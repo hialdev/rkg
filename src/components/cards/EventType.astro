@@ -1,0 +1,11 @@
+---
+import { Icon } from "@iconify-icon/react";
+import type { eventTypes } from "../../mock";
+
+const { eventType } = Astro.props as { eventType: typeof eventTypes[0]}
+---
+
+<div class="flex flex-col items-center p-10 rounded-xl group hover:bg-red-500 hover:text-white transition-all ease-in-out">
+   <Icon client:load icon={eventType.icon_id} className="text-yellow-500 group-hover:text-white transition-all ease-in-out" width={90} />
+   <h4 class="text-xl font-bold text-center">{eventType.title}</h4>
+</div>

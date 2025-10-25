@@ -1,0 +1,28 @@
+---
+import { eventStats, eventTypes } from "../../../mock";
+import EventStat from "../../cards/EventStat.astro";
+import EventType from "../../cards/EventType.astro";
+---
+
+<section class="container mx-auto py-10">
+   <div class="grid grid-cols-12">
+      {
+         eventTypes.map((et) => (
+            <div class="col-span-3">
+               <EventType eventType={et} />
+            </div>
+         ))
+      }
+   </div>
+</section>
+<section class="py-20 bg-stone-900">
+   <div class="container mx-auto grid grid-cols-12">
+      {
+         eventStats.map((et) => (
+            <div class="col-span-3">
+               <EventStat eventStat={et} />
+            </div>
+         ))
+      }
+   </div>
+</section>

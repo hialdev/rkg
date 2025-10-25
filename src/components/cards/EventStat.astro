@@ -1,0 +1,88 @@
+---
+import { Icon } from "@iconify-icon/react";
+import type { eventStats } from "../../mock";
+
+const { eventStat } = Astro.props as { eventStat: (typeof eventStats)[0] };
+const uniqueId = `counter-${eventStat.id}`;
+---
+
+<div class="flex flex-col gap-3 items-center text-white">
+   <Icon
+      client:load
+      icon={eventStat.icon_id}
+      width={50}
+      className="text-green-600"
+   />
+
+   <div class="flex flex-col items-center">
+      <div class="flex items-center gap-2">
+         <span
+            id={uniqueId}
+            class="text-3xl font-medium counter"
+            data-target={eventStat.count}
+            data-counter-id={uniqueId}
+         >
+            0
+         </span>
+         <span class="text-green-600 font-bold text-xl">
+            {eventStat.unit_count}
+         </span>
+      </div>
+
+      <p class="text-center">{eventStat.title}</p>
+   </div>
+</div>
+
+<script>
+   // Gunakan tipe yang tepat
+   document
+      .querySelectorAll<HTMLElement>("[data-counter-id]")
+      .forEach((counterEl) => {
+         const target = Number(counterEl.dataset.target ?? 0);
+         if (target <= 0) {
+            counterEl.textContent = target.toLocaleString();
+            return;
+         }
+
+         let started = false;
+
+         const observer = new IntersectionObserver(
+            (entries) => {
+               if (entries[0].isIntersecting && !started) {
+                  started = true;
+                  observer.disconnect();
+
+                  setTimeout(() => {
+                     animateCount(counterEl, target);
+                  }, 1000);
+               }
+            },
+            { threshold: 0.5 }
+         );
+
+         observer.observe(counterEl);
+      });
+
+   // Definisikan tipe parameter dengan jelas
+   function animateCount(element: HTMLElement, targetValue: number): void {
+      const startTime = performance.now();
+      const duration = 3000; // ms
+
+      function update(currentTime: DOMHighResTimeStamp): void {
+         const elapsed = currentTime - startTime;
+         const progress = Math.min(elapsed / duration, 1);
+         const easeProgress = 1 - Math.pow(1 - progress, 3);
+         const currentValue = Math.floor(easeProgress * targetValue);
+
+         element.textContent = currentValue.toLocaleString();
+
+         if (progress < 1) {
+            requestAnimationFrame(update);
+         } else {
+            element.textContent = targetValue.toLocaleString();
+         }
+      }
+
+      requestAnimationFrame(update);
+   }
+</script>

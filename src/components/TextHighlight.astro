@@ -1,0 +1,25 @@
+---
+// src/components/TextHighlight.astro
+interface Props {
+  text: string;
+  className?: string;
+}
+
+const { text, className = "" } = Astro.props;
+
+const words = text.split(/(\s+)/).filter(Boolean);
+---
+
+<span class={className}>
+  {words.map((word, i) =>
+    word.trim() === '' ? (
+      <span >&nbsp;</span>
+    ) : (
+      <span
+        class="bg-white text-black px-3 py-0.5 rounded"
+      >
+        {word}
+      </span>
+    )
+  )}
+</span>

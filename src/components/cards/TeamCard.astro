@@ -1,0 +1,55 @@
+---
+import { Image } from "astro:assets";
+import type { teams } from "../../mock";
+
+const { team } = Astro.props as {team: typeof teams[0]};
+---
+
+<div class="relative group rounded-2xl overflow-hidden">
+   <Image
+      src={team.image}
+      alt={`Image Team A`}
+      class="rounded-2xl bg-stone-200 object-cover aspect-[2/3] group-hover:scale-90 group-hover:-rotate-6"
+      width={354}
+      height={472}
+   />
+   <div
+      class="absolute top-0 end-0 start-0 bottom-0 flex group-hover:hidden flex-col justify-end p-5"
+   >
+      <div class="flex flex-col gap-2 mb-4">
+         <h3 class="leading-[2.5em]">
+            <span
+               class="inline px-3 py-1 bg-white rounded text-stone-900 text-2xl font-medium"
+               >{team.name}</span
+            >
+         </h3>
+      </div>
+      <div
+         class="flex self-start items-center gap-3 px-3 py-1 bg-white rounded-full text-stone-800"
+      >
+         <span class="bg-stone-900 w-1 h-1 rounded-full"></span>
+         <h4 class="text-lg font-medium text-stone-800">{team.role}</h4>
+      </div>
+   </div>
+
+   <!-- Hover -->
+   <div
+      class="hidden group-hover:flex absolute top-0 end-0 start-0 bottom-0 z-10 bg-transparent flex-col justify-end"
+   >
+      <div class="bg-stone-800 p-7 rounded-xl text-white">
+         <div
+            class="bg-stone-800 rounded-tl-xl text-white p-7 pt-10 max-w-[90%] -ms-7 -mt-15"
+            style="clip-path: polygon(0% 0%, 75% 0%, 100% 60%, 100% 100%, 0% 100%)"
+         >
+            <h3 class="text-white text-xl font-medium">{team.name}</h3>
+            <div class="flex items-center gap-3">
+               <span class="bg-white w-1 h-1 rounded-full"></span>
+               <h4 class="font-medium text-white">{team.role}</h4>
+            </div>
+         </div>
+         <div class="text-sm">
+            {team.about}
+         </div>
+      </div>
+   </div>
+</div>
