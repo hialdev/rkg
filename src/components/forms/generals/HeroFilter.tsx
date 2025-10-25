@@ -29,11 +29,11 @@ export default function HeroFilter({ defaultValue = "", onChange }: Props) {
    };
 
    return (
-      <Box className="flex items-center gap-2 bg-white rounded-full overflow-hidden px-2 ps-4 py-2 my-4 shadow-sm">
+      <Box className="flex flex-wrap w-full max-w-screen md:max-w-[auto] md:w-auto items-center gap-2 bg-white rounded-md md:rounded-full overflow-hidden md:px-2 ps-4 py-10 md:py-2 mx-20 md:my-4 shadow-sm">
          {/* AUTOCOMPLETE */}
          <Autocomplete
             id="country-select-demo"
-            sx={{ width: 400, borderRadius: 30 }}
+            sx={{ width: {xs:"100%",md:400}, borderRadius: 30 }}
             options={cities}
             multiple
             getOptionLabel={(option: any) => option.name}
@@ -100,7 +100,10 @@ export default function HeroFilter({ defaultValue = "", onChange }: Props) {
             variant="outlined"
             sx={{
                m: 1,
-               minWidth: 140,
+               minWidth: {
+                  xs:"70%",
+                  md:140
+               },
                "& .MuiOutlinedInput-root": {
                   "& fieldset": { border: "none" },
                   "&:hover fieldset": { border: "none" },

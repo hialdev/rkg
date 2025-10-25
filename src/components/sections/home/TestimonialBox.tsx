@@ -22,14 +22,14 @@ export default function TestimonialBox() {
          {/* Arrows */}
          <button
             ref={prevRef}
-            className="absolute flex items-center justify-center cursor-pointer z-20 left-0 top-1/2 -translate-y-1/2 bg-white text-stone-700 shadow-md p-3 -ms-8 rounded-full hover:bg-stone-200 disabled:text-stone-500 disabled:cursor-auto"
+            className="absolute flex items-center justify-center cursor-pointer z-20 left-0 bottom-0 -mb-20 md:bottom-auto md:-mb-0 md:top-1/2 -translate-y-1/2 bg-white text-stone-700 shadow-md p-3 md:-ms-8 rounded-full hover:bg-stone-200 disabled:text-stone-500 disabled:cursor-auto"
          >
             <Icon icon="mdi:arrow-left" width={20} />
          </button>
 
          <button
             ref={nextRef}
-            className="absolute flex items-center justify-center cursor-pointer z-20 right-0 top-1/2 -translate-y-1/2 bg-white text-stone-700 shadow-md p-3 -me-8 rounded-full hover:bg-stone-200 disabled:text-stone-500 disabled:cursor-auto"
+            className="absolute flex items-center justify-center cursor-pointer z-20 right-0 bottom-0 -mb-20 md:bottom-auto md:-mb-0 md:top-1/2 -translate-y-1/2 bg-white text-stone-700 shadow-md p-3 md:-me-8 rounded-full hover:bg-stone-200 disabled:text-stone-500 disabled:cursor-auto"
          >
             <Icon icon="mdi:arrow-right" width={20} />
          </button>

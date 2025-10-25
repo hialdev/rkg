@@ -59,7 +59,7 @@ const restRows = isOdd ? openTrips.slice(2) : openTrips;
    </section>
 
    <!-- CONTENT -->
-   <section class="container mx-auto py-20 pb-10 text-center">
+   <section class="container mx-auto py-20 pb-10 text-center px-3">
       <h2 class="text-3xl font-semibold text-gray-800 mb-4">
          About Us
       </h2>
@@ -73,12 +73,12 @@ const restRows = isOdd ? openTrips.slice(2) : openTrips;
       </a>
    </section>
 
-   <section class="container mx-auto py-20">
+   <section class="container mx-auto py-20 px-3">
       <h2 class="text-3xl font-semibold text-gray-800 mb-10">Open Trip</h2>
       <div class="grid grid-cols-12 gap-4">
          {
             openTrips.map((trip) => (
-               <div class="col-span-4">
+               <div class="col-span-12 sm:col-span-6 md:col-span-4">
                   <OpenTrip trip={trip} />
                </div>
             ))
@@ -86,7 +86,7 @@ const restRows = isOdd ? openTrips.slice(2) : openTrips;
       </div>
    </section>
 
-   <section class="container mx-auto py-20">
+   <section class="container mx-auto py-20 px-3">
       <h2 class="text-3xl font-semibold text-gray-800 mb-10">Private Trip</h2>
 
       <div class="space-y-6">
@@ -173,7 +173,7 @@ const restRows = isOdd ? openTrips.slice(2) : openTrips;
 
    <EventStatistics />
 
-   <section class="py-10 bg-stone-900">
+   <section class="py-10 bg-stone-950 px-3">
       <div class="container mx-auto">
          <h2 class="text-5xl font-medium text-yellow-500 mb-10">Our Team</h2>
          <TeamBox />
@@ -181,18 +181,18 @@ const restRows = isOdd ? openTrips.slice(2) : openTrips;
    </section>
 
    
-   <section class="py-20">
+   <section class="py-20 px-3">
       <ClientList />
    </section>
 
    <section class="bg-orange-200">
-      <div class="container mx-auto py-20">
+      <div class="container mx-auto py-20 px-3">
          <h2 class="text-5xl font-medium mb-10">Testimonials</h2>
          <TestimonialBox client:load />
       </div>
    </section>
 
-   <section class="py-20">
+   <section class="py-20 px-3">
       <ConsultationBox />
    </section>
 </Layout>

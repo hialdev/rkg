@@ -8,7 +8,7 @@ import EventType from "../../cards/EventType.astro";
    <div class="grid grid-cols-12">
       {
          eventTypes.map((et) => (
-            <div class="col-span-3">
+            <div class="col-span-6 md:col-span-3">
                <EventType eventType={et} />
             </div>
          ))
@@ -16,10 +16,10 @@ import EventType from "../../cards/EventType.astro";
    </div>
 </section>
 <section class="py-20 bg-stone-900">
-   <div class="container mx-auto grid grid-cols-12">
+   <div class="container mx-auto grid grid-cols-12 gap-5">
       {
          eventStats.map((et) => (
-            <div class="col-span-3">
+            <div class="col-span-6 md:col-span-3">
                <EventStat eventStat={et} />
             </div>
          ))

@@ -6,7 +6,7 @@ import TeamCard from "../../cards/TeamCard.astro";
 <div class="grid grid-cols-12 gap-5">
    {
       teams.map((team) => (
-         <div class="col-span-3">
+         <div class="col-span-12 sm:col-span-6 md:col-span-3">
             <TeamCard team={team} />
          </div>
       ))
