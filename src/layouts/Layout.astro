@@ -2,13 +2,16 @@
 import Footer from "../components/partials/Footer.astro";
 import Header from "../components/partials/Header.astro";
 import "../styles/global.css";
-import { type PageMetaType } from "../types/page"
+import { type PageMetaType } from "../types/page";
 
-const { pageMeta } = Astro.props as { pageMeta: PageMetaType };
+const { pageMeta, isFloating = false } = Astro.props as {
+   pageMeta: PageMetaType;
+   isFloating: boolean;
+};
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" id="html-root">
    <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width" />
@@ -24,10 +27,23 @@ const { pageMeta } = Astro.props as { pageMeta: PageMetaType };
       />
    </head>
    <body>
-      <Header />
+      <Header isFloating={isFloating} />
       <main>
          <slot />
       </main>
       <Footer />
+      <script>
+         // Update the language attribute based on stored locale
+         document.addEventListener("DOMContentLoaded", function () {
+            const storedLocale = localStorage.getItem("locale");
+            if (storedLocale) {
+               document.documentElement.lang = storedLocale;
+            } else {
+               // Set default based on browser language
+               const browserLang = navigator.language.startsWith("id") ? "id" : "en";
+               document.documentElement.lang = browserLang;
+            }
+         });
+      </script>
    </body>
 </html>

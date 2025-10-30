@@ -17,13 +17,13 @@ interface EventCardProps {
 export default function EventCard({ event }: EventCardProps) {
    return (
       <div>
-         <div className="relative aspect-video overflow-hidden">
+         <div className="relative h-screen md:aspect-video md:h-auto overflow-hidden">
             <img
                src={event.image}
                alt={event.title + " Image"}
                width={1280}
                height={720}
-               className="w-full h-auto"
+               className="w-full h-full object-cover"
             />
             <div className="absolute top-0 end-0 start-0 bottom-0 flex flex-col justify-end bg-stone-950/50 p-10 text-white">
                <div>

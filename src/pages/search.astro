@@ -1,0 +1,16 @@
+---
+import Layout from "../layouts/Layout.astro";
+import type { PageMetaType } from "../types/page";
+import LocaleSearchContent from "../components/sections/search/LocaleSearchContent";
+
+const metaData: PageMetaType = {
+   title: "Search | RKG Tour & Travel - Find Your Perfect Trip",
+   description: "Discover and search for various trip types offered by RKG Tour & Travel, including adventure, cultural, luxury, family, and solo trips.",
+   image: "/assets/rkgtour.webp",
+   robot: true,
+};
+---
+
+<Layout pageMeta={metaData}>
+   <LocaleSearchContent client:only="react" />
+</Layout>

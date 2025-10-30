@@ -1,0 +1,26 @@
+---
+import Layout from "../layouts/Layout.astro";
+import type { PageMetaType } from "../types/page";
+import AboutView from "../components/sections/about/AboutView";
+import TeamBox from "../components/sections/home/TeamBox";
+
+const metaData: PageMetaType = {
+   title: "About Us | RKG Tour & Travel - Meet Our Team",
+   description: "Learn more about RKG Tour & Travel, our mission, and the dedicated team behind your perfect trip.",
+   image: "/assets/rkgtour.webp",
+   robot: true,
+};
+---
+
+<Layout pageMeta={metaData}>
+   <AboutView client:only="react" />
+
+   <section class="py-20 bg-stone-950 px-3">
+      <div class="container mx-auto">
+         <h2 class="text-5xl font-medium text-yellow-500 mb-10">Our Team</h2>
+         <div id="team-box-wrapper">
+            <TeamBox client:only="react" />
+         </div>
+      </div>
+   </section>
+</Layout>

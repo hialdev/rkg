@@ -1,198 +1,49 @@
 ---
-import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import type { PageMetaType } from "../types/page";
-import ImageSlider from "../components/sections/home/ImageSlider";
-import HeroFilter from "../components/forms/generals/HeroFilter";
-import { menus } from "../config/menu";
-import { imageLists, openTrips } from "../mock/index";
-import OpenTrip from "../components/cards/OpenTrip.astro";
-import EventSlider from "../components/sections/home/EventSlider";
-import EventStatistics from "../components/sections/home/EventStatistics.astro";
-import TeamCard from "../components/cards/TeamCard.astro";
-import { Icon } from "@iconify-icon/react";
-import TeamBox from "../components/sections/home/TeamBox.astro";
-import ClientList from "../components/sections/home/ClientList.astro";
-import TestimonialBox from "../components/sections/home/TestimonialBox";
-import ConsultationBox from "../components/sections/home/ConsultationBox.astro";
+import LocaleHomeContent from "../components/sections/home/LocaleHomeContent";
+import EventStatistics from "../components/sections/home/EventStatistics";
+import TeamBox from "../components/sections/home/TeamBox";
+import ClientList from "../components/sections/home/ClientList";
+import ConsultationBox from "../components/sections/home/ConsultationBox";
 
 const metaData: PageMetaType = {
-   title: "Home Page",
-   description: "Description for home",
-   image: "",
+   title: "RKG Tour & Travel | Your Professional Travel Partner",
+   description: "RKG Tour & Travel is your trusted partner for professional travel services, offering comprehensive tour packages, travel arrangements, and unforgettable journey experiences across destinations.",
+   image: "/assets/rkgtour.webp",
    robot: true,
 };
-
-const isOdd = openTrips.length % 2 !== 0;
-const firstRow = isOdd ? openTrips.slice(0, 2) : [];
-const restRows = isOdd ? openTrips.slice(2) : openTrips;
 ---
 
-<Layout pageMeta={metaData}>
-
-   <!-- HERO -->
-   <section
-      class="relative h-screen w-full flex flex-col items-center justify-center text-white overflow-hidden"
-   >
-      <!-- Background utama -->
-      <div class="absolute inset-0">
-         <ImageSlider images={imageLists} client:load />
-
-         <!-- Overlay gradasi hitam dari atas -->
-         <div
-            class="absolute z-10 inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.4)_0%,rgba(0,0,0,0)_30%)]"
-         >
-         </div>
-      </div>
-
-      <!-- Konten hero -->
-      <div
-         class="relative z-10 flex flex-col justify-end items-center h-full mb-10"
-      >
-         <HeroFilter
-            client:load
-            onChange={(value) => {
-               console.log("Value hero filter", value);
-            }}
-         />
-      </div>
-   </section>
-
-   <!-- CONTENT -->
-   <section class="container mx-auto py-20 pb-10 text-center px-3">
-      <h2 class="text-3xl font-semibold text-gray-800 mb-4">
-         About Us
-      </h2>
-      <p class="text-gray-500 max-w-2xl mx-auto">
-         Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam,
-         voluptas.
-      </p>
-      <a href="" class="inline-flex mt-6 items-center gap-2 p-2 px-4 rounded-full border self-start hover:border-red-100 hover:bg-red-100 hover:text-red-700">
-         Read More
-         <Icon icon={`mdi:arrow-right`} width={20} />
-      </a>
-   </section>
-
-   <section class="container mx-auto py-20 px-3">
-      <h2 class="text-3xl font-semibold text-gray-800 mb-10">Open Trip</h2>
-      <div class="grid grid-cols-12 gap-4">
-         {
-            openTrips.map((trip) => (
-               <div class="col-span-12 sm:col-span-6 md:col-span-4">
-                  <OpenTrip trip={trip} />
-               </div>
-            ))
-         }
-      </div>
-   </section>
-
-   <section class="container mx-auto py-20 px-3">
-      <h2 class="text-3xl font-semibold text-gray-800 mb-10">Private Trip</h2>
-
-      <div class="space-y-6">
-         {
-            isOdd && (
-               <div class="grid gap-6 sm:grid-cols-2">
-                  {firstRow.map((trip) => (
-                     <div class="group relative rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
-                        <img
-                           src={trip.image.path}
-                           alt={trip.title}
-                           class="w-full h-full object-cover aspect-[16/9]"
-                        />
-                        <div class="absolute inset-0 bg-black/40 hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
-                           <h3 class="text-white text-lg font-medium text-center">
-                              {trip.title}
-                           </h3>
-                        </div>
-                        <div class="hidden group-hover:flex absolute flex-col justify-between inset-0 bg-red-800 top-30 p-10">
-                           <div class="text-white text-sm line-clamp-5">
-                              Lorem ipsum dolor sit amet consectetur adipisicing
-                              elit. Necessitatibus voluptate modi obcaecati
-                              alias facilis ipsam doloremque fuga commodi sint
-                           </div>
-                           <a
-                              href=""
-                              class="px-4 py-2 border-white border inline-flex self-start text-white hover:bg-red-950 hover:border-red-950 hover:text-red-100 rounded-full items-center gap-3"
-                           >
-                              See Detail
-                              <Icon client:load icon="mdi:arrow-right" />
-                           </a>
-                        </div>
-                     </div>
-                  ))}
-               </div>
-            )
-         }
-
-         <div
-            class={`grid gap-6 ${isOdd ? "sm:grid-cols-3" : "sm:grid-cols-3 lg:grid-cols-4"}`}
-         >
-            {
-               restRows.map((trip) => (
-                  <div class="group relative rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
-                     <img
-                        src={trip.image.path}
-                        alt={trip.title}
-                        class="w-full h-full object-cover aspect-[16/9]"
-                     />
-                     <div class="absolute inset-0 bg-black/40 hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
-                        <h3 class="text-white text-lg font-medium text-center">
-                           {trip.title}
-                        </h3>
-                     </div>
-                     <div class="hidden group-hover:block absolute inset-0 bg-red-800 top-10 p-10">
-                        <div class="text-white mb-4 text-sm line-clamp-3">
-                           Lorem ipsum dolor sit amet consectetur adipisicing
-                           elit. Necessitatibus voluptate modi obcaecati alias
-                           facilis ipsam doloremque fuga commodi sint
-                        </div>
-                        <a
-                           href=""
-                           class="px-4 py-2 border-white border inline-flex text-white hover:bg-red-950 hover:border-red-950 hover:text-red-100 rounded-full items-center gap-3"
-                        >
-                           See Detail
-                           <Icon client:load icon="mdi:arrow-right" />
-                        </a>
-                     </div>
-                  </div>
-               ))
-            }
-         </div>
-      </div>
-   </section>
-
-   <section class="pt-20">
-      <div class="container mx-auto">
-         <h2 class="text-3xl font-semibold text-gray-800 mb-10">
-            Event Organizer
-         </h2>
-      </div>
-      <EventSlider client:load />
-   </section>
-
-   <EventStatistics />
-
+<Layout isFloating={true} pageMeta={metaData}>
+   <LocaleHomeContent client:only="react" />
+   
+   {/* Event Statistics Section */}
+   <div id="event-statistics-wrapper">
+      <EventStatistics client:only="react" />
+   </div>
+   
+   {/* Team Box Section */}
    <section class="py-10 bg-stone-950 px-3">
       <div class="container mx-auto">
          <h2 class="text-5xl font-medium text-yellow-500 mb-10">Our Team</h2>
-         <TeamBox />
+         <div id="team-box-wrapper">
+            <TeamBox client:only="react" />
+         </div>
       </div>
    </section>
-
    
+   {/* Client List Section */}
    <section class="py-20 px-3">
-      <ClientList />
-   </section>
-
-   <section class="bg-orange-200">
-      <div class="container mx-auto py-20 px-3">
-         <h2 class="text-5xl font-medium mb-10">Testimonials</h2>
-         <TestimonialBox client:load />
+      <div id="client-list-wrapper">
+         <ClientList client:only="react" />
       </div>
    </section>
-
+   
+   {/* Consultation Box Section */}
    <section class="py-20 px-3">
-      <ConsultationBox />
+      <div id="consultation-box-wrapper">
+         <ConsultationBox client:only="react" />
+      </div>
    </section>
 </Layout>

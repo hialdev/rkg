@@ -1,0 +1,15 @@
+---
+import GalleryView from "../components/sections/gallery/GalleryView";
+import Layout from "../layouts/Layout.astro";
+import type { PageMetaType } from "../types/page";
+
+const metaData: PageMetaType = {
+   title: "Gallery | RKG Tour & Travel",
+   description: "Explore the gallery of RKG Tour & Travel showcasing photos and videos of our activities and memorable journeys.",
+   image: "/assets/rkgtour.webp",
+   robot: true,
+};
+---
+<Layout pageMeta={metaData}>
+   <GalleryView client:only />
+</Layout>

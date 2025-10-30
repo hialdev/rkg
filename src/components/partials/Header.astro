@@ -1,195 +1,76 @@
 ---
 import { Image } from "astro:assets";
-import { menus } from "../../config/menu";
+import logoRkg from "../../assets/rkgtour.webp";
+import LocaleMenu from "./LocaleMenu";
+import LocaleMobileMenu from "./LocaleMobileMenu";
+
+const { isFloating = false } = Astro.props;
 ---
 
 <header
    id="navbar"
-   class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-transparent"
+   class={`${
+      isFloating
+         ? "fixed top-0 left-0 w-full z-50 bg-transparent transition-all duration-300"
+         : "relative w-full bg-white text-stone-900"
+   }`}
 >
    <nav class="container mx-auto flex items-center justify-between py-3 px-4">
       <!-- LOGO -->
       <div class="flex items-center gap-2">
-         <Image
-            src="https://placehold.co/60x60"
-            alt="logo RKG"
-            width={60}
-            height={60}
-            class="rounded-full"
-         />
+         <a href="/">
+            <Image src={logoRkg} alt="logo RKG" width={60} height={60} />
+         </a>
       </div>
 
       <!-- HAMBURGER ICON -->
       <button
          id="menu-toggle"
          data-open="false"
-         class="flex flex-col gap-[6px] md:hidden fixed top-6 right-4 z-[70] w-8 h-8 justify-center items-end transition-all"
+         class={`flex flex-col gap-[6px] md:hidden fixed top-6 right-4 z-[70] w-8 h-8 justify-center items-end transition-all ${
+            isFloating ? "text-white" : "text-gray-800"
+         }`}
       >
          <span
-            class="line-1 block w-6 h-[3px] bg-white rounded-full transition-all"
-         ></span>
+            class={`line-1 block w-6 h-[3px] ${
+               isFloating ? "bg-white" : "bg-gray-800"
+            } rounded-full transition-all`}></span>
          <span
-            class="line-2 block w-4 h-[3px] bg-white rounded-full self-end transition-all"
-         ></span>
+            class={`line-2 block w-4 h-[3px] ${
+               isFloating ? "bg-white" : "bg-gray-800"
+            } rounded-full self-end transition-all`}></span>
          <span
-            class="line-3 block w-8 h-[3px] bg-white rounded-full transition-all"
-         ></span>
+            class={`line-3 block w-8 h-[3px] ${
+               isFloating ? "bg-white" : "bg-gray-800"
+            } rounded-full transition-all`}></span>
       </button>
 
-      <!-- NAV MENU (DESKTOP) -->
-      <ul
-         id="menu"
-         class="hidden md:flex items-center gap-6 text-white font-medium"
-      >
-         {
-            menus.map((menu) => (
-               <li class="relative group">
-                  <a
-                     href={menu.path}
-                     class="flex items-center gap-1 hover:text-rose-300 transition"
-                  >
-                     {menu.name}
-                     {menu.childerns.length > 0 && (
-                        <svg
-                           xmlns="http://www.w3.org/2000/svg"
-                           class="h-4 w-4 transition-transform group-hover:rotate-180"
-                           fill="none"
-                           viewBox="0 0 24 24"
-                           stroke="currentColor"
-                        >
-                           <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M19 9l-7 7-7-7"
-                           />
-                        </svg>
-                     )}
-                  </a>
-
-                  {menu.childerns.length > 0 && (
-                     <ul class="absolute left-0 top-full hidden group-hover:block bg-white shadow-lg mt-1 rounded-md min-w-[180px] z-20 text-gray-700 before:absolute before:-top-2 before:left-0 before:w-full before:h-3">
-                        {menu.childerns.map((child) => (
-                           <li class="relative group/drop">
-                              <a
-                                 href={child.path}
-                                 class="flex items-center text-stone-900 rounded-lg justify-between px-5 py-3 hover:bg-rose-50 hover:text-rose-700"
-                              >
-                                 {child.name}
-                                 {child.childerns.length > 0 && (
-                                    <svg
-                                       xmlns="http://www.w3.org/2000/svg"
-                                       class="h-4 w-4"
-                                       fill="none"
-                                       viewBox="0 0 24 24"
-                                       stroke="currentColor"
-                                    >
-                                       <path
-                                          stroke-linecap="round"
-                                          stroke-linejoin="round"
-                                          stroke-width="2"
-                                          d="M9 5l7 7-7 7"
-                                       />
-                                    </svg>
-                                 )}
-                              </a>
-
-                              {child.childerns.length > 0 && (
-                                 <ul class="absolute top-0 left-full hidden group-hover/drop:block bg-white shadow-lg rounded-md min-w-[180px] text-gray-700 before:absolute before:-left-3 before:top-0 before:w-3 before:h-full">
-                                    {child.childerns.map((sub) => (
-                                       <li>
-                                          <a
-                                             href={sub.path}
-                                             class="block text-stone-900 rounded-lg px-5 py-3 hover:bg-rose-50 hover:text-rose-700"
-                                          >
-                                             {sub.name}
-                                          </a>
-                                       </li>
-                                    ))}
-                                 </ul>
-                              )}
-                           </li>
-                        ))}
-                     </ul>
-                  )}
-               </li>
-            ))
-         }
-      </ul>
+      <LocaleMenu client:only="react" {isFloating} />
    </nav>
 
-   <!-- MOBILE MENU -->
    <div
       id="mobile-menu"
-      class="fixed inset-0 bg-white h-screen text-gray-800 hidden flex-col items-start p-6 pt-20 z-40 md:hidden transition-all duration-300 max-h-screen opacity-0 translate-y-[-10px]"
+      class={`fixed inset-0 h-screen bg-white hidden flex-col items-start p-6 pt-20 z-40 md:hidden transition-all duration-300 max-h-screen opacity-0 translate-y-[-10px] text-gray-800`}
    >
-      {
-         menus.map((menu) => (
-            <div class="w-full mb-4">
-               <details class="group overflow-visible">
-                  <summary class="cursor-pointer flex justify-between items-center py-2 text-lg font-medium hover:text-rose-600">
-                     {menu.name}
-                     {menu.childerns.length > 0 && (
-                        <svg
-                           xmlns="http://www.w3.org/2000/svg"
-                           class="h-4 w-4 transition-transform group-open:rotate-180"
-                           fill="none"
-                           viewBox="0 0 24 24"
-                           stroke="currentColor"
-                        >
-                           <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M19 9l-7 7-7-7"
-                           />
-                        </svg>
-                     )}
-                  </summary>
-                  {menu.childerns.length > 0 && (
-                     <div class="pl-4 border-l border-gray-200">
-                        {menu.childerns.map((child) => (
-                           <details class="group overflow-visible">
-                              <summary class="cursor-pointer flex justify-between items-center py-2 hover:text-rose-600">
-                                 {child.name}
-                                 {child.childerns.length > 0 && (
-                                    <svg
-                                       xmlns="http://www.w3.org/2000/svg"
-                                       class="h-4 w-4 transition-transform group-open:rotate-180"
-                                       fill="none"
-                                       viewBox="0 0 24 24"
-                                       stroke="currentColor"
-                                    >
-                                       <path
-                                          stroke-linecap="round"
-                                          stroke-linejoin="round"
-                                          stroke-width="2"
-                                          d="M9 5l7 7-7 7"
-                                       />
-                                    </svg>
-                                 )}
-                              </summary>
-                              {child.childerns.length > 0 && (
-                                 <ul class="pl-4 border-l border-gray-200">
-                                    {child.childerns.map((sub) => (
-                                       <li class="py-1 hover:text-rose-600">
-                                          <a href={sub.path}>{sub.name}</a>
-                                       </li>
-                                    ))}
-                                 </ul>
-                              )}
-                           </details>
-                        ))}
-                     </div>
-                  )}
-               </details>
-            </div>
-         ))
-      }
+      <LocaleMobileMenu
+         client:only="react"
+         onClose={() => {
+            const mobileMenu = document.getElementById("mobile-menu");
+            const toggle = document.getElementById("menu-toggle");
+            if (mobileMenu && toggle) {
+               mobileMenu.classList.add("opacity-0", "translate-y-[-10px]");
+               setTimeout(() => mobileMenu.classList.add("hidden"), 300);
+               toggle.setAttribute("data-open", "false");
+               const [l1, l2, l3] = toggle.querySelectorAll("span");
+               l1?.classList.remove("rotate-45", "translate-y-[9px]", "w-8");
+               l2?.classList.remove("opacity-0");
+               l3?.classList.remove("-rotate-45", "-translate-y-[9px]");
+            }
+         }}
+      />
    </div>
 </header>
 
-<!-- SCRIPT -->
 <script>
    document.addEventListener("DOMContentLoaded", () => {
       const navbar = document.getElementById("navbar");
@@ -215,7 +96,7 @@ import { menus } from "../../config/menu";
             });
          } else {
             navbar?.classList.remove("bg-white", "backdrop-blur-md");
-            mobileMenu?.classList.remove("bg-white", "backdrop-blur-md");
+            mobileMenu?.classList.remove("backdrop-blur-md");
             navbar?.classList.add("bg-transparent");
             masterMenus.forEach((a) => {
                a.classList.add("text-white");
@@ -248,7 +129,7 @@ import { menus } from "../../config/menu";
 
          if (isMenuOpen) {
             // Force black navbar
-            navbar && navbar.classList.add("bg-white/50", "backdrop-blur-sm");
+            navbar && navbar.classList.add("bg-white");
             navbar && navbar.classList.remove("bg-transparent");
             navbar &&
                navbar.querySelectorAll("a").forEach((a) => {

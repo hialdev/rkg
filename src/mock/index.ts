@@ -1,124 +1,102 @@
+export const countries = [
+   { id: 1, name: "Indonesia" },
+   { id: 2, name: "Malaysia" },
+];
+
 export const cities = [
    {
+      id: 1,
+      country_id: 1,
       name: "Bali",
       province: "Bali",
       description:
-         "Pulau dewata yang terkenal dengan pantai, gunung, dan budaya uniknya seperti Uluwatu, Kintamani, dan Ubud.",
+         "Pulau dewata yang terkenal dengan pantai, gunung, dan budaya unik.",
    },
    {
+      id: 2,
+      country_id: 1,
       name: "Yogyakarta",
-      province: "Daerah Istimewa Yogyakarta",
-      description:
-         "Dikenal dengan alam vulkanik Gunung Merapi, gua Jomblang, dan pantai-pantai selatan seperti Parangtritis.",
+      province: "DIY",
+      description: "Dikenal dengan Gunung Merapi, candi, dan pantai selatan.",
    },
    {
+      id: 3,
+      country_id: 1,
       name: "Bandung",
       province: "Jawa Barat",
-      description:
-         "Kota sejuk dengan wisata alam Lembang, Kawah Putih, dan kebun teh Ciwidey.",
+      description: "Kota sejuk dengan wisata alam Lembang dan Ciwidey.",
    },
    {
-      name: "Malang",
-      province: "Jawa Timur",
-      description:
-         "Berada di dataran tinggi, terkenal dengan Batu, Coban Rondo, dan Bromo.",
-   },
-   {
-      name: "Lombok",
-      province: "Nusa Tenggara Barat",
-      description:
-         "Pulau dengan pantai eksotis seperti Kuta Mandalika dan Gunung Rinjani yang megah.",
-   },
-   {
+      id: 4,
+      country_id: 1,
       name: "Labuan Bajo",
-      province: "Nusa Tenggara Timur",
-      description:
-         "Gerbang menuju Taman Nasional Komodo dengan pemandangan pulau dan laut biru yang menakjubkan.",
+      province: "NTT",
+      description: "Gerbang menuju Taman Nasional Komodo dan pulau eksotis.",
    },
    {
-      name: "Manado",
-      province: "Sulawesi Utara",
+      id: 5,
+      country_id: 1,
+      name: "Lombok",
+      province: "NTB",
       description:
-         "Tersohor dengan taman laut Bunaken dan wisata alam pegunungan Tomohon.",
+         "Pulau dengan pantai eksotis seperti Kuta Mandalika dan Gunung Rinjani.",
    },
    {
-      name: "Bukittinggi",
-      province: "Sumatera Barat",
-      description:
-         "Kota bersejarah dengan keindahan Ngarai Sianok dan panorama Gunung Singgalang.",
-   },
-   {
-      name: "Padang",
-      province: "Sumatera Barat",
-      description:
-         "Selain kulinernya, Padang memiliki wisata pantai dan perbukitan seperti Air Manis dan Mandeh.",
-   },
-   {
-      name: "Banyuwangi",
-      province: "Jawa Timur",
-      description:
-         "Dijuluki The Sunrise of Java, terkenal dengan Kawah Ijen dan Pantai Pulau Merah.",
-   },
-   {
-      name: "Wakatobi",
-      province: "Sulawesi Tenggara",
-      description:
-         "Surga bawah laut dunia dengan keanekaragaman terumbu karang yang luar biasa.",
-   },
-   {
-      name: "Raja Ampat",
-      province: "Papua Barat Daya",
-      description:
-         "Salah satu destinasi diving terbaik dunia dengan gugusan pulau karst dan laut jernih.",
-   },
-   {
-      name: "Bogor",
-      province: "Jawa Barat",
-      description:
-         "Kota hujan yang dikelilingi wisata alam seperti Puncak, Curug Nangka, dan Kebun Raya Bogor.",
-   },
-   {
-      name: "Dieng",
-      province: "Jawa Tengah",
-      description:
-         "Dataran tinggi eksotis dengan kawah vulkanik, telaga warna, dan budaya khas pegunungan.",
-   },
-   {
-      name: "Belitung",
-      province: "Kepulauan Bangka Belitung",
-      description:
-         "Pulau dengan pantai batu granit raksasa dan laut biru toska yang jernih.",
-   },
-   {
-      name: "Medan",
-      province: "Sumatera Utara",
-      description:
-         "Gerbang menuju Danau Toba dan Pulau Samosir, wisata alam vulkanik terbesar di Asia Tenggara.",
-   },
-   {
-      name: "Makassar",
-      province: "Sulawesi Selatan",
-      description:
-         "Dekat dengan Taman Nasional Bantimurung, Pantai Losari, dan pegunungan Malino.",
-   },
-   {
-      name: "Toba",
-      province: "Sumatera Utara",
-      description:
-         "Area sekitar Danau Toba yang indah dengan budaya Batak dan pemandangan alam spektakuler.",
-   },
-   {
-      name: "Flores",
-      province: "Nusa Tenggara Timur",
-      description:
-         "Pulau dengan keajaiban alam seperti Danau Kelimutu, pantai pink, dan perbukitan hijau.",
-   },
-   {
+      id: 6,
+      country_id: 1,
       name: "Bromo",
       province: "Jawa Timur",
       description:
-         "Gunung aktif dengan panorama lautan pasir dan sunrise paling ikonik di Indonesia.",
+         "Gunung aktif dengan panorama lautan pasir dan sunrise ikonik.",
    },
+   {
+      id: 7,
+      country_id: 1,
+      name: "Makassar",
+      province: "Sulawesi Selatan",
+      description: "Dekat dengan Taman Nasional Bantimurung dan Pantai Losari.",
+   },
+   {
+      id: 8,
+      country_id: 1,
+      name: "Medan",
+      province: "Sumatera Utara",
+      description: "Gerbang menuju Danau Toba dan Pulau Samosir.",
+   },
+   {
+      id: 9,
+      country_id: 1,
+      name: "Padang",
+      province: "Sumatera Barat",
+      description: "Kota dengan kuliner khas dan pantai indah.",
+   },
+   {
+      id: 10,
+      country_id: 1,
+      name: "Raja Ampat",
+      province: "Papua Barat Daya",
+      description:
+         "Destinasi diving terbaik dunia dengan pulau karst dan laut biru.",
+   },
+   {
+      id: 11,
+      country_id: 2,
+      name: "Kuala Lumpur",
+      province: "Wilayah Persekutuan",
+      description: "Ibukota Malaysia dengan landmark Menara Kembar Petronas.",
+   },
+   {
+      id: 12,
+      country_id: 2,
+      name: "Penang",
+      province: "Pulau Pinang",
+      description: "Kota heritage dengan kuliner dan pantai indah.",
+   },
+];
+
+export const tripTypes = [
+   { name: "open-trip", label: "Open Trip" },
+   { name: "private-trip", label: "Private Trip" },
 ];
 
 export const imageLists = [
@@ -136,104 +114,104 @@ export const imageLists = [
    },
 ];
 
-export const tripTypes = [
-   {
-      name: "open-trip",
-      label: "Open Trip",
-   },
-   {
-      name: "private-trip",
-      label: "Private Trip",
-   },
-];
-
 export const openTrips = [
    {
       id: 1,
-      title: "Open Trip Bali Adventure",
-      destination: "Bali, Indonesia",
-      duration: "5 Days 4 Nights",
+      title: "Bali Adventure",
+      city_id: 1,
+      type: "open-trip",
+      duration: "5D4N",
       price: 2599000,
       image: imageLists[0],
    },
    {
       id: 2,
-      title: "Sailing Komodo Island",
-      destination: "Labuan Bajo, Indonesia",
-      duration: "4 Days 3 Nights",
-      price: 3299000,
+      title: "Yogyakarta Heritage Tour",
+      city_id: 2,
+      type: "private-trip",
+      duration: "4D3N",
+      price: 2199000,
       image: imageLists[1],
    },
    {
       id: 3,
-      title: "Raja Ampat Explorer",
-      destination: "Raja Ampat, Indonesia",
-      duration: "6 Days 5 Nights",
-      price: 4899000,
+      title: "Bandung Leisure Trip",
+      city_id: 3,
+      type: "open-trip",
+      duration: "3D2N",
+      price: 1899000,
       image: imageLists[2],
    },
    {
       id: 4,
-      title: "Bromo Sunrise Journey",
-      destination: "Bromo, Indonesia",
-      duration: "3 Days 2 Nights",
-      price: 1899000,
-      image: imageLists[1],
-   },
-   {
-      id: 5,
-      title: "Yogyakarta Heritage Tour",
-      destination: "Yogyakarta, Indonesia",
-      duration: "4 Days 3 Nights",
-      price: 2199000,
-      image: imageLists[2],
-   },
-   {
-      id: 6,
-      title: "Nusa Penida Getaway",
-      destination: "Nusa Penida, Indonesia",
-      duration: "3 Days 2 Nights",
-      price: 1999000,
+      title: "Labuan Bajo Sailing",
+      city_id: 4,
+      type: "private-trip",
+      duration: "4D3N",
+      price: 3299000,
       image: imageLists[0],
    },
    {
+      id: 5,
+      title: "Lombok Paradise Tour",
+      city_id: 5,
+      type: "open-trip",
+      duration: "5D4N",
+      price: 2699000,
+      image: imageLists[1],
+   },
+   {
+      id: 6,
+      title: "Bromo Sunrise Journey",
+      city_id: 6,
+      type: "open-trip",
+      duration: "3D2N",
+      price: 1899000,
+      image: imageLists[2],
+   },
+   {
       id: 7,
-      title: "Belitung Island Escape",
-      destination: "Belitung, Indonesia",
-      duration: "4 Days 3 Nights",
+      title: "Makassar Island Escape",
+      city_id: 7,
+      type: "private-trip",
+      duration: "4D3N",
       price: 2399000,
       image: imageLists[1],
    },
    {
       id: 8,
-      title: "Lombok Paradise Tour",
-      destination: "Lombok, Indonesia",
-      duration: "5 Days 4 Nights",
-      price: 2699000,
-      image: imageLists[2],
-   },
-   {
-      id: 9,
-      title: "Derawan Marine Adventure",
-      destination: "Derawan, Indonesia",
-      duration: "6 Days 5 Nights",
-      price: 4599000,
+      title: "Medan Culture Expedition",
+      city_id: 8,
+      type: "open-trip",
+      duration: "6D5N",
+      price: 3999000,
       image: imageLists[0],
    },
    {
-      id: 10,
-      title: "Sumba Hidden Gems",
-      destination: "Sumba, Indonesia",
-      duration: "5 Days 4 Nights",
-      price: 3799000,
+      id: 9,
+      title: "Padang Culinary Tour",
+      city_id: 9,
+      type: "private-trip",
+      duration: "3D2N",
+      price: 1999000,
       image: imageLists[2],
    },
    {
+      id: 10,
+      title: "Raja Ampat Diving",
+      city_id: 10,
+      type: "open-trip",
+      duration: "6D5N",
+      price: 4899000,
+      image: imageLists[0],
+   },
+   {
       id: 11,
-      title: "Flores Culture Expedition",
-      destination: "Flores, Indonesia",
-      duration: "6 Days 5 Nights",
-      price: 3999000,
+      title: "Kuala Lumpur City Tour",
+      city_id: 11,
+      type: "private-trip",
+      duration: "3D2N",
+      price: 1799000,
       image: imageLists[1],
    },
 ];
@@ -364,49 +342,49 @@ export const teams = [
       name: "Dmytro Zabolotnyi",
       role: "Founder",
       about: "Berpengalaman lebih dari 10 tahun membangun brand event besar dan mengelola tim profesional di banyak kota.",
-      image: "https://api.dicebear.com/7.x/notionists/png?seed=dmytro&size=300",
+      image: "https://plus.unsplash.com/premium_photo-1671656349218-5218444643d8?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YXZhdGFyfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=900",
    },
    {
       id: 2,
       name: "Sarah Wijaya",
       role: "Project Manager",
       about: "Mengkoordinasikan pelaksanaan event dari awal sampai akhir dengan presisi dan kepuasan klien tinggi.",
-      image: "https://api.dicebear.com/7.x/notionists/png?seed=sarahwijaya&size=300",
+      image: "https://plus.unsplash.com/premium_photo-1690407617542-2f210cf20d7e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8YXZhdGFyfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=900",
    },
    {
       id: 3,
       name: "Hadi Pratama",
       role: "Creative Director",
       about: "Menciptakan konsep visual yang unik dan berkesan, menjadikan setiap acara memiliki ciri khas tersendiri.",
-      image: "https://api.dicebear.com/7.x/notionists/png?seed=hadipratama&size=300",
+      image: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8YXZhdGFyfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=900",
    },
    {
       id: 4,
       name: "Maria Gabriella",
       role: "Event Coordinator",
       about: "Gesit dan komunikatif, memastikan setiap elemen acara berjalan sesuai rencana tanpa hambatan.",
-      image: "https://api.dicebear.com/7.x/notionists/png?seed=mariagabi&size=300",
+      image: "https://plus.unsplash.com/premium_photo-1670884441012-c5cf195c062a?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fGF2YXRhcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=900",
    },
    {
       id: 5,
       name: "Kevin Santoso",
       role: "Technical Specialist",
       about: "Mengatur sistem audio, lighting, dan multimedia dengan profesional untuk pengalaman acara yang memukau.",
-      image: "https://api.dicebear.com/7.x/notionists/png?seed=kevinsantoso&size=300",
+      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGF2YXRhcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=900",
    },
    {
       id: 6,
       name: "Chelsea Putri",
       role: "Marketing Strategist",
       about: "Mengembangkan kampanye promosi yang tepat sasaran dan meningkatkan awareness untuk setiap event.",
-      image: "https://api.dicebear.com/7.x/notionists/png?seed=chelseaputri&size=300",
+      image: "https://images.unsplash.com/photo-1701615004837-40d8573b6652?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGF2YXRhcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=900",
    },
    {
       id: 7,
       name: "Ardi Nugraha",
       role: "Logistic Manager",
       about: "Ahli dalam mengelola logistik agar event berjalan efisien — tepat waktu dan tepat lokasi.",
-      image: "https://api.dicebear.com/7.x/notionists/png?seedardinugraha&size=300",
+      image: "https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGF2YXRhcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=900",
    },
 ];
 
@@ -516,5 +494,167 @@ export const testimonials = [
       from_logo: "https://cdn.simpleicons.org/fiverr",
       stars: 5,
       created_at: "2024-09-22T14:40:00Z",
+   },
+];
+
+export const galleries = [
+   {
+      id: 1,
+      media: imageLists[0].path,
+      title: "Pendakian Gunung Rinjani",
+      excerpt: "Menikmati pemandangan Danau Segara Anak yang spektakuler.",
+      type: "image" as const,
+   },
+   {
+      id: 2,
+      media: imageLists[1].path,
+      title: "Sunset di Pantai Kuta",
+      excerpt: "Ceria bersama teman sambil menikmati senja di pasir putih.",
+      type: "image" as const,
+   },
+   {
+      id: 3,
+      media: imageLists[2].path,
+      title: "Eksplorasi Candi Borobudur",
+      excerpt: "Belajar sejarah sambil mengambil foto menawan.",
+      type: "image" as const,
+   },
+   {
+      id: 4,
+      media: imageLists[0].path,
+      title: "Petualangan Pulau Komodo",
+      excerpt: "Menyaksikan komodo dan snorkeling di perairan jernih.",
+      type: "image" as const,
+   },
+   {
+      id: 5,
+      media: imageLists[2].path,
+      title: "Terasering Sawah Ubud",
+      excerpt: "Pemandangan hijau yang menenangkan jiwa, sempurna untuk foto.",
+      type: "image" as const,
+   },
+   {
+      id: 6,
+      media: imageLists[0].path,
+      title: "Camping di Hutan Bali",
+      excerpt:
+         "Malam penuh bintang, api unggun, dan cerita seru bersama teman.",
+      type: "image" as const,
+   },
+   {
+      id: 7,
+      media: imageLists[1].path,
+      title: "Snorkeling di Nusa Penida",
+      excerpt: "Menyelam dan melihat ikan tropis yang indah.",
+      type: "image" as const,
+   },
+];
+
+export const galleryItems = [
+   {
+      id: 1,
+      media: imageLists[0].path,
+      title: "Pendakian Gunung Rinjani",
+      excerpt: "Menikmati pemandangan Danau Segara Anak yang spektakuler.",
+      type: "image" as const,
+   },
+   {
+      id: 2,
+      media: imageLists[1].path,
+      title: "Sunset di Pantai Kuta",
+      excerpt: "Ceria bersama teman sambil menikmati senja di pasir putih.",
+      type: "image" as const,
+   },
+   {
+      id: 3,
+      media: "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+      title: "Keindahan Alam Indonesia",
+      excerpt: "Video dokumenter tentang keindahan alam Indonesia.",
+      type: "video" as const,
+   },
+   {
+      id: 4,
+      media: imageLists[2].path,
+      title: "Eksplorasi Candi Borobudur",
+      excerpt: "Belajar sejarah sambil mengambil foto menawan.",
+      type: "image" as const,
+   },
+   {
+      id: 5,
+      media: "https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+      title: "Petualangan Hewan Liar",
+      excerpt: "Video dokumenter tentang kehidupan hewan liar di Indonesia.",
+      type: "video" as const,
+   },
+   {
+      id: 6,
+      media: imageLists[0].path,
+      title: "Petualangan Pulau Komodo",
+      excerpt: "Menyaksikan komodo dan snorkeling di perairan jernih.",
+      type: "image" as const,
+   },
+   {
+      id: 7,
+      media: imageLists[2].path,
+      title: "Terasering Sawah Ubud",
+      excerpt: "Pemandangan hijau yang menenangkan jiwa, sempurna untuk foto.",
+      type: "image" as const,
+   },
+   {
+      id: 8,
+      media: imageLists[0].path,
+      title: "Camping di Hutan Bali",
+      excerpt:
+         "Malam penuh bintang, api unggun, dan cerita seru bersama teman.",
+      type: "image" as const,
+   },
+   {
+      id: 9,
+      media: imageLists[1].path,
+      title: "Snorkeling di Nusa Penida",
+      excerpt: "Menyelam dan melihat ikan tropis yang indah.",
+      type: "image" as const,
+   },
+   {
+      id: 10,
+      media: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+      title: "Api dan Es di Indonesia",
+      excerpt: "Perpaduan unik antara gunung berapi dan danau es di Indonesia.",
+      type: "video" as const,
+   },
+];
+
+export const highlights = [
+   {
+      icon: "twemoji:world-map",
+      title: "Destinasi Terbaik",
+      description:
+         "Destinasi wisata alam terbaik Indonesia untuk pengalaman terbaik anda",
+   },
+   {
+      icon: "emojione-v1:person-surfing",
+      title: "Aktivitas Seru",
+      description: "Beragam aktivitas menarik dan menantang untuk semua usia",
+   },
+   {
+      icon: "emojione-v1:pot-of-food",
+      title: "Kuliner Lokal",
+      description:
+         "Nikmati cita rasa khas daerah dengan makanan dan minuman lokal",
+   },
+   {
+      icon: "fxemoji:camerawithflash",
+      title: "Foto Instagramable",
+      description: "Spot foto terbaik yang membuat setiap momen berkesan",
+   },
+   {
+      icon: "emojione-v1:beach-with-umbrella",
+      title: "Akomodasi Nyaman",
+      description: "Pilihan penginapan strategis dan nyaman selama perjalanan",
+   },
+   {
+      icon: "emojione-v1:flying-envelope",
+      title: "Booking Cepat",
+      description: "Pesan perjalanan Anda dalam hitungan menit tanpa ribet",
    },
 ];
