@@ -7,9 +7,10 @@ import {
    setTripType,
    setSelectedCities,
 } from "../../../stores/search";
-import { openTrips, cities, countries } from "../../../mock";
+import { tripsData, cities, countries } from "../../../mock";
 import OfflineIcon from "../../OfflineIcon";
 import OpenTrip from "../../cards/OpenTrip";
+import LocaleOpenTrip from "../../cards/LocaleOpenTrip";
 
 interface FilteredTripsProps {
    initialCities: string[];
@@ -36,7 +37,7 @@ export default function FilteredTrips({
       setTripType(initialTripType);
    }, [initialCities, initialTripType]);
 
-   const filtered = openTrips.filter((trip) => {
+   const filtered = tripsData.filter((trip) => {
       const typeMatch =
          currentTripType === "all" || trip.type === currentTripType;
       const cityMatch =
@@ -65,7 +66,7 @@ export default function FilteredTrips({
 
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
             {filtered.length > 0 ? (
-               filtered.map((trip) => <OpenTrip trip={trip} />)
+               filtered.map((trip) => <LocaleOpenTrip trip={trip} />)
             ) : (
                <p className="col-span-full text-center text-gray-500">
                   {translations.services.items[2].description} {/* Using third service item description as "No trips found" */}

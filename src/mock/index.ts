@@ -114,16 +114,502 @@ export const imageLists = [
    },
 ];
 
+export const airports = [
+   {
+      id: 1,
+      name: "Ngurah Rai International Airport",
+      code: "DPS",
+      city_id: 1,
+   },
+   {
+      id: 2,
+      name: "Adisutjipto International Airport",
+      code: "JOG",
+      city_id: 2,
+   },
+   {
+      id: 3,
+      name: "Husein Sastranegara International Airport",
+      code: "BDO",
+      city_id: 3,
+   },
+   {
+      id: 4,
+      name: "Komodo Airport",
+      code: "LBJ",
+      city_id: 4,
+   },
+   {
+      id: 5,
+      name: "Lombok International Airport",
+      code: "LOP",
+      city_id: 5,
+   },
+   {
+      id: 6,
+      name: "Abdul Rachman Saleh Airport",
+      code: "MLG",
+      city_id: 6,
+   },
+   {
+      id: 7,
+      name: "Sultan Hasanuddin International Airport",
+      code: "UPG",
+      city_id: 7,
+   },
+   {
+      id: 8,
+      name: "Kualanamu International Airport",
+      code: "KNO",
+      city_id: 8,
+   },
+   {
+      id: 9,
+      name: "Minangkabau International Airport",
+      code: "PDG",
+      city_id: 9,
+   },
+   {
+      id: 10,
+      name: "Raja Ampat Airport",
+      code: "RJM",
+      city_id: 10,
+   },
+   {
+      id: 11,
+      name: "Kuala Lumpur International Airport",
+      code: "KUL",
+      city_id: 11,
+   },
+];
+
+export const destinations = [
+   // City 1 (Bali) - 5 destinasi
+   {
+      id: 1,
+      image: imageLists[0].path,
+      title: "Pantai Kuta",
+      description:
+         "Pasir putih dan spot sunset ikonik, cocok untuk bersantai dan surfing pemula.",
+      city_id: 1,
+   },
+   {
+      id: 2,
+      image: imageLists[1].path,
+      title: "Ubud Rice Terrace",
+      description:
+         "Terasering sawah hijau yang menenangkan dan populer untuk berfoto.",
+      city_id: 1,
+   },
+   {
+      id: 3,
+      image: imageLists[2].path,
+      title: "Tirta Empul",
+      description:
+         "Pura suci dengan mata air berkhasiat untuk upacara pembersihan spiritual.",
+      city_id: 1,
+   },
+   {
+      id: 4,
+      image: imageLists[0].path,
+      title: "Tanah Lot",
+      description:
+         "Pura di tepi laut dengan panorama matahari terbenam yang dramatis.",
+      city_id: 1,
+   },
+   {
+      id: 5,
+      image: imageLists[1].path,
+      title: "Monkey Forest",
+      description:
+         "Hutan suci berisi kera ekor panjang dan peninggalan budaya Bali.",
+      city_id: 1,
+   },
+
+   // City 2 (Yogyakarta) - 3 destinasi
+   {
+      id: 6,
+      image: imageLists[2].path,
+      title: "Candi Prambanan",
+      description:
+         "Kompleks candi Hindu besar dengan arsitektur megah dan relief bersejarah.",
+      city_id: 2,
+   },
+   {
+      id: 7,
+      image: imageLists[0].path,
+      title: "Keraton Yogyakarta",
+      description:
+         "Istana Sultan yang tetap berfungsi sebagai pusat kebudayaan Jawa.",
+      city_id: 2,
+   },
+   {
+      id: 8,
+      image: imageLists[1].path,
+      title: "Bukit Bintang",
+      description:
+         "Puncak pandang malam dengan pemandangan kota Yogyakarta yang memukau.",
+      city_id: 2,
+   },
+
+   // City 3 (Bandung) - 3 destinasi
+   {
+      id: 9,
+      image: imageLists[0].path,
+      title: "Tangkuban Perahu",
+      description:
+         "Gunung berapi dengan kawah yang mudah dijangkau dan pemandangan menakjubkan.",
+      city_id: 3,
+   },
+   {
+      id: 10,
+      image: imageLists[2].path,
+      title: "Kawah Putih",
+      description: "Danau kawah berwarna unik di dataran tinggi Ciwidey.",
+      city_id: 3,
+   },
+   {
+      id: 11,
+      image: imageLists[1].path,
+      title: "Lembang Floating Market",
+      description:
+         "Pasar wisata kuliner dan cenderamata di tepi danau dan area pegunungan.",
+      city_id: 3,
+   },
+
+   // City 4 (Labuan Bajo) - 3 destinasi
+   {
+      id: 12,
+      image: imageLists[2].path,
+      title: "Pulau Komodo",
+      description:
+         "Habitat asli komodo, destinasi wajib untuk melihat satwa purba ini.",
+      city_id: 4,
+   },
+   {
+      id: 13,
+      image: imageLists[0].path,
+      title: "Pink Beach",
+      description:
+         "Pantai berpasir merah muda dengan air jernih dan spot snorkeling yang bagus.",
+      city_id: 4,
+   },
+   {
+      id: 14,
+      image: imageLists[1].path,
+      title: "Manta Point",
+      description:
+         "Spot diving/snorkeling populer untuk menyaksikan ikan pari manta.",
+      city_id: 4,
+   },
+];
+
+export const testimonials = [
+   {
+      id: 1,
+      name: "Budi Santoso",
+      quote: "Pelayanan sangat profesional dan hasilnya memuaskan! Akan bekerja sama lagi.",
+      from_name: "Google Review",
+      from_logo: "https://cdn.simpleicons.org/google",
+      stars: 5,
+      created_at: "2024-09-12T10:20:00Z",
+   },
+   {
+      id: 2,
+      name: "Siti Rahma",
+      quote: "Tim yang sangat komunikatif dan pengerjaan tepat waktu.",
+      from_name: "Tiktok",
+      from_logo: "https://cdn.simpleicons.org/tiktok",
+      stars: 4,
+      created_at: "2024-10-01T08:45:00Z",
+   },
+   {
+      id: 3,
+      name: "Michael Thompson",
+      quote: "Good collaboration and fast response. Recommended!",
+      from_name: "Upwork",
+      from_logo: "https://cdn.simpleicons.org/upwork",
+      stars: 5,
+      created_at: "2024-07-20T16:00:00Z",
+   },
+   {
+      id: 4,
+      name: "Nurul Afifah",
+      quote: "Hasilnya bagus, walaupun revisi agak lama tapi tetap memuaskan.",
+      from_name: "Google Review",
+      from_logo: "https://cdn.simpleicons.org/google",
+      stars: 4,
+      created_at: "2024-08-10T12:30:00Z",
+   },
+   {
+      id: 5,
+      name: "Jonathan Lee",
+      quote: "Very talented team! Creative and detail-oriented.",
+      from_name: "Behance",
+      from_logo: "https://cdn.simpleicons.org/behance",
+      stars: 5,
+      created_at: "2024-06-05T09:10:00Z",
+   },
+   {
+      id: 6,
+      name: "Andi Wijaya",
+      quote: "Cukup baik untuk project kecil kami.",
+      from_name: "LinkedIn",
+      from_logo: "https://cdn.simpleicons.org/linkedin",
+      stars: 3,
+      created_at: "2024-05-18T11:00:00Z",
+   },
+   {
+      id: 7,
+      name: "Akira Tanaka",
+      quote: "Excellent work and friendly support!",
+      from_name: "Fiverr",
+      from_logo: "https://cdn.simpleicons.org/fiverr",
+      stars: 5,
+      created_at: "2024-09-22T14:40:00Z",
+   },
+];
+
+export const testiTrips = [
+   {
+      id: 1,
+      trip_id: 1,
+      name: "Lina Marlina",
+      role: "Traveler",
+      images: [
+         "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+         "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=800&q=80",
+         "https://images.unsplash.com/photo-1682686580391-615b1f28e5ee?auto=format&fit=crop&w=800&q=80",
+      ],
+      review:
+         "Perjalanan sangat menyenangkan: itinerary jelas, pemandu ramah, dan akomodasi sesuai harapan. Spot snorkeling dan pantainya luar biasa. Saya akan merekomendasikan trip ini ke teman yang suka petualangan santai.",
+      star: 5,
+   },
+   {
+      id: 2,
+      trip_id: 2,
+      name: "Ahmad Rizki",
+      role: "Adventure Seeker",
+      images: [
+         "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=80",
+         "https://images.unsplash.com/photo-1530521954074-e64f6810b32d?auto=format&fit=crop&w=800&q=80",
+      ],
+      review:
+         "Lokasi wisata dan guide oke, makanan lokal yang disediakan enak. Beberapa waktu transit agak lama tapi keseluruhan pengalaman memuaskan dan sebanding dengan harga.",
+      star: 4,
+   },
+   {
+      id: 3,
+      trip_id: 3,
+      name: "Sarah Chen",
+      role: "Photography Enthusiast",
+      images: [
+         "https://images.unsplash.com/photo-1518890569493-668df9a00266?auto=format&fit=crop&w=800&q=80",
+      ],
+      review:
+         "Tempat-tempatnya sangat fotogenik dan guide memberi banyak tips pemotretan. Transportasi nyaman namun ada satu spot yang sedikit ramai, tetap worth it untuk pencinta foto.",
+      star: 5,
+   },
+   {
+      id: 4,
+      trip_id: 4,
+      name: "Michael Wong",
+      role: "Nature Explorer",
+      images: [
+         "https://images.unsplash.com/photo-1502791451862-7bd8c1df43a7?auto=format&fit=crop&w=800&q=80",
+         "https://images.unsplash.com/photo-1454496522488-7a8e488e8606?auto=format&fit=crop&w=800&q=80",
+      ],
+      review:
+         "Pengalaman alam yang menyenangkan dengan pemandu berpengalaman. Akomodasi sederhana tapi bersih. Sedikit terasa padat pada hari kedua, namun overall puas dengan layanan.",
+      star: 4,
+   },
+   {
+      id: 5,
+      trip_id: 5,
+      name: "Diana Putri",
+      role: "Beach Lover",
+      images: [
+         "https://images.unsplash.com/photo-1520942702018-0862200e6873?auto=format&fit=crop&w=800&q=80",
+         "https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=800&q=80",
+      ],
+      review:
+         "Pantainya cantik dan itinerary disusun rapi sehingga kami bisa nikmati banyak spot. Staf sangat membantu ketika ada perubahan kecil di hari keberangkatan.",
+      star: 5,
+   },
+   {
+      id: 6,
+      trip_id: 6,
+      name: "Ricky Hartono",
+      role: "Mountain Climber",
+      images: [
+         "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80",
+      ],
+      review:
+         "Cocok untuk yang suka trekking: jalur terawat dan guide paham medan. Perlengkapan dasar disediakan namun sarankan bawa perlengkapan pribadi untuk kenyamanan maksimal.",
+      star: 4,
+   },
+   {
+      id: 7,
+      trip_id: 7,
+      name: "Maya Septiani",
+      role: "Cultural Explorer",
+      images: [
+         "https://images.unsplash.com/photo-1519451241324-20b4ea2c4220?auto=format&fit=crop&w=800&q=80",
+         "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=800&q=80",
+      ],
+      review:
+         "Perjalanan budaya yang informatif, guide menjelaskan sejarah dan adat dengan baik. Waktu kunjungan pas sehingga tidak terburu-buru, sangat cocok bagi yang ingin belajar budaya setempat.",
+      star: 4,
+   },
+   {
+      id: 8,
+      trip_id: 8,
+      name: "Deni Kusuma",
+      role: "Food Tourist",
+      images: [
+         "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?auto=format&fit=crop&w=800&q=80",
+         "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=800&q=80",
+      ],
+      review:
+         "Rangkaian kulinernya menarik dan banyak rekomendasi tempat makan lokal. Beberapa makanan terlalu pedas untuk saya, tapi overall pengalaman kuliner memuaskan.",
+      star: 4,
+   },
+   {
+      id: 9,
+      trip_id: 9,
+      name: "Linda Wijaya",
+      role: "Island Hopper",
+      images: [
+         "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=800&q=80",
+         "https://images.unsplash.com/photo-1468413253725-0d5181091126?auto=format&fit=crop&w=800&q=80",
+      ],
+      review:
+         "Perjalanan pulau-ke-pulau rapi dan kapal nyaman. Guide sangat membantu mengatur waktu kunjungan sehingga semua spot utama bisa dikunjungi tanpa terburu-buru.",
+      star: 5,
+   },
+];
+
 export const openTrips = [
    {
       id: 1,
       title: "Bali Adventure",
+      slug: "bali-adventure",
       city_id: 1,
       type: "open-trip",
       duration: "5D4N",
       price: 2599000,
       image: imageLists[0],
+      min_people: 2,
+      airport_id: 1,
+      destinations: destinations.filter((d) => d.city_id === 1),
+      content: `<p>
+         Keindahan dan daya tarik Sumba telah menarik seluruh kalangan wisatawan. Sehingga,
+         wisatawan sering menyebut Sumba sebagai Hawainya Indonesia. Sumba berhasil menyuguhkan
+         berbagai panorama mulai dari pantai hingga air terjun nan Indah. Kecantikan alam Sumba dapat
+         menjadi alternatif kamu jika sudah bosan dengan berbagai destinasi wisata Bali dan Labuan Bajo.
+         </p>
+
+         <p>Open Trip Sumba 4D3N adalah salah satu paket Tour Sumba yang ditawarkan IndonesiaJuara
+         dengan mengunjungi destinasi terbaik di Pulau Sumba, Nusa Tenggara Timur seperti Air Terjun
+         Tanggedu dan Bukit Tanarara. Selama 4 hari 3 malam, kamu akan menikmati indahnya savana,
+         rumah adat, pantai, dan air terjun. Walaupun biasanya mengeksplorasi Sumba tidak sebentar, trip
+         ini memastikan kamu untuk menyusuri seluruh keindahaan mulai dari Sumba Timur sampai ke
+         Barat. Sehingga kamu akan mendapatkan liburan yang tidak terlupakan di Pulau Terindah di
+         Dunia. Trip ini bersifat Open Trip atau rombongan yang memungkinkan kamu untuk berinteraksi
+         dengan orang-orang baru selama perjalanan.</p>`,
+      open_dates: [
+         { from_date: "2024-11-10", to_date: "2024-11-14" },
+         { from_date: "2024-12-05", to_date: "2024-12-09" },
+         { from_date: "2025-01-15", to_date: "2025-01-19" },
+      ],
+      itinerary: [
+         {
+            day: 1,
+            activities: [
+               {
+                  time: "08:00",
+                  description:
+                     "Tiba di Bandara Ngurah Rai, Bali. Bertemu dengan guide dan langsung menuju Pantai Kuta.",
+               },
+               {
+                  time: "12:00",
+                  description: "Makan siang di restoran lokal.",
+               },
+               {
+                  time: "14:00",
+                  description: "Check-in hotel dan istirahat sejenak.",
+               },
+               {
+                  time: "16:00",
+                  description:
+                     "Jelajahi Pantai Kuta, nikmati sunset dan aktivitas pantai.",
+               },
+               {
+                  time: "19:00",
+                  description:
+                     "Makan malam di Jimbaran dengan hidangan seafood segar.",
+               },
+            ],
+         },
+         {
+            day: 2,
+            activities: [
+               { time: "07:00", description: "Sarapan di hotel." },
+               {
+                  time: "08:00",
+                  description:
+                     "Kunjungi Ubud: Monkey Forest, Pasar Seni Ubud, dan Tegalalang Rice Terrace.",
+               },
+               {
+                  time: "12:00",
+                  description: "Makan siang di restoran lokal di Ubud.",
+               },
+               {
+                  time: "14:00",
+                  description: "Kunjungi Tirta Empul dan Gunung Kawi.",
+               },
+               {
+                  time: "18:00",
+                  description: "Kembali ke hotel dan istirahat.",
+               },
+               {
+                  time: "19:30",
+                  description: "Makan malam di restoran lokal.",
+               },
+            ],
+         },
+         {
+            day: 3,
+            activities: [
+               { time: "06:00", description: "Sarapan di hotel." },
+               {
+                  time: "07:00",
+                  description:
+                     "Perjalanan ke Tanah Lot, nikmati pemandangan pura di tepi laut.",
+               },
+               {
+                  time: "12:00",
+                  description: "Makan siang di restoran lokal.",
+               },
+               {
+                  time: "14:00",
+                  description:
+                     "Kunjungi Pantai Seminyak untuk bersantai dan berbelanja.",
+               },
+               {
+                  time: "18:00",
+                  description: "Kembali ke hotel dan istirahat.",
+               },
+               {
+                  time: "19:30",
+                  description: "Makan malam di restoran lokal.",
+               },
+            ],
+         },
+      ],
+      testimonials: testimonials.slice(0, 3),
    },
+
    {
       id: 2,
       title: "Yogyakarta Heritage Tour",
@@ -431,72 +917,6 @@ export const clients = [
    },
 ];
 
-export const testimonials = [
-   {
-      id: 1,
-      name: "Budi Santoso",
-      quote: "Pelayanan sangat profesional dan hasilnya memuaskan! Akan bekerja sama lagi.",
-      from_name: "Google Review",
-      from_logo: "https://cdn.simpleicons.org/google",
-      stars: 5,
-      created_at: "2024-09-12T10:20:00Z",
-   },
-   {
-      id: 2,
-      name: "Siti Rahma",
-      quote: "Tim yang sangat komunikatif dan pengerjaan tepat waktu.",
-      from_name: "Tiktok",
-      from_logo: "https://cdn.simpleicons.org/tiktok",
-      stars: 4,
-      created_at: "2024-10-01T08:45:00Z",
-   },
-   {
-      id: 3,
-      name: "Michael Thompson",
-      quote: "Good collaboration and fast response. Recommended!",
-      from_name: "Upwork",
-      from_logo: "https://cdn.simpleicons.org/upwork",
-      stars: 5,
-      created_at: "2024-07-20T16:00:00Z",
-   },
-   {
-      id: 4,
-      name: "Nurul Afifah",
-      quote: "Hasilnya bagus, walaupun revisi agak lama tapi tetap memuaskan.",
-      from_name: "Google Review",
-      from_logo: "https://cdn.simpleicons.org/google",
-      stars: 4,
-      created_at: "2024-08-10T12:30:00Z",
-   },
-   {
-      id: 5,
-      name: "Jonathan Lee",
-      quote: "Very talented team! Creative and detail-oriented.",
-      from_name: "Behance",
-      from_logo: "https://cdn.simpleicons.org/behance",
-      stars: 5,
-      created_at: "2024-06-05T09:10:00Z",
-   },
-   {
-      id: 6,
-      name: "Andi Wijaya",
-      quote: "Cukup baik untuk project kecil kami.",
-      from_name: "LinkedIn",
-      from_logo: "https://cdn.simpleicons.org/linkedin",
-      stars: 3,
-      created_at: "2024-05-18T11:00:00Z",
-   },
-   {
-      id: 7,
-      name: "Akira Tanaka",
-      quote: "Excellent work and friendly support!",
-      from_name: "Fiverr",
-      from_logo: "https://cdn.simpleicons.org/fiverr",
-      stars: 5,
-      created_at: "2024-09-22T14:40:00Z",
-   },
-];
-
 export const galleries = [
    {
       id: 1,
@@ -656,5 +1076,397 @@ export const highlights = [
       icon: "emojione-v1:flying-envelope",
       title: "Booking Cepat",
       description: "Pesan perjalanan Anda dalam hitungan menit tanpa ribet",
+   },
+];
+
+export const tripsData = [
+   {
+      id: 1,
+      title: "Bali Adventure",
+      slug: "bali-adventure",
+      description:
+         "Jelajahi keindahan alam dan budaya Bali dalam paket wisata lengkap 5 hari 4 malam.",
+      city_id: 1,
+      type: "open-trip",
+      duration: "5D4N",
+      price: 2599000,
+      image: imageLists[0],
+      images: imageLists,
+      min_people: 2,
+      meet_point: "Bandara Ngurah Rai, Bali",
+      gmap_link:
+         "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7886.884954486969!2d115.16137699235433!3d-8.744370465224094!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd2441650216933%3A0xdf71da6ddd7bcc1f!2sI%20Gusti%20Ngurah%20Rai%20International%20Airport!5e0!3m2!1sen!2sid!4v1762324555900!5m2!1sen!2sid",
+      best_season: "April - Oktober",
+      destinations: destinations.filter((d) => d.city_id === 1),
+      content: `<p>Nikmati pengalaman wisata terbaik di Bali dengan mengunjungi destinasi ikonik seperti Pantai Kuta, Ubud, dan Tanah Lot. Paket ini mencakup akomodasi, transportasi, dan pemandu wisata profesional.</p>`,
+      open_dates: [
+         { from_date: "2024-11-10", to_date: "2024-11-14" },
+         { from_date: "2024-12-05", to_date: "2024-12-09" },
+         { from_date: "2025-01-15", to_date: "2025-01-19" },
+      ],
+      itinerary: [
+         {
+            day: 1,
+            activities: [
+               {
+                  time: "08:00",
+                  description:
+                     "Tiba di Bandara Ngurah Rai, penjemputan oleh tim",
+               },
+               {
+                  time: "10:00",
+                  description: "Check-in hotel dan istirahat sejenak",
+               },
+               { time: "12:30", description: "Makan siang di Jimbaran" },
+               { time: "15:00", description: "Kunjungan ke Pantai Kuta" },
+               {
+                  time: "18:00",
+                  description: "Menikmati sunset di Seminyak Beach",
+               },
+               {
+                  time: "20:00",
+                  description: "Makan malam dan kembali ke hotel",
+               },
+            ],
+         },
+         {
+            day: 2,
+            activities: [
+               { time: "07:00", description: "Sarapan di hotel" },
+               {
+                  time: "09:00",
+                  description: "Kunjungan ke Ubud Monkey Forest",
+               },
+               { time: "12:00", description: "Makan siang di daerah Ubud" },
+               {
+                  time: "14:00",
+                  description: "Melihat sawah terasering Tegalalang",
+               },
+               {
+                  time: "17:00",
+                  description: "Menyaksikan tari Kecak di Pura Uluwatu",
+               },
+               {
+                  time: "19:30",
+                  description: "Dinner di Jimbaran seafood restaurant",
+               },
+            ],
+         },
+         {
+            day: 3,
+            activities: [
+               { time: "07:00", description: "Sarapan di hotel" },
+               { time: "09:00", description: "Perjalanan ke Bedugul" },
+               {
+                  time: "11:00",
+                  description: "Mengunjungi Danau Beratan dan Pura Ulun Danu",
+               },
+               {
+                  time: "13:00",
+                  description: "Makan siang di restoran tepi danau",
+               },
+               { time: "15:00", description: "Kunjungan ke Kebun Raya Bali" },
+               { time: "18:00", description: "Kembali ke hotel" },
+            ],
+         },
+         {
+            day: 4,
+            activities: [
+               { time: "07:30", description: "Sarapan di hotel" },
+               { time: "09:00", description: "Kunjungan ke Tanah Lot" },
+               {
+                  time: "11:00",
+                  description: "Shopping di Krisna Oleh-oleh Bali",
+               },
+               { time: "13:00", description: "Makan siang di Denpasar" },
+               { time: "15:00", description: "Waktu bebas di pantai" },
+               { time: "19:00", description: "Makan malam farewell" },
+            ],
+         },
+         {
+            day: 5,
+            activities: [
+               { time: "07:00", description: "Sarapan dan check-out hotel" },
+               { time: "09:00", description: "Waktu bebas di sekitar hotel" },
+               {
+                  time: "11:00",
+                  description: "Perjalanan ke Bandara Ngurah Rai",
+               },
+               {
+                  time: "13:00",
+                  description: "Penerbangan kembali ke kota asal",
+               },
+            ],
+         },
+      ],
+      testimonials: testiTrips,
+   },
+   {
+      id: 2,
+      title: "Yogyakarta Heritage",
+      slug: "yogyakarta-heritage",
+      description: "Jelajahi warisan budaya di kota istimewa Yogyakarta.",
+      city_id: 2,
+      type: "private-trip",
+      duration: "2D1N",
+      price: 1899000,
+      image: imageLists[1],
+      images: imageLists,
+      min_people: 1,
+      meet_point: "Bandara Adisucipto, Yogyakarta",
+      gmap_link:
+         "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.0083236807604!2d110.42810457525236!3d-7.788941192230919!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a50a9f995d21b%3A0xf027a77c64c3df0!2sAdisutjipto%20International%20Airport!5e0!3m2!1sen!2sid!4v1762324521749!5m2!1sen!2sid",
+      best_season: "Juni - September",
+      destinations: destinations.filter((d) => d.city_id === 2),
+      content: `<p>Rasakan pesona kota budaya Yogyakarta dengan mengunjungi Candi Borobudur, Keraton, dan destinasi bersejarah lainnya.</p>`,
+      open_dates: [],
+      itinerary: [
+         {
+            day: 1,
+            activities: [
+               { time: "08:00", description: "Tiba di Bandara Adisutjipto" },
+               { time: "09:00", description: "Check-in hotel dan istirahat" },
+               { time: "11:00", description: "Kunjungan ke Candi Prambanan" },
+               { time: "13:00", description: "Makan siang di restoran lokal" },
+               { time: "15:00", description: "Jalan-jalan di Malioboro" },
+               {
+                  time: "19:00",
+                  description: "Menikmati malam di Alun-Alun Kidul",
+               },
+            ],
+         },
+         {
+            day: 2,
+            activities: [
+               { time: "06:00", description: "Sarapan pagi" },
+               { time: "07:30", description: "Perjalanan ke Candi Borobudur" },
+               { time: "11:00", description: "Makan siang di Magelang" },
+               {
+                  time: "13:00",
+                  description: "Kunjungan ke Keraton Yogyakarta",
+               },
+               {
+                  time: "15:00",
+                  description: "Belanja oleh-oleh di Bakpia Pathok",
+               },
+               { time: "17:00", description: "Transfer ke bandara" },
+            ],
+         },
+      ],
+      testimonials: testiTrips,
+   },
+   {
+      id: 3,
+      title: "Komodo Adventure",
+      slug: "komodo-adventure",
+      description:
+         "Petualangan seru menjelajahi Taman Nasional Komodo dan pulau eksotis sekitarnya.",
+      city_id: 4,
+      type: "open-trip",
+      duration: "3D2N",
+      price: 3599000,
+      image: imageLists[2],
+      images: imageLists,
+      min_people: 4,
+      meet_point: "Bandara Komodo, Labuan Bajo",
+      gmap_link:
+         "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3946.10834170245!2d119.88455927525949!3d-8.488845991552525!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2db465219938ff6f%3A0x65f416d9240eb787!2sKomodo%20International%20Airport!5e0!3m2!1sen!2sid!4v1762324479146!5m2!1sen!2sid",
+      best_season: "Maret - November",
+      destinations: destinations.filter((d) => d.city_id === 4),
+      content: `<p>Nikmati pengalaman tak terlupakan bertemu komodo dan snorkeling di perairan jernih Labuan Bajo.</p>`,
+      open_dates: [
+         { from_date: "2024-10-15", to_date: "2024-10-17" },
+         { from_date: "2024-11-20", to_date: "2024-11-22" },
+      ],
+      itinerary: [
+         {
+            day: 1,
+            activities: [
+               {
+                  time: "08:00",
+                  description: "Tiba di Bandara Komodo, penjemputan",
+               },
+               { time: "10:00", description: "Berlayar ke Pulau Kelor" },
+               { time: "12:00", description: "Snorkeling di Pink Beach" },
+               { time: "15:00", description: "Trekking ke Pulau Padar" },
+               { time: "18:00", description: "Dinner di kapal" },
+               { time: "20:00", description: "Menginap di kapal (Liveaboard)" },
+            ],
+         },
+         {
+            day: 2,
+            activities: [
+               { time: "06:00", description: "Sunrise di Pulau Padar" },
+               { time: "08:00", description: "Kunjungan ke Pulau Komodo" },
+               { time: "11:00", description: "Makan siang di kapal" },
+               { time: "14:00", description: "Snorkeling di Manta Point" },
+               { time: "17:00", description: "Santai di Pulau Kanawa" },
+               { time: "20:00", description: "Barbecue malam di kapal" },
+            ],
+         },
+         {
+            day: 3,
+            activities: [
+               { time: "07:00", description: "Sarapan di kapal" },
+               { time: "09:00", description: "Kembali ke Labuan Bajo" },
+               { time: "11:00", description: "Belanja oleh-oleh lokal" },
+               { time: "13:00", description: "Transfer ke bandara" },
+            ],
+         },
+      ],
+      testimonials: testiTrips,
+   },
+   {
+      id: 4,
+      title: "Bromo Sunrise",
+      slug: "bromo-sunrise",
+      description:
+         "Nikmati keindahan matahari terbit dari Gunung Bromo yang legendaris.",
+      city_id: 6,
+      type: "private-trip",
+      duration: "3D2N",
+      price: 1299000,
+      image: imageLists[0],
+      images: imageLists,
+      min_people: 1,
+      meet_point: "Bandara Juanda, Surabaya",
+      gmap_link:
+         "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3956.7769976334293!2d112.7847140752484!3d-7.378871592630591!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7e50b3bf959b9%3A0xc0ff7c58786318e8!2sJuanda%20International%20Airport!5e0!3m2!1sen!2sid!4v1762324444868!5m2!1sen!2sid",
+      best_season: "Juli - September",
+      destinations: destinations.filter((d) => d.city_id === 6),
+      content: `<p>Saksikan keajaiban alam dari ketinggian Gunung Bromo dengan pemandangan matahari terbit yang memukau.</p>`,
+      open_dates: [],
+      itinerary: [
+         {
+            day: 1,
+            activities: [
+               {
+                  time: "10:00",
+                  description:
+                     "Tiba di Bandara Juanda, perjalanan ke Probolinggo",
+               },
+               { time: "13:00", description: "Makan siang di perjalanan" },
+               {
+                  time: "16:00",
+                  description: "Check-in penginapan dekat Bromo",
+               },
+               { time: "18:00", description: "Makan malam dan briefing trip" },
+            ],
+         },
+         {
+            day: 2,
+            activities: [
+               {
+                  time: "03:00",
+                  description: "Perjalanan ke Penanjakan untuk sunrise",
+               },
+               {
+                  time: "05:00",
+                  description: "Menikmati sunrise di Gunung Bromo",
+               },
+               { time: "07:00", description: "Trekking ke kawah Bromo" },
+               { time: "10:00", description: "Sarapan dan kembali ke hotel" },
+               { time: "13:00", description: "Wisata ke Bukit Teletubbies" },
+               { time: "18:00", description: "Makan malam dan istirahat" },
+            ],
+         },
+         {
+            day: 3,
+            activities: [
+               { time: "08:00", description: "Sarapan dan check-out" },
+               { time: "11:00", description: "Perjalanan kembali ke Surabaya" },
+               { time: "14:00", description: "Belanja oleh-oleh" },
+               { time: "16:00", description: "Transfer ke bandara" },
+            ],
+         },
+      ],
+      testimonials: testiTrips,
+   },
+   {
+      id: 5,
+      title: "Raja Ampat Explorer",
+      slug: "raja-ampat-explorer",
+      description:
+         "Jelajahi surga bawah laut di Raja Ampat dengan keindahan terumbu karang dan ikan tropis.",
+      city_id: 10,
+      type: "open-trip",
+      duration: "4D3N",
+      price: 5999000,
+      image: imageLists[1],
+      images: imageLists,
+      min_people: 6,
+      meet_point: "Bandara Raja Ampat",
+      gmap_link:
+         "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.709998393986!2d130.77266707521426!3d-0.4222019995736525!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2d5f02e77960e3f7%3A0xa7eaeab550a25ad5!2sMarinda%20Airport!5e0!3m2!1sen!2sid!4v1762323183984!5m2!1sen!2sid",
+      best_season: "Oktober - April",
+      destinations: destinations.filter((d) => d.city_id === 10),
+      content: `<p>Nikmati diving dan snorkeling di lokasi terbaik dunia dengan pemandangan bawah laut yang menakjubkan.</p>`,
+      open_dates: [
+         { from_date: "2024-12-20", to_date: "2024-12-23" },
+         { from_date: "2025-01-10", to_date: "2025-01-13" },
+      ],
+      itinerary: [
+         {
+            day: 1,
+            activities: [
+               {
+                  time: "09:00",
+                  description: "Tiba di Bandara Marinda, Waisai",
+               },
+               {
+                  time: "11:00",
+                  description: "Transfer ke resort dan check-in",
+               },
+               {
+                  time: "13:00",
+                  description: "Makan siang dan briefing diving",
+               },
+               {
+                  time: "15:00",
+                  description: "Diving sesi pertama di Friwen Wall",
+               },
+               { time: "18:00", description: "Makan malam di tepi pantai" },
+            ],
+         },
+         {
+            day: 2,
+            activities: [
+               { time: "07:00", description: "Sarapan pagi" },
+               {
+                  time: "09:00",
+                  description: "Island hopping ke Pianemo Viewpoint",
+               },
+               { time: "12:00", description: "Makan siang di pulau kecil" },
+               { time: "14:00", description: "Snorkeling di Arborek Village" },
+               { time: "17:00", description: "Sunset di resort" },
+               {
+                  time: "20:00",
+                  description: "Dinner dan sharing foto underwater",
+               },
+            ],
+         },
+         {
+            day: 3,
+            activities: [
+               { time: "07:30", description: "Sarapan pagi" },
+               { time: "09:00", description: "Diving di Melissa’s Garden" },
+               { time: "12:00", description: "Lunch di kapal" },
+               { time: "15:00", description: "Kunjungan ke desa lokal" },
+               { time: "18:00", description: "Barbecue malam di pantai" },
+            ],
+         },
+         {
+            day: 4,
+            activities: [
+               { time: "07:00", description: "Sarapan dan check-out resort" },
+               { time: "09:00", description: "Transfer ke bandara" },
+               {
+                  time: "11:00",
+                  description: "Penerbangan kembali ke kota asal",
+               },
+            ],
+         },
+      ],
+      testimonials: testiTrips,
    },
 ];

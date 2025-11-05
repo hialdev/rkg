@@ -1,4 +1,4 @@
-import { testimonials } from ".";
+import { destinations, testimonials } from ".";
 
 export const en = {
    // Navigation
@@ -23,6 +23,9 @@ export const en = {
       typeTrip: "Type Trip",
       all: "All Trips",
       duration: "Duration",
+      best: "Most Selected!",
+      start_from: "Starts From",
+      destination: "Destination",
    },
 
    testimonials: {

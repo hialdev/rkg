@@ -1,6 +1,6 @@
 import React from "react";
 import { useLocale } from "../../../contexts/LocaleContext";
-import { imageLists, openTrips } from "../../../mock/index";
+import { imageLists, openTrips, tripsData } from "../../../mock/index";
 import LocaleOpenTrip from "../../cards/LocaleOpenTrip";
 import HeroFilter from "../../forms/generals/HeroFilter";
 import ImageSlider from "./ImageSlider";
@@ -17,14 +17,14 @@ const LocaleHomeContent: React.FC<LocaleHomeContentProps> = ({
 }) => {
    const { translations } = useLocale();
 
-   const isOdd = openTrips.length % 2 !== 0;
-   const firstRow = isOdd ? openTrips.slice(0, 2) : [];
-   const restRows = isOdd ? openTrips.slice(2) : openTrips;
+   const isOdd = tripsData.length % 2 !== 0;
+   const firstRow = isOdd ? tripsData.slice(0, 2) : [];
+   const restRows = isOdd ? tripsData.slice(2) : tripsData;
 
    return (
       <>
          {/* HERO */}
-         <section className="relative h-screen w-full flex-col items-center justify-center pb-20 px-3 text-white overflow-hidden">
+         <section className="relative h-screen w-full flex-col items-center justify-center py-20 px-3 text-white overflow-hidden">
             {/* Background utama */}
             <div className="absolute inset-0">
                <ImageSlider images={imageLists} />
@@ -44,7 +44,7 @@ const LocaleHomeContent: React.FC<LocaleHomeContentProps> = ({
                {translations.nav.services}
             </h2>
             <div className="grid grid-cols-12 gap-5">
-               {openTrips.map((trip, index) => (
+               {tripsData.map((trip, index) => (
                   <div
                      key={index}
                      className="col-span-12 sm:col-span-6 md:col-span-4"
@@ -55,7 +55,7 @@ const LocaleHomeContent: React.FC<LocaleHomeContentProps> = ({
             </div>
          </section>
 
-         <section className="container mx-auto py-20 px-3">
+         <section className="container mx-auto pb-20 pt-10 px-3">
             <h2 className="text-3xl font-semibold text-gray-800 mb-10">
                {translations.services.items[1]?.title || "Private Trip"}
             </h2>
@@ -79,8 +79,8 @@ const LocaleHomeContent: React.FC<LocaleHomeContentProps> = ({
                               </h3>
                            </div>
                            <div className="hidden group-hover:flex absolute flex-col justify-center items-center inset-0 gap-5 bg-red-800 top-30 p-5">
-                              <div className="text-white text-sm line-clamp-5">
-                                 {translations.services.items[2]?.description ||
+                              <div className="text-white text-center text-sm line-clamp-5">
+                                 {trip.description ||
                                     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus voluptate modi obcaecati alias facilis ipsam doloremque fuga commodi sint"}
                               </div>
                               <a
@@ -117,8 +117,8 @@ const LocaleHomeContent: React.FC<LocaleHomeContentProps> = ({
                            </h3>
                         </div>
                         <div className="hidden group-hover:flex flex-col absolute inset-0 bg-red-800 top-10 p-5 items-center justify-center">
-                           <div className="text-white mb-4 text-sm line-clamp-3">
-                              {translations.services.items[2]?.description ||
+                           <div className="text-white text-center mb-4 text-sm line-clamp-3">
+                              {trip.description ||
                                  "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus voluptate modi obcaecati alias facilis ipsam doloremque fuga commodi sint"}
                            </div>
                            <a

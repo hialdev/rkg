@@ -25,7 +25,10 @@ export const id = {
    label: {
       typeTrip: "Jenis Perjalanan",
       all: "Semua Trip",
+      start_from: "Mulai Dari",
       duration: "Durasi",
+      best: "Sering Dipilih!",
+      destination: "Destinasi",
    },
 
    // Hero section
