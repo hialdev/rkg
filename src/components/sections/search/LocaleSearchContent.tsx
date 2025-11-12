@@ -18,7 +18,7 @@ const LocaleSearchContent: React.FC = () => {
       return (
          <>
             <section className="container mx-auto py-20 px-4">
-               
+
             </section>
          </>
       );
@@ -43,7 +43,7 @@ const LocaleSearchContent: React.FC = () => {
             </div>
          </section>
 
-         <section className="container mx-auto py-20">
+         <section className="container mx-auto py-20 px-4">
             <h2 className="text-4xl font-medium mb-10">
                {translations.faq?.title || "Frequently Asked Question"}
             </h2>

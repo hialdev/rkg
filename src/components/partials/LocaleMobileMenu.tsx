@@ -33,7 +33,7 @@ const LocaleMobileMenu: React.FC<LocaleMobileMenuProps> = ({ onClose }) => {
             <div key={index} className="w-full mb-4">
                <details className="group overflow-visible">
                   <summary className="cursor-pointer flex justify-between items-center py-2 text-lg font-medium hover:text-rose-60 text-gray-800">
-                     {menu.name}
+                     <a href={menu.path}>{menu.name}</a>
                      {menu.childerns.length > 0 && (
                         <svg
                            xmlns="http://www.w3.org/2000/svg"
