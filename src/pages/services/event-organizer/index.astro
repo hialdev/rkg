@@ -1,0 +1,190 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import type { PageMetaType } from "../../../types/page";
+import { ctgEvents, stepEvents } from "../../../mock";
+import EventSlider from "../../../components/sections/home/EventSlider";
+import StepEvent from "../../../components/sections/event/StepEvent";
+import { Icon } from "@iconify-icon/react";
+import ClientList from "../../../components/sections/home/ClientList";
+import FAQBlock from "../../../components/sections/search/FAQBlock";
+
+const metaData: PageMetaType = {
+   title: "Our Service - Event Organizer | RKG Tour & Travel",
+   description:
+      "Discover RKG Tour & Travel's Event Organizer services, specializing in planning and managing unforgettable events and corporate gatherings.",
+   image: "/assets/rkgtour.webp",
+   robot: true,
+};
+---
+
+<Layout pageMeta={metaData}>
+   <EventSlider client:idle />
+   <section class="py-20 bg-black text-white">
+      <div
+         class="container mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5"
+      >
+         {
+            ctgEvents.map((ctg) => (
+               <div class="flex flex-col items-center justify-start">
+                  <img
+                     src="https://placehold.co/400x400"
+                     alt="Image of Event Item"
+                     class="block aspect-square rounded-2xl w-full object-cover"
+                  />
+                  <div class="text-center">
+                     <a
+                        href={"/services/event-organizer/"+ctg.slug}
+                        class="mt-4 text-lg inline-flex items-center group gap-2 px-4 py-2 text-white bg-yellow-500 hover:bg-white hover:text-yellow-500 hover:scale-105 hover:scale-3d transition-all ease-in-out w-content rounded-full font-semibold"
+                     >
+                        {ctg.title}
+                        <Icon
+                           className="hidden group-hover:block"
+                           icon={`mdi:arrow-right`}
+                        />
+                     </a>
+                     <p class="mt-2">{ctg.description}</p>
+                  </div>
+               </div>
+            ))
+         }
+      </div>
+   </section>
+   <section class="py-20 bg-black text-white px-4">
+      <h2 class="text-center font-bold text-white text-4xl">
+         Seamless Event Planning With RKG Production
+      </h2>
+      <p class="text-center max-w-[40em] mt-3 mx-auto">
+         RKG Production goes beyond creating events—we craft unforgettable
+         experiences. Our easy steps ensure your event is planned smoothly and
+         efficiently.
+      </p>
+      <div class="container mx-auto mt-10">
+         <StepEvent client:load events={stepEvents} />
+      </div>
+   </section>
+
+   <section class="py-20 bg-black text-white px-4">
+      <div class="container mx-auto">
+         <div class="grid grid-cols-4 gap-5">
+            <div class="">
+               <div class="rounded-sm p-5 bg-white text-black">
+                  <img
+                     src="https://placehold.co/480x240?text=EventService"
+                     alt="Event Service"
+                     class="block w-full aspect-video rounded-sm object-cover"
+                  />
+                  <div class="text-center my-4">
+                     <h3 class="text-lg font-medium mb-3">
+                        Multimedia - Live Camera - Photo & Video
+                     </h3>
+                     <p>
+                        Abadikan momen pentingmu dengan live streaming
+                        profesional , tayangan dinamis multi camera, dan
+                        dokumentasi foto serta video berkualitas sinematik,
+                        Cocok untuk acara pribadi, korporat, hingga event besar.
+                     </p>
+                  </div>
+               </div>
+               <a
+                  href=""
+                  class="block mt-4 rounded-sm text-center px-4 py-2 border-3 border-yellow-500 font-medium text-white hover:bg-yellow-500"
+                  >Talk to us</a
+               >
+            </div>
+            <div class="">
+               <div class="rounded-sm p-5 bg-white text-black">
+                  <img
+                     src="https://placehold.co/480x240?text=EventService"
+                     alt="Event Service"
+                     class="block w-full aspect-video rounded-sm object-cover"
+                  />
+                  <div class="text-center my-4">
+                     <h3 class="text-lg font-medium mb-3">
+                        Multimedia - Live Camera - Photo & Video
+                     </h3>
+                     <p>
+                        Abadikan momen pentingmu dengan live streaming
+                        profesional , tayangan dinamis multi camera, dan
+                        dokumentasi foto serta video berkualitas sinematik,
+                        Cocok untuk acara pribadi, korporat, hingga event besar.
+                     </p>
+                  </div>
+               </div>
+               <a
+                  href=""
+                  class="block mt-4 rounded-sm text-center px-4 py-2 border-3 border-yellow-500 font-medium text-white hover:bg-yellow-500"
+                  >Talk to us</a
+               >
+            </div>
+            <div class="">
+               <div class="rounded-sm p-5 bg-white text-black">
+                  <img
+                     src="https://placehold.co/480x240?text=EventService"
+                     alt="Event Service"
+                     class="block w-full aspect-video rounded-sm object-cover"
+                  />
+                  <div class="text-center my-4">
+                     <h3 class="text-lg font-medium mb-3">
+                        Multimedia - Live Camera - Photo & Video
+                     </h3>
+                     <p>
+                        Abadikan momen pentingmu dengan live streaming
+                        profesional , tayangan dinamis multi camera, dan
+                        dokumentasi foto serta video berkualitas sinematik,
+                        Cocok untuk acara pribadi, korporat, hingga event besar.
+                     </p>
+                  </div>
+               </div>
+               <a
+                  href=""
+                  class="block mt-4 rounded-sm text-center px-4 py-2 border-3 border-yellow-500 font-medium text-white hover:bg-yellow-500"
+                  >Talk to us</a
+               >
+            </div>
+            <div class="">
+               <div class="rounded-sm p-5 bg-white text-black">
+                  <img
+                     src="https://placehold.co/480x240?text=EventService"
+                     alt="Event Service"
+                     class="block w-full aspect-video rounded-sm object-cover"
+                  />
+                  <div class="text-center my-4">
+                     <h3 class="text-lg font-medium mb-3">
+                        Multimedia - Live Camera - Photo & Video
+                     </h3>
+                     <p>
+                        Abadikan momen pentingmu dengan live streaming
+                        profesional , tayangan dinamis multi camera, dan
+                        dokumentasi foto serta video berkualitas sinematik,
+                        Cocok untuk acara pribadi, korporat, hingga event besar.
+                     </p>
+                  </div>
+               </div>
+               <a
+                  href=""
+                  class="rounded-sm block mt-4 text-center px-4 py-2 border-3 border-yellow-500 font-medium text-white hover:bg-yellow-500"
+                  >Talk to us</a
+               >
+            </div>
+         </div>
+      </div>
+   </section>
+
+   {/* Client List Section */}
+   <section class="py-20 px-3">
+      <div id="client-list-wrapper">
+         <ClientList client:only="react" />
+      </div>
+   </section>
+
+   <section class="py-20 bg-black">
+      <div class="container mx-auto">
+         <h2
+            class="text-5xl mb-10 text-white font-bold underline decoration-yellow-400 decoration-12 underline-offset-3"
+         >
+            FAQ
+         </h2>
+         <FAQBlock client:load />
+      </div>
+   </section>
+</Layout>

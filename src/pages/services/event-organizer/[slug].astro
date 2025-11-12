@@ -1,0 +1,28 @@
+---
+import type { GetStaticPaths } from "astro";
+import Layout from "../../../layouts/Layout.astro";
+import type { PageMetaType } from "../../../types/page";
+import { Icon } from "@iconify-icon/react";
+import { ctgEvents } from "../../../mock";
+import LocaleDetailEvent from "../../../components/sections/event/LocaleDetailEvent";
+
+export const getStaticPaths: GetStaticPaths = () => {
+   return ctgEvents.map((event) => ({
+      params: { slug: event.slug },
+   }));
+};
+
+const { slug } = Astro.params;
+const eventData = ctgEvents.find((event) => event.slug === slug);
+
+const metaData: PageMetaType = {
+   title: `${eventData?.title} | RKG Tour & Travel`,
+   description: eventData?.content || "",
+   image: eventData?.image || "/assets/rkgtour.webp",
+   robot: true,
+};
+---
+
+<Layout pageMeta={metaData}> 
+   <LocaleDetailEvent client:only eventData={eventData} />
+</Layout>

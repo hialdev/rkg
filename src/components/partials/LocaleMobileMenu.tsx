@@ -43,9 +43,9 @@ const LocaleMobileMenu: React.FC<LocaleMobileMenuProps> = ({ onClose }) => {
                            stroke="currentColor"
                         >
                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
                               d="M19 9l-7 7-7-7"
                            />
                         </svg>
@@ -59,8 +59,8 @@ const LocaleMobileMenu: React.FC<LocaleMobileMenuProps> = ({ onClose }) => {
                                  key={childIndex}
                                  className="group overflow-visible"
                               >
-                                 <summary className="cursor-pointer flex justify-between items-center py-2 hover:text-rose-60 text-gray-800">
-                                    {child.name}
+                                 <summary className="cursor-pointer flex justify-between items-center hover:text-rose-60 text-gray-800">
+                                    <a href={child.path} className="p-2 px-4 hover:bg-stone-100 rounded-xl">{child.name}</a>
                                     {child.childerns &&
                                        child.childerns.length > 0 && (
                                           <svg
@@ -71,9 +71,9 @@ const LocaleMobileMenu: React.FC<LocaleMobileMenuProps> = ({ onClose }) => {
                                              stroke="currentColor"
                                           >
                                              <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
                                                 d="M9 5l7 7-7 7"
                                              />
                                           </svg>

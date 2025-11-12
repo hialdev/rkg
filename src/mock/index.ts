@@ -354,8 +354,8 @@ export const testimonials = [
       id: 6,
       name: "Andi Wijaya",
       quote: "Cukup baik untuk project kecil kami.",
-      from_name: "LinkedIn",
-      from_logo: "https://cdn.simpleicons.org/linkedin",
+      from_name: "Line",
+      from_logo: "https://cdn.simpleicons.org/line",
       stars: 3,
       created_at: "2024-05-18T11:00:00Z",
    },
@@ -1470,3 +1470,148 @@ export const tripsData = [
       testimonials: testiTrips,
    },
 ];
+
+export const stepEvents = [
+   {
+      id: "1",
+      title: "Event Planning",
+      description: "Initial consultation and planning phase",
+      content:
+         "<p>This is the first step where we discuss your event requirements and preferences.</p><ul><li>Initial consultation</li><li>Requirement analysis</li><li>Budget planning</li></ul>",
+   },
+   {
+      id: "2",
+      title: "Venue Selection",
+      description: "Finding the perfect location for your event",
+      content:
+         "<p>Based on your preferences, we will scout and select the ideal venue for your event.</p><ul><li>Venue scouting</li><li>Site visits</li><li>Contract negotiation</li></ul>",
+   },
+   {
+      id: "3",
+      title: "Catering & Decor",
+      description: "Food and decoration arrangements",
+      content:
+         "<p>Coordinating all catering and decoration elements to match your vision.</p><ul><li>Catering selection</li><li>Menu planning</li><li>Decor theme</li></ul>",
+   },
+   {
+      id: "4",
+      title: "Final Execution",
+      description: "Executing the event flawlessly",
+      content:
+         "<p>On the day of the event, our team manages everything to ensure success.</p><ul><li>Day-of coordination</li><li>Vendor management</li><li>Guest services</li></ul>",
+   },
+];
+
+export const ctgEvents = [
+   {
+      id: 1,
+      title: "Team Building",
+      slug: "team-building",
+      description: "Outbond | Inbond | Fun Games",
+      content: `
+         <h4>Layanan Meeting natavisual : Solusi untuk Meeting Profesional yang Efektif dan Berkesan</h4>
+         <p>Corporate Meeting | Workshop | Online Meeting | Hybrid Meeting
+            Di dunia bisnis yang serba cepat, meeting menjadi salah satu elemen penting untuk berbagi ide, mengambil keputusan strategis, dan membangun hubungan
+            profesional. Namun, tidak semua meeting berjalan dengan efektif dan memberikan hasil maksimal. Di sinilah Nata Visual hadir dengan solusi lengkap untuk
+            kebutuhan meeting Anda.</p>
+         <h6>Mengapa Memilih Layanan Meeting dari Nata Visual?</h6>
+         <ol>
+            Kami memahami bahwa meeting bukan sekadar pertemuan biasa, tetapi momen penting yang dapat meningkatkan reputasi perusahaan dan membantu
+            mencapai tujuan bisnis. Dengan pengalaman kami dalam mengelola berbagai jenis acara, layanan meeting dari Nata Visual dirancang untuk:
+            <li>Meningkatkan Reputasi Perusahaan</li>
+            <li>Meeting yang direncanakan dengan baik mencerminkan profesionalisme perusahaan Anda. Mulai dari pemilihan venue, dekorasi, hingga pengaturan
+teknis, kami memastikan setiap detail mencerminkan nilai dan kredibilitas perusahaan Anda.</li>
+            <li>Membantu Mencapai Tujuan Acara</li>
+            <li>Apakah Anda ingin memperkenalkan produk baru, menyusun strategi bisnis, atau memperkuat kerja sama tim? Kami membantu mengelola setiap elemen
+meeting agar mendukung tujuan utama Anda. Semua aspek kami sesuaikan untuk memastikan hasil yang optimal.</li>
+            <li>Memberikan Pengalaman Tak Terlupakan</li>
+            <li>Dengan layanan yang berfokus pada detail, kami menciptakan suasana meeting yang nyaman dan profesional. Mulai dari penyediaan fasilitas audiovisual
+berkualitas tinggi hingga layanan konsumsi yang memanjakan, kami berkomitmen memberikan pengalaman terbaik bagi semua peserta.</li>
+         </ol>
+         <h6>Apa Saja yang Kami Tawarkan?</h6>
+         <ul>
+            <li>Venue Management : Pemilihan lokasi yang strategis dan sesuai dengan kebutuhan meeting Anda.</li>
+            <li>Setup dan Dekorasi : Pengaturan ruang meeting yang profesional dan nyaman.</li>
+            <li>Fasilitas Audiovisual : Peralatan teknologi terkini untuk mendukung presentasi dan diskusi.</li>
+            <li>Dokumentasi Multimedia : Dokumentasi lengkap berupa foto dan video untuk arsip atau kebutuhan promosi perusahaan.</li>
+            <li>Layanan Konsumsi : Pilihan menu makanan dan minuman berkualitas untuk mendukung kenyamanan peserta.</li>
+         </ul>
+      `,
+      image: "https://placehold.co/720x480?text=DetailEventService",
+      galleries: imageLists.map(img => img.path)
+   },
+   {
+      id: 2, 
+      title: "MICE",
+      slug: "mice",
+      description: "Meeting | Incentive | Conference | Exhibition | Corporate Meeting | Workshop | Online Meeting | Hybrid Meeting",
+      content: `
+         <h4>Layanan Meeting natavisual : Solusi untuk Meeting Profesional yang Efektif dan Berkesan</h4>
+         <p>Corporate Meeting | Workshop | Online Meeting | Hybrid Meeting
+            Di dunia bisnis yang serba cepat, meeting menjadi salah satu elemen penting untuk berbagi ide, mengambil keputusan strategis, dan membangun hubungan
+            profesional. Namun, tidak semua meeting berjalan dengan efektif dan memberikan hasil maksimal. Di sinilah Nata Visual hadir dengan solusi lengkap untuk
+            kebutuhan meeting Anda.</p>
+         <h6>Mengapa Memilih Layanan Meeting dari Nata Visual?</h6>
+         <ol>
+            Kami memahami bahwa meeting bukan sekadar pertemuan biasa, tetapi momen penting yang dapat meningkatkan reputasi perusahaan dan membantu
+            mencapai tujuan bisnis. Dengan pengalaman kami dalam mengelola berbagai jenis acara, layanan meeting dari Nata Visual dirancang untuk:
+            <li>Meningkatkan Reputasi Perusahaan</li>
+            <li>Meeting yang direncanakan dengan baik mencerminkan profesionalisme perusahaan Anda. Mulai dari pemilihan venue, dekorasi, hingga pengaturan
+teknis, kami memastikan setiap detail mencerminkan nilai dan kredibilitas perusahaan Anda.</li>
+            <li>Membantu Mencapai Tujuan Acara</li>
+            <li>Apakah Anda ingin memperkenalkan produk baru, menyusun strategi bisnis, atau memperkuat kerja sama tim? Kami membantu mengelola setiap elemen
+meeting agar mendukung tujuan utama Anda. Semua aspek kami sesuaikan untuk memastikan hasil yang optimal.</li>
+            <li>Memberikan Pengalaman Tak Terlupakan</li>
+            <li>Dengan layanan yang berfokus pada detail, kami menciptakan suasana meeting yang nyaman dan profesional. Mulai dari penyediaan fasilitas audiovisual
+berkualitas tinggi hingga layanan konsumsi yang memanjakan, kami berkomitmen memberikan pengalaman terbaik bagi semua peserta.</li>
+         </ol>
+         <h6>Apa Saja yang Kami Tawarkan?</h6>
+         <ul>
+            <li>Venue Management : Pemilihan lokasi yang strategis dan sesuai dengan kebutuhan meeting Anda.</li>
+            <li>Setup dan Dekorasi : Pengaturan ruang meeting yang profesional dan nyaman.</li>
+            <li>Fasilitas Audiovisual : Peralatan teknologi terkini untuk mendukung presentasi dan diskusi.</li>
+            <li>Dokumentasi Multimedia : Dokumentasi lengkap berupa foto dan video untuk arsip atau kebutuhan promosi perusahaan.</li>
+            <li>Layanan Konsumsi : Pilihan menu makanan dan minuman berkualitas untuk mendukung kenyamanan peserta.</li>
+         </ul>
+      `,
+      image: "https://placehold.co/720x480?text=DetailEventService",
+      galleries: imageLists.map(img => img.path)
+   },
+   {
+      id: 3,
+      title: "Gathering",
+      slug: "gathering",
+      description: "Company Gathering | Family Gathering | Community Gathering",
+      content: `
+         <h4>Layanan Meeting natavisual : Solusi untuk Meeting Profesional yang Efektif dan Berkesan</h4>
+         <p>Corporate Meeting | Workshop | Online Meeting | Hybrid Meeting
+            Di dunia bisnis yang serba cepat, meeting menjadi salah satu elemen penting untuk berbagi ide, mengambil keputusan strategis, dan membangun hubungan
+            profesional. Namun, tidak semua meeting berjalan dengan efektif dan memberikan hasil maksimal. Di sinilah Nata Visual hadir dengan solusi lengkap untuk
+            kebutuhan meeting Anda.</p>
+         <h6>Mengapa Memilih Layanan Meeting dari Nata Visual?</h6>
+         <ol>
+            Kami memahami bahwa meeting bukan sekadar pertemuan biasa, tetapi momen penting yang dapat meningkatkan reputasi perusahaan dan membantu
+            mencapai tujuan bisnis. Dengan pengalaman kami dalam mengelola berbagai jenis acara, layanan meeting dari Nata Visual dirancang untuk:
+            <li>Meningkatkan Reputasi Perusahaan</li>
+            <li>Meeting yang direncanakan dengan baik mencerminkan profesionalisme perusahaan Anda. Mulai dari pemilihan venue, dekorasi, hingga pengaturan
+teknis, kami memastikan setiap detail mencerminkan nilai dan kredibilitas perusahaan Anda.</li>
+            <li>Membantu Mencapai Tujuan Acara</li>
+            <li>Apakah Anda ingin memperkenalkan produk baru, menyusun strategi bisnis, atau memperkuat kerja sama tim? Kami membantu mengelola setiap elemen
+meeting agar mendukung tujuan utama Anda. Semua aspek kami sesuaikan untuk memastikan hasil yang optimal.</li>
+            <li>Memberikan Pengalaman Tak Terlupakan</li>
+            <li>Dengan layanan yang berfokus pada detail, kami menciptakan suasana meeting yang nyaman dan profesional. Mulai dari penyediaan fasilitas audiovisual
+berkualitas tinggi hingga layanan konsumsi yang memanjakan, kami berkomitmen memberikan pengalaman terbaik bagi semua peserta.</li>
+         </ol>
+         <h6>Apa Saja yang Kami Tawarkan?</h6>
+         <ul>
+            <li>Venue Management : Pemilihan lokasi yang strategis dan sesuai dengan kebutuhan meeting Anda.</li>
+            <li>Setup dan Dekorasi : Pengaturan ruang meeting yang profesional dan nyaman.</li>
+            <li>Fasilitas Audiovisual : Peralatan teknologi terkini untuk mendukung presentasi dan diskusi.</li>
+            <li>Dokumentasi Multimedia : Dokumentasi lengkap berupa foto dan video untuk arsip atau kebutuhan promosi perusahaan.</li>
+            <li>Layanan Konsumsi : Pilihan menu makanan dan minuman berkualitas untuk mendukung kenyamanan peserta.</li>
+         </ul>
+      `,
+      image: "https://placehold.co/720x480?text=DetailEventService",
+      galleries: imageLists.map(img => img.path)
+   }
+]

@@ -5,30 +5,42 @@ export interface MenuItem {
    childerns: MenuItem[];
 }
 
+const menuPaths = {
+   home: "/",
+   about: "/about",
+   gallery: "/gallery",
+   service: {
+      root: "/services",
+      open_trip: "/services/open-trip",
+      private_trip: "/services/private-trip",
+      event_organizer: "/services/event-organizer",
+   },
+
+}
 // This will be updated by the locale context to provide localized menu items
 export const getMenus = (locale: "en" | "id"): MenuItem[] => {
    if (locale === "id") {
       return [
-         { name: "Beranda", path: "/", childerns: [] },
-         { name: "Tentang Kami", path: "/about", childerns: [] },
-         { name: "Galeri", path: "/gallery", childerns: [] },
+         { name: "Beranda", path: menuPaths.home, childerns: [] },
+         { name: "Tentang Kami", path: menuPaths.about, childerns: [] },
+         { name: "Galeri", path: menuPaths.gallery, childerns: [] },
          {
             name: "Layanan Kami",
-            path: "/services",
+            path: menuPaths.service.root,
             childerns: [
                {
                   name: "Open Trip",
-                  path: "/search?cities=&tripType=open-trip",
+                  path: menuPaths.service.open_trip,
                   childerns: [],
                },
                {
                   name: "Private Trip",
-                  path: "/search?cities=&tripType=private-trip",
+                  path: menuPaths.service.private_trip,
                   childerns: [],
                },
                {
                   name: "Event Organizer",
-                  path: "/event-organizer",
+                  path: menuPaths.service.event_organizer,
                   childerns: [],
                },
             ],
@@ -37,26 +49,26 @@ export const getMenus = (locale: "en" | "id"): MenuItem[] => {
    } else {
       // English (default)
       return [
-         { name: "Home", path: "/", childerns: [] },
-         { name: "About Us", path: "/about", childerns: [] },
-         { name: "Gallery", path: "/gallery", childerns: [] },
+         { name: "Home", path: menuPaths.home, childerns: [] },
+         { name: "About Us", path: menuPaths.about, childerns: [] },
+         { name: "Gallery", path: menuPaths.gallery, childerns: [] },
          {
             name: "Our Services",
-            path: "/services",
+            path: menuPaths.service.root,
             childerns: [
                {
                   name: "Open Trip",
-                  path: "/search?cities=&tripType=open-trip",
+                  path: menuPaths.service.open_trip,
                   childerns: [],
                },
                {
                   name: "Private Trip",
-                  path: "/search?cities=&tripType=private-trip",
+                  path: menuPaths.service.private_trip,
                   childerns: [],
                },
                {
                   name: "Event Organizer",
-                  path: "/event-organizer",
+                  path: menuPaths.service.event_organizer,
                   childerns: [],
                },
             ],
@@ -67,24 +79,24 @@ export const getMenus = (locale: "en" | "id"): MenuItem[] => {
 
 // Default menu for static rendering (will be updated on client side)
 export const menus: MenuItem[] = [
-   { name: "Home", path: "/", childerns: [] },
-   { name: "About Us", path: "/about", childerns: [] },
-   { name: "Gallery", path: "/gallery", childerns: [] },
+   { name: "Home", path: menuPaths.home, childerns: [] },
+   { name: "About Us", path: menuPaths.about, childerns: [] },
+   { name: "Gallery", path: menuPaths.gallery, childerns: [] },
    {
       name: "Our Services",
-      path: "/services",
+      path: menuPaths.service.root,
       childerns: [
          {
             name: "Open Trip",
-            path: "/search?cities=&tripType=open-trip",
+            path: menuPaths.service.open_trip,
             childerns: [],
          },
          {
             name: "Private Trip",
-            path: "/search?cities=&tripType=private-trip",
+            path: menuPaths.service.private_trip,
             childerns: [],
          },
-         { name: "Event Organizer", path: "/event-organizer", childerns: [] },
+         { name: "Event Organizer", path: menuPaths.service.event_organizer, childerns: [] },
       ],
    },
 ];

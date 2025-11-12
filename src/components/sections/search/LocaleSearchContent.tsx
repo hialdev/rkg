@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocale } from "../../../contexts/LocaleContext";
 import SearchView from "./SearchView";
 import ImageGalleryBlock from "../gallery/ImageGalleryBlock";
@@ -7,7 +7,22 @@ import TestimonialBox from "../home/TestimonialBox";
 import FAQBlock from "./FAQBlock";
 
 const LocaleSearchContent: React.FC = () => {
+   const [isClient, setIsClient] = useState(false);
    const { translations } = useLocale();
+
+   useEffect(() => {
+      setIsClient(true);
+   }, []);
+
+   if (!isClient) {
+      return (
+         <>
+            <section className="container mx-auto py-20 px-4">
+               
+            </section>
+         </>
+      );
+   }
 
    return (
       <>

@@ -16,6 +16,7 @@ import {
 import dayjs, { type Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc";
 import localeData from "dayjs/plugin/localeData";
+import { useLocale } from "../../contexts/LocaleContext";
 
 dayjs.extend(utc);
 dayjs.extend(localeData);
@@ -45,9 +46,11 @@ interface OpenTripBookProps {
 }
 
 const OpenTripBook = ({ tripData }: OpenTripBookProps) => {
+   const { translations } = useLocale();
+   
    // Define the Zod schema for form validation
    const schema = z.object({
-      openDate: z.string().min(1, "Open date is required"),
+      openDate: z.string().min(1, translations?.validation?.open_date_required || "Open date is required"),
       additionalInfo: z.string().optional(),
    });
 
@@ -93,14 +96,14 @@ const OpenTripBook = ({ tripData }: OpenTripBookProps) => {
             <Typography
                variant="h6"
                component="h2"
-               className="mb-6 text-center"
+               sx={{ mb: 3, textAlign: "center" }}
             >
-               Book Open Trip: {tripData.title}
+               {translations.label.book} {translations.label.open_trip}: {tripData.title}
             </Typography>
 
             <FormControl fullWidth className="mb-4" error={!!errors.openDate}>
                <Typography variant="body2" sx={{mb:1}}>
-                  Available Dates
+                  {translations.label.available_dates}
                </Typography>
                <Box className="flex flex-wrap gap-2 mb-2">
                   {tripData.open_dates.map((dateRange, index) => {
@@ -132,7 +135,7 @@ const OpenTripBook = ({ tripData }: OpenTripBookProps) => {
 
             <TextField
                fullWidth
-               label="Additional Information"
+               label={translations.label.additional_info}
                multiline
                rows={4}
                variant="outlined"
@@ -146,7 +149,7 @@ const OpenTripBook = ({ tripData }: OpenTripBookProps) => {
                type="submit"
                className="bg-linear-to-bl from-emerald-300 to-cyan-700 px-6 text-white font-medium rounded-full mt-5 py-3"
             >
-               Book Now
+               {translations.contact.send}
             </button>
          </Box>
       </LocalizationProvider>

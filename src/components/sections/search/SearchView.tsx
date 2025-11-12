@@ -3,9 +3,13 @@ import FilteredTrips from "./FilteredTrips";
 
 export default function SearchView() {
    const queryParams = new URLSearchParams(window.location.search);
+   let initialCities = queryParams.get("cities")?.split(",") || [];
+   let initialTripType = queryParams.get("tripType") || "all";
 
-   const initialCities = queryParams.get("cities")?.split(",") || [];
-   const initialTripType = queryParams.get("tripType") || "all";
+   let urlNow = window.location.pathname.split("/")
+   if (urlNow.length > 2 && urlNow[1] == "services") {
+      initialTripType = urlNow[2]
+   }
    
    return (
       <>

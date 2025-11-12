@@ -25,10 +25,21 @@ export const id = {
    label: {
       typeTrip: "Jenis Perjalanan",
       all: "Semua Trip",
+      open_trip: "Tour Terbuka",
+      private_trip: "Tour Pribadi",
       start_from: "Mulai Dari",
       duration: "Durasi",
+      person: "Orang",
       best: "Sering Dipilih!",
       destination: "Destinasi",
+      book_now: "Pesan Sekarang",
+      book: "Pesan",
+      start_date: "Tanggal Mulai",
+      end_date: "Tanggal Selesai",
+      description: "Deskripsi",
+      your_message: "Beritahu kami sesuatu",
+      available_dates: "Tanggal Tersedia",
+      additional_info: "Informasi Tambahan",
    },
 
    // Hero section

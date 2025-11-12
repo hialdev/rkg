@@ -7,16 +7,19 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TextField, Button, Box, Typography } from "@mui/material";
 import dayjs, { type Dayjs } from "dayjs";
+import { useLocale } from "../../contexts/LocaleContext";
 
 const PrivateTripBook = () => {
+   const { translations } = useLocale();
+   
    // Define the Zod schema for form validation
    const schema = z.object({
-      startDate: z.string().min(1, "Start date is required"),
-      endDate: z.string().min(1, "End date is required"),
+      startDate: z.string().min(1, translations.validation?.start_date_required || "Start date is required"),
+      endDate: z.string().min(1, translations.validation?.end_date_required || "End date is required"),
       message: z
          .string()
-         .min(10, "Message must be at least 10 characters")
-         .max(500, "Message must not exceed 500 characters"),
+         .min(10, translations.validation?.message_min_length || "Message must be at least 10 characters")
+         .max(500, translations.validation?.message_max_length || "Message must not exceed 500 characters"),
    });
 
    type FormData = z.infer<typeof schema>;
@@ -53,14 +56,14 @@ const PrivateTripBook = () => {
                component="h2"
                className="text-center"
             >
-               Book Your Private Trip
+               {translations.label.book} {translations.label.private_trip}
             </Typography>
 
             <Box className="flex flex-col sm:flex-row gap-4 mb-4">
                <Box className="w-full sm:w-1/2">
                   <DatePicker
                      sx={{width:"100%"}}
-                     label="Start Date"
+                     label={translations.label.start_date}
                      value={dateRange[0]}
                      onChange={(newValue) => {
                         if (newValue) {
@@ -89,7 +92,7 @@ const PrivateTripBook = () => {
                <Box className="w-full sm:w-1/2">
                   <DatePicker
                      sx={{width:"100%"}}
-                     label="End Date"
+                     label={translations.label.end_date}
                      value={dateRange[1]}
                      onChange={(newValue) => {
                         if (newValue) {
@@ -119,7 +122,7 @@ const PrivateTripBook = () => {
 
             <TextField
                fullWidth
-               label="Your Message/Desires"
+               label={translations.label.your_message}
                multiline
                rows={4}
                variant="outlined"
@@ -130,9 +133,9 @@ const PrivateTripBook = () => {
             />
 
             <button
-               className="bg-linear-to-tl from-yellow-400 via-yellow-600 to-orange-300 text-white font-medium py-2 px-6 rounded-full hover:shadow-lg hover:scale-105 cursor-pointer"
+               className="bg-linear-to-tl from-yellow-40 via-yellow-600 to-orange-300 text-white font-medium py-2 px-6 rounded-full hover:shadow-lg hover:scale-105 cursor-pointer"
             >
-               Book Now
+               {translations.contact.send}
             </button>
          </Box>
       </LocalizationProvider>

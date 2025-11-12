@@ -1,0 +1,15 @@
+---
+import LocaleSearchContent from "../../components/sections/search/LocaleSearchContent";
+import Layout from "../../layouts/Layout.astro";
+import type { PageMetaType } from "../../types/page";
+
+const metaData: PageMetaType = {
+   title: "Our Services - Open Trip | RKG Tour & Travel",
+   description: "Discover RKG Tour & Travel's Open Trip services, offering exciting group travel experiences to various destinations.",
+   image: "/assets/rkgtour.webp",
+   robot: true,
+};
+---
+<Layout pageMeta={metaData}>
+   <LocaleSearchContent client:idle />
+</Layout>

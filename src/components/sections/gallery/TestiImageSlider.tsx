@@ -93,7 +93,7 @@ const TestiImageSlider: React.FC<TestiImageSliderProps> = ({
                disableOnInteraction: false,
             }}
             loop={true}
-            className="w-full aspect-[3/4] max-h-[15em] sm:max-h-[20em]"
+            className="w-full aspect-[3/4] max-h-[15em] md:max-h-[17em] lg:max-h-[20em]"
          >
             {images.map((image, index) => (
                <SwiperSlide key={index} className="!flex !items-center !justify-center">

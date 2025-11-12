@@ -26,6 +26,17 @@ export const en = {
       best: "Most Selected!",
       start_from: "Starts From",
       destination: "Destination",
+      open_trip: "Open Trip",
+      private_trip: "Private Trip",
+      book_now: "Book Now",
+      book: "Book",
+      start_date: "Start Date",
+      end_date: "End Date",
+      description: "Description",
+      person: "Person",
+      your_message: "Your Message",
+      available_dates: "Available Dates",
+      additional_info: "Additional Information",
    },
 
    testimonials: {

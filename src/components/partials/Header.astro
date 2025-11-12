@@ -28,20 +28,20 @@ const { isFloating = false } = Astro.props;
          id="menu-toggle"
          data-open="false"
          class={`flex flex-col gap-[6px] md:hidden fixed top-6 right-4 z-[70] w-8 h-8 justify-center items-end transition-all ${
-            isFloating ? "text-white" : "text-gray-800"
+            isFloating ? "md:text-white" : "text-gray-800"
          }`}
       >
          <span
             class={`line-1 block w-6 h-[3px] ${
-               isFloating ? "bg-white" : "bg-gray-800"
+               isFloating ? "md:bg-white" : "bg-gray-800"
             } rounded-full transition-all`}></span>
          <span
             class={`line-2 block w-4 h-[3px] ${
-               isFloating ? "bg-white" : "bg-gray-800"
+               isFloating ? "md:bg-white" : "bg-gray-800"
             } rounded-full self-end transition-all`}></span>
          <span
             class={`line-3 block w-8 h-[3px] ${
-               isFloating ? "bg-white" : "bg-gray-800"
+               isFloating ? "md:bg-white" : "bg-gray-800"
             } rounded-full transition-all`}></span>
       </button>
 
@@ -101,10 +101,6 @@ const { isFloating = false } = Astro.props;
             masterMenus.forEach((a) => {
                a.classList.add("text-white");
                a.classList.remove("text-gray-800");
-            });
-            document.querySelectorAll("#menu-toggle span").forEach((s) => {
-               s.classList.add("bg-white");
-               s.classList.remove("bg-gray-800");
             });
          }
       };

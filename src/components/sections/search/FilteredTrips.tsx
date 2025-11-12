@@ -66,7 +66,7 @@ export default function FilteredTrips({
 
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
             {filtered.length > 0 ? (
-               filtered.map((trip) => <LocaleOpenTrip trip={trip} />)
+               filtered.map((trip, i) => <LocaleOpenTrip key={i} trip={trip} />)
             ) : (
                <p className="col-span-full text-center text-gray-500">
                   {translations.services.items[2].description} {/* Using third service item description as "No trips found" */}
