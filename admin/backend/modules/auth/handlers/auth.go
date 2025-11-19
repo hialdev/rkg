@@ -5,6 +5,8 @@ import (
 	"aldev/utils"
 	"errors"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -36,25 +38,51 @@ func (h *AuthHandler) Login(c *fiber.Ctx) error {
 		return utils.RespApi(c, "perm", "Login gagal", err.Error())
 	}
 
-	// ✅ Set accessToken di HTTP-only cookie
+	httpOnly := false
+	if val := os.Getenv("COOKIE_HTTPONLY"); val != "" {
+		httpOnly, _ = strconv.ParseBool(val) // Error diabaikan, default tetap false
+	}
+
+	sameSite := "Lax"
+	if sameSiteStr := strings.ToLower(os.Getenv("COOKIE_SAMESITE")); sameSiteStr != "" {
+		if sameSiteStr == "strict" {
+			sameSite = "Strict"
+		}
+	}
+
+	accessAge := 15
+	if ageStr := os.Getenv("COOKIE_ACCESSAGE"); ageStr != "" {
+		if age, err := strconv.Atoi(ageStr); err == nil {
+			accessAge = age
+		}
+	}
+
+	refreshAge := 7
+	if ageStr := os.Getenv("COOKIE_REFRESHAGE"); ageStr != "" {
+		if age, err := strconv.Atoi(ageStr); err == nil {
+			refreshAge = age
+		}
+	}
+
 	c.Cookie(&fiber.Cookie{
 		Name:     "accessToken",
 		Value:    accessToken,
-		MaxAge:   int((time.Second * 5).Seconds()), // sesuaikan masa berlaku
-		HTTPOnly: true,
+		MaxAge:   int((time.Minute * time.Duration(accessAge)).Seconds()), // sesuaikan masa berlaku
+		HTTPOnly: httpOnly,
 		Secure:   os.Getenv("APP_ENV") == "production",
-		SameSite: "Lax",
+		Domain:   os.Getenv("COOKIE_DOMAIN"),
+		SameSite: sameSite,
 		Path:     "/",
 	})
 
-	// Set refreshToken (sudah ada)
 	c.Cookie(&fiber.Cookie{
 		Name:     "refreshToken",
 		Value:    refreshToken,
-		MaxAge:   int((time.Hour * 24 * 7).Seconds()),
-		HTTPOnly: true,
+		MaxAge:   int((time.Hour * 24 * time.Duration(refreshAge)).Seconds()),
+		HTTPOnly: httpOnly,
 		Secure:   os.Getenv("APP_ENV") == "production",
-		SameSite: "Lax",
+		Domain:   os.Getenv("COOKIE_DOMAIN"),
+		SameSite: sameSite,
 		Path:     "/",
 	})
 
@@ -125,14 +153,33 @@ func (h *AuthHandler) RefreshToken(c *fiber.Ctx) error {
 		return utils.RespApi(c, "ise", "Access token tidak valid", nil)
 	}
 
-	// ✅ Perbarui cookie accessToken
+	httpOnly := false
+	if val := os.Getenv("COOKIE_HTTPONLY"); val != "" {
+		httpOnly, _ = strconv.ParseBool(val) // Error diabaikan, default tetap false
+	}
+
+	sameSite := "Lax"
+	if sameSiteStr := strings.ToLower(os.Getenv("COOKIE_SAMESITE")); sameSiteStr != "" {
+		if sameSiteStr == "strict" {
+			sameSite = "Strict"
+		}
+	}
+
+	accessAge := 15
+	if ageStr := os.Getenv("COOKIE_ACCESSAGE"); ageStr != "" {
+		if age, err := strconv.Atoi(ageStr); err == nil {
+			accessAge = age
+		}
+	}
+
 	c.Cookie(&fiber.Cookie{
 		Name:     "accessToken",
 		Value:    accessToken,
-		MaxAge:   int((time.Minute * 15).Seconds()),
-		HTTPOnly: true,
+		MaxAge:   int((time.Minute * time.Duration(accessAge)).Seconds()), // sesuaikan masa berlaku
+		HTTPOnly: httpOnly,
 		Secure:   os.Getenv("APP_ENV") == "production",
-		SameSite: "Lax",
+		Domain:   os.Getenv("COOKIE_DOMAIN"),
+		SameSite: sameSite,
 		Path:     "/",
 	})
 

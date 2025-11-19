@@ -55,11 +55,12 @@ async function handleRefresh(req: NextRequest) {
             );
 
             response.cookies.set('accessToken', at, {
-               httpOnly: true,
+               httpOnly: process.env.NEXT_PUBLIC_COOKIE_HTTPONLY === 'true',
                secure: process.env.NODE_ENV === 'production',
-               sameSite: 'lax',
+               sameSite: process.env.NEXT_PUBLIC_COOKIE_SAMESITE === 'strict' ? 'strict' : 'lax',
                path: '/',
-               maxAge: 15 * 60, // 15 minutes in seconds
+               maxAge: process.env.NEXT_PUBLIC_COOKIE_AGE && parseInt(process.env.NEXT_PUBLIC_COOKIE_AGE) > 0 ? parseInt(process.env.NEXT_PUBLIC_COOKIE_AGE) * 60 : 15 * 60, // 15 minutes in seconds
+               domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
             });
 
             return response;

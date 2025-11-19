@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -229,15 +230,28 @@ func (s *AuthService) Logout(c *fiber.Ctx) error {
 		_ = connection.DeleteToken("refresh:" + userID)
 	}
 
+	httpOnly := false
+	if val := os.Getenv("COOKIE_HTTPONLY"); val != "" {
+		httpOnly, _ = strconv.ParseBool(val) // Error diabaikan, default tetap false
+	}
+
+	sameSite := "Lax"
+	if sameSiteStr := strings.ToLower(os.Getenv("COOKIE_SAMESITE")); sameSiteStr != "" {
+		if sameSiteStr == "strict" {
+			sameSite = "Strict"
+		}
+	}
+
 	// Clear dengan expired date yang jauh di masa lalu
 	c.Cookie(&fiber.Cookie{
 		Name:     "refreshToken",
 		Value:    "",
 		MaxAge:   -86400,                          // -24 jam
 		Expires:  time.Now().Add(-24 * time.Hour), // Tambahan explicit expires
-		HTTPOnly: true,
+		HTTPOnly: httpOnly,
 		Secure:   os.Getenv("APP_ENV") == "production",
-		SameSite: "Lax",
+		SameSite: sameSite,
+		Domain:   os.Getenv("COOKIE_DOMAIN"),
 		Path:     "/",
 	})
 
@@ -247,9 +261,10 @@ func (s *AuthService) Logout(c *fiber.Ctx) error {
 		Value:    "",
 		MaxAge:   -86400,
 		Expires:  time.Now().Add(-24 * time.Hour),
-		HTTPOnly: true,
+		HTTPOnly: httpOnly,
 		Secure:   os.Getenv("APP_ENV") == "production",
-		SameSite: "Lax",
+		SameSite: sameSite,
+		Domain:   os.Getenv("COOKIE_DOMAIN"),
 		Path:     "/api",
 	})
 
@@ -262,9 +277,10 @@ func (s *AuthService) Logout(c *fiber.Ctx) error {
 		Value:    "",
 		MaxAge:   -86400,                          // -24 jam
 		Expires:  time.Now().Add(-24 * time.Hour), // Tambahan explicit expires
-		HTTPOnly: true,
+		HTTPOnly: httpOnly,
 		Secure:   os.Getenv("APP_ENV") == "production",
-		SameSite: "Lax",
+		SameSite: sameSite,
+		Domain:   os.Getenv("COOKIE_DOMAIN"),
 		Path:     "/",
 	})
 
@@ -274,9 +290,10 @@ func (s *AuthService) Logout(c *fiber.Ctx) error {
 		Value:    "",
 		MaxAge:   -86400,
 		Expires:  time.Now().Add(-24 * time.Hour),
-		HTTPOnly: true,
+		HTTPOnly: httpOnly,
 		Secure:   os.Getenv("APP_ENV") == "production",
-		SameSite: "Lax",
+		SameSite: sameSite,
+		Domain:   os.Getenv("COOKIE_DOMAIN"),
 		Path:     "/api",
 	})
 
