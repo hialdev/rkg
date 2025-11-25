@@ -14,25 +14,28 @@ import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import { LoadingScreen } from 'src/components/loading-screen';
 
 import { TeamForm } from './components/form';
+import { Box } from '@mui/material';
+import { DashboardContent } from 'src/layouts/dashboard';
 
 // ----------------------------------------------------------------------
 
 type Props = {
-   currentTeam: TeamData | null;
+   id: string;
 };
 
-export function TeamEditView({ currentTeam }: Props) {
+export function TeamEditView({ id }: Props) {
    const { detail } = useTeamStore();
    const [team, setTeam] = useState<TeamData | null>(null);
    const [loading, setLoading] = useState(true);
 
    useEffect(() => {
       const fetchTeam = async () => {
-         if (currentTeam?.id) {
+         if (id) {
             try {
-               const response = await detail({ id: currentTeam.id });
+               const response = await detail({ id: id });
                if (response.success) {
                   setTeam(response.data);
+                  console.log("Response Team Data : ", response.data)
                } else {
                   toast.error('Failed to load team data');
                }
@@ -47,14 +50,14 @@ export function TeamEditView({ currentTeam }: Props) {
       };
 
       fetchTeam();
-   }, [currentTeam?.id]);
+   }, [id]);
 
    if (loading) {
       return <LoadingScreen />;
    }
 
    return (
-      <DashboardLayout>
+      <DashboardContent>
          <CustomBreadcrumbs
             heading="Edit Team"
             links={[
@@ -65,7 +68,7 @@ export function TeamEditView({ currentTeam }: Props) {
             sx={{ mb: { xs: 3, md: 5 } }}
          />
 
-         <TeamForm editData={team ?? undefined} onSuccess={() => {}} />
-      </DashboardLayout>
+         <TeamForm editData={team ?? undefined} open={true} onSuccess={() => {}} />
+      </DashboardContent>
    );
 }

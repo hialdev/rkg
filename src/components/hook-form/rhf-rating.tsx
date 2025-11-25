@@ -2,7 +2,8 @@ import type { BoxProps } from '@mui/material/Box';
 import type { RatingProps } from '@mui/material/Rating';
 import type { FormHelperTextProps } from '@mui/material/FormHelperText';
 
-import { Controller, useFormContext } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';

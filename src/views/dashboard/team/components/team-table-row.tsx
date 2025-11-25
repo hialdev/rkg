@@ -20,6 +20,7 @@ import useTeamStore from 'src/stores/team';
 import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
+import { TeamForm } from './form';
 
 // ----------------------------------------------------------------------
 
@@ -45,6 +46,7 @@ export function TeamTableRow({
    const [open, setOpen] = useState<HTMLButtonElement | null>(null);
 
    const confirmDialog = useBoolean();
+   const editDialog = useBoolean();
 
    const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
       setOpen(event.currentTarget);
@@ -59,7 +61,7 @@ export function TeamTableRow({
          if (row.id) {
             const { delete: deleteTeam } = useTeamStore.getState();
             const response = await deleteTeam({ id: row.id });
-            
+
             if (response.success) {
                toast.success(response.message || 'Team deleted successfully!');
                onDeleteRow();
@@ -86,7 +88,15 @@ export function TeamTableRow({
                <Box gap={2} display="flex" alignItems="center">
                   <Avatar
                      alt={name || 'Team member'}
-                     src={image ? (typeof image === 'string' ? (image.startsWith('http') ? image : `${process.env.NEXT_PUBLIC_API_HOST}/${image}`) : URL.createObjectURL(image)) : undefined}
+                     src={
+                        image
+                           ? typeof image === 'string'
+                              ? image.startsWith('http')
+                                 ? image
+                                 : `${process.env.NEXT_PUBLIC_API_HOST}/${image}`
+                              : URL.createObjectURL(image)
+                           : undefined
+                     }
                      sx={{ width: 48, height: 48 }}
                   />
                   <Typography variant="subtitle2" noWrap>
@@ -104,58 +114,22 @@ export function TeamTableRow({
             </TableCell>
 
             <TableCell align="right">
-               <IconButton onClick={handleOpenPopover}>
-                  <Iconify icon="eva:more-vertical-fill" />
-               </IconButton>
+               <Box>
+                  <TableCell align="right">
+                     <IconButton
+                        onClick={editDialog.onTrue}
+                        color={editDialog.value ? 'primary' : 'default'}
+                     >
+                        <Iconify icon="solar:pen-bold" />
+                     </IconButton>
+
+                     <IconButton color="error" onClick={confirmDialog.onTrue}>
+                        <Iconify icon="solar:trash-bin-trash-bold" />
+                     </IconButton>
+                  </TableCell>
+               </Box>
             </TableCell>
          </TableRow>
-
-         <Popover
-            open={!!open}
-            anchorEl={open}
-            onClose={handleClosePopover}
-            anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-         >
-            <Box sx={{ py: 1 }}>
-               <Link href={editHref} underline="none">
-                  <Box
-                     onClick={handleClosePopover}
-                     sx={{
-                        py: 1.5,
-                        px: 2,
-                        typography: 'body2',
-                        display: 'flex',
-                        gap: 1,
-                        cursor: 'pointer',
-                        alignItems: 'center',
-                     }}
-                  >
-                     <Iconify icon="solar:pen-bold" width={20} />
-                     Edit
-                  </Box>
-               </Link>
-
-               <Box
-                  onClick={() => {
-                     confirmDialog.onTrue();
-                     handleClosePopover();
-                  }}
-                  sx={{
-                     py: 1.5,
-                     px: 2,
-                     typography: 'body2',
-                     display: 'flex',
-                     gap: 1,
-                     cursor: 'pointer',
-                     alignItems: 'center',
-                  }}
-               >
-                  <Iconify icon="solar:trash-bin-trash-bold" width={20} />
-                  Delete
-               </Box>
-            </Box>
-         </Popover>
 
          <ConfirmDialog
             open={confirmDialog.value}
@@ -168,6 +142,8 @@ export function TeamTableRow({
                </button>
             }
          />
+
+         <TeamForm editData={row} open={editDialog.value} onSuccess={onSuccessEdit} />
       </>
    );
 }

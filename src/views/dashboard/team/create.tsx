@@ -5,12 +5,13 @@ import { DashboardLayout } from 'src/layouts/al/dashboard/layout';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
 import { TeamForm } from './components/form';
+import { DashboardContent } from 'src/layouts/dashboard';
 
 // ----------------------------------------------------------------------
 
 export function TeamCreateView() {
    return (
-      <DashboardLayout>
+      <DashboardContent>
          <CustomBreadcrumbs
             heading="Create Team"
             links={[
@@ -22,6 +23,6 @@ export function TeamCreateView() {
          />
 
          <TeamForm onSuccess={() => {}} />
-      </DashboardLayout>
+      </DashboardContent>
    );
 }

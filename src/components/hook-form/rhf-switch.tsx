@@ -6,7 +6,8 @@ import type { FormControlProps } from '@mui/material/FormControl';
 import type { FormHelperTextProps } from '@mui/material/FormHelperText';
 import type { FormControlLabelProps } from '@mui/material/FormControlLabel';
 
-import { Controller, useFormContext } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 
 import Box from '@mui/material/Box';
 import Switch from '@mui/material/Switch';
