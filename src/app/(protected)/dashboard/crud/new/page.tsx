@@ -1,0 +1,19 @@
+import type { Metadata } from 'next';
+
+import { paths } from 'src/routes/al/paths';
+
+import { CONFIG } from 'src/global-config';
+import AuthGuard from 'src/guards/auth-guard';
+
+// ----------------------------------------------------------------------
+
+export const metadata: Metadata = { title: `Add New Dataset - ${CONFIG.appName}` };
+
+export default function Page() {
+   return (
+      <AuthGuard currentPath={`${paths.dashboard.crud.new}`} requiredPermissions={[]}>
+         <>
+         </>
+      </AuthGuard>
+   );
+}
