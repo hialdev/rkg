@@ -1,3 +1,5 @@
+"use client"
+
 import type { TeamData } from 'src/stores/team';
 
 import { useState, useEffect } from 'react';
