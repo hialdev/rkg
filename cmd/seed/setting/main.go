@@ -4,9 +4,16 @@ import (
 	"aldev/connection"
 	"fmt"
 	"log"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("❗ Gagal mendapatkan data file .env", err.Error())
+	}
+
 	// Inisialisasi koneksi DB
 	connection.InitDB()
 	db := connection.DB
@@ -14,7 +21,7 @@ func main() {
 	// --- Execute SQL Insert Setting Groups ---
 	// Periksa dulu apakah data sudah ada untuk mencegah duplikasi
 	var count int64
-	err := db.Raw("SELECT COUNT(*) FROM setting_groups WHERE id = ?", "e752233c-cf1a-4e1d-9fdd-5aa59c233281").Scan(&count).Error
+	err = db.Raw("SELECT COUNT(*) FROM setting_groups WHERE id = ?", "e752233c-cf1a-4e1d-9fdd-5aa59c233281").Scan(&count).Error
 	if err != nil {
 		log.Fatalf("Error checking setting_groups: %v", err)
 	}

@@ -4,9 +4,17 @@ import (
 	"aldev/connection"
 	"aldev/modules/auth/models"
 	"fmt"
+	"log"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("❗ Gagal mendapatkan data file .env", err.Error())
+	}
+
 	// inisialisasi koneksi DB
 	connection.InitDB()
 	db := connection.DB
@@ -33,7 +41,7 @@ func main() {
 
 	// --- Step 2: Create Super Admin role ---
 	var superAdmin models.Role
-	err := db.Where("name = ?", "Super Admin").First(&superAdmin).Error
+	err = db.Where("name = ?", "Super Admin").First(&superAdmin).Error
 	if err != nil {
 		superAdmin = models.Role{Name: "Super Admin", Description: strPtr("Full system access")}
 		db.Create(&superAdmin)
