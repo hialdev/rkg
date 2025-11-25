@@ -19,11 +19,13 @@ export default function AccessItem({ role, onSuccess }: Props) {
    const menuActions = usePopover();
    // -----------------------------------------------------------------------------------------
    const handleDelete = () => {
-
+      editDialog.onFalse()
+      onSuccess()
    }
 
    const handleEditSuccess = () => {
-
+      editDialog.onFalse()
+      onSuccess()
    }
    // -----------------------------------------------------------------------------------------
 

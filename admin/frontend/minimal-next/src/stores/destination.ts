@@ -1,117 +1,110 @@
-import type { RoleData } from "./role";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-
-import { protectedApi } from "src/lib/al/axios";
+import { protectedApi } from '../lib/al/axios';
 
 export interface DestinationData {
-   id : string,
-   image? : string | File,
-   title: string,
-   description?: string,
+   id?: string;
+   title?: string;
+   slug?: string;
+   description?: string;
+   image?: any;
 }
 
 interface DestinationState {
-   destinations: DestinationData | null;
+   destinations: DestinationData[];
 
-   all: ({page, limit, search, sort, order} : {page?: number | string, limit?: number | string, search?: string, sort: string, order: "desc" | "asc"}) => Promise<any>;
-   add: (data : DestinationData) => Promise<any>;
-   detail: ({id} : {id: string}) => Promise<any>;
-   update: ({id, data} : {id: string, data: DestinationData}) => Promise<any>;
-   delete: ({id} : {id: string}) => Promise<any>;
+   all: (params?: any) => Promise<any>;
+   detail: ({ id }: { id: string }) => Promise<any>;
+   add: ({ data }: { data: DestinationData }) => Promise<any>;
+   update: ({ id, data }: { id: string; data: DestinationData }) => Promise<any>;
+   delete: ({ id }: { id: string }) => Promise<any>;
 }
 
 const useDestinationStore = create<DestinationState>()(
    persist(
       (set, get) => ({
-         destinations: null,
-         all: async ({page, limit, search, sort, order}) => {
-            try {
-               const params = { page, limit, search, sort, order };
-               const response = await protectedApi.get("/destinations", { params });
-               set({ destinations: response.data });
-               return response.data;
-            } catch (error) {
-               return {success:false, message:error};
+         destinations: [],
+         all: async (params?: any) => {
+            const queryParams = new URLSearchParams();
+            
+            if (params) {
+               if (params.page !== undefined) queryParams.append('page', params.page.toString());
+               if (params.limit !== undefined) queryParams.append('limit', params.limit.toString());
+               if (params.search !== undefined) queryParams.append('search', params.search);
+               if (params.sort !== undefined) queryParams.append('sort', params.sort);
+               if (params.order !== undefined) queryParams.append('order', params.order);
             }
+            
+            const queryString = queryParams.toString();
+            const url = queryString ? `/destinations?${queryString}` : '/destinations';
+            
+            const response = await protectedApi.get(url);
+            if (response.data.success && response.data.data) {
+               set({ destinations: response.data.data.destinations || response.data.data });
+            }
+            return response.data;
          },
-         add: async (data) => {
-            try {
-               let payload: DestinationData | FormData = data;
-               let config = {};
+         detail: async ({ id }) => {
+            const response = await protectedApi.get(`/destinations/${id}`);
+            return response.data;
+         },
+         add: async ({ data }) => {
+            let payload: DestinationData | FormData = data;
+            let config = {};
 
-               // Jika ada field image yang instanceof File, gunakan FormData
-               if (data.image instanceof File) {
-                  const formData = new FormData();
+            // Jika ada field image yang instanceof File, gunakan FormData
+            if (data.image instanceof File) {
+               const formData = new FormData();
 
-                  // Mapping field satu per satu — aman dari TypeScript
-                  if (data.title) formData.append("title", data.title);
-                  if (data.description) formData.append("description", data.description);
-                  formData.append("image", data.image); // image selalu ada di sini (karena dicek instanceof File)
+               // Mapping field satu per satu — aman dari TypeScript
+               if (data.title) formData.append('title', data.title);
+               if (data.slug) formData.append('slug', data.slug);
+               if (data.description) formData.append('description', data.description);
+               formData.append('image', data.image); // image selalu ada di sini (karena dicek instanceof File)
 
-                  payload = formData;
-                  config = {
-                     headers: {
-                        "Content-Type": "multipart/form-data",
-                     },
-                  };
-               }
-
-               const response = await protectedApi.post(`/destinations`, payload, config);
-               return response.data;
-            } catch (error) {
-               return {
-                  success: false,
-                  message: error || "Unknown error",
+               payload = formData;
+               config = {
+                  headers: {
+                     'Content-Type': 'multipart/form-data',
+                  },
                };
             }
+
+            const response = await protectedApi.post(`/destinations`, payload, config);
+            return response.data;
          },
-         detail: async ({id}) => {
-            try {
-               const response = await protectedApi.get(`/destinations/${id}`);
-               return response.data;
-            } catch (error) {
-               return {success:false, message:error};
-            }
-         },
-         update: async ({id, data}) => {
-            try {
-               let payload: DestinationData | FormData = data;
-               let config = {};
+         update: async ({ id, data }) => {
+            let payload: DestinationData | FormData = data;
+            let config = {};
 
-               // Jika ada field image yang instanceof File, gunakan FormData
-               if (data.image instanceof File) {
-                  const formData = new FormData();
+            // Jika ada field image yang instanceof File, gunakan FormData
+            if (data.image instanceof File) {
+               const formData = new FormData();
 
-                  if (data.title) formData.append("title", data.title);
-                  if (data.description) formData.append("description", data.description);
-                  formData.append("image", data.image); // image selalu ada di sini (karena dicek instanceof File)
+               if (data.title) formData.append('title', data.title);
+               if (data.slug) formData.append('slug', data.slug);
+               if (data.description) formData.append('description', data.description);
+               formData.append('image', data.image); // image selalu ada di sini (karena dicek instanceof File)
 
-                  payload = formData;
-                  config = {
-                     headers: {
-                        "Content-Type": "multipart/form-data",
-                     },
-                  };
-               }
-
-               const response = await protectedApi.post(`/destinations/${id}`, payload, config);
-               return response.data;
-            } catch (error) {
-               return {
-                  success: false,
-                  message: error || "Unknown error",
+               payload = formData;
+               config = {
+                  headers: {
+                     'Content-Type': 'multipart/form-data',
+                  },
                };
             }
+
+            const response = await protectedApi.post(`/destinations/${id}`, payload, config);
+            return response.data;
          },
-         delete: async ({id}) => {
+         delete: async ({ id }) => {
             const response = await protectedApi.delete(`/destinations/${id}`);
             return response.data;
          },
-       }),
+      }),
       {
-         name: "user-store", // key di localStorage
+         name: 'destination-store', // key di localStorage
          partialize: (state) => ({
             destinations: state.destinations,
          }), // hanya simpan ini

@@ -17,15 +17,22 @@ import Stack from '@mui/material/Stack';
 import { toast } from 'src/components/snackbar';
 import { Form, Field, schemaUtils } from 'src/components/hook-form';
 import { countries } from 'src/stores/countries';
-import { DestinationForm } from './destination-form';
 import { useBoolean } from 'minimal-shared/hooks';
 import { slugify } from '../helpers/slug';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import useTripStore from 'src/stores/trip';
+import { CONFIG } from 'src/global-config';
+import { DestinationForm } from 'src/views/dashboard/destinations/components/form';
+import useDestinationStore from 'src/stores/destination';
+import { paths } from 'src/routes/al/paths';
+import { useRouter } from 'src/routes/hooks';
 
 // ----------------------------------------------------------------------
 
 // Define the schema for the trip form
-export type TripType = z.infer<typeof TripSchema>;
+export type TripType = z.infer<typeof TripSchema> & {
+   id?: string;
+};
 
 export const TripSchema = z.object({
    title: z.string().optional(),
@@ -78,8 +85,10 @@ type Props = {
 };
 
 export function TripForm({ currentTrip, onSuccess }: Props) {
+   const { destinations, all } = useDestinationStore()
+   const router = useRouter();
    const addDestination = useBoolean()
-   const [slug, setSlug] = useState<string>("")
+   const [slug, setSlug] = useState<string>(currentTrip?.slug ?? "")
 
    // Default values for the form
    const defaultValues: TripType = {
@@ -91,7 +100,10 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
       type: currentTrip?.type || 'open-trip',
       duration: currentTrip?.duration || '',
       price: currentTrip?.price || 0,
-      image: currentTrip?.image || undefined,
+      image:
+         typeof currentTrip?.image === "string" && currentTrip?.image
+            ? `${CONFIG.apiHostUrl}/${currentTrip.image}`
+            : currentTrip?.image,
       min_people: currentTrip?.min_people || 2,
       meet_point: currentTrip?.meet_point || '',
       destinations: currentTrip?.destinations || [],
@@ -123,20 +135,42 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
       formState: { isSubmitting },
    } = methods;
 
+   useEffect(() => {
+      all()
+   },[]) 
    // Watch for changes in open_dates and itinerary
    const openDates = watch('open_dates');
    const itinerary = watch('itinerary');
+
+   const { add, update } = useTripStore();
 
    const onSubmit = handleSubmit(async (data) => {
       try {
          console.info('Trip Form Data:', data);
 
-         // In a real implementation, you would send the data to an API
-         // For now, we'll just show a success message
-         toast.success(currentTrip ? 'Trip updated successfully!' : 'Trip created successfully!');
+         // Manually include the slug value since the field is disabled
+         const formData = {
+            ...data,
+            slug: slug || data.slug,
+         };
 
-         onSuccess?.();
-         reset();
+         let result;
+         if (currentTrip?.id) {
+            // Update existing trip
+            result = await update({ id: currentTrip.id, data: formData });
+         } else {
+            // Create new trip
+            result = await add({ data: formData });
+         }
+
+         if (result.success) {
+            toast.success(currentTrip ? 'Trip updated successfully!' : 'Trip created successfully!');
+            onSuccess?.();
+            reset();
+            router.replace(paths.dashboard.trip.root)
+         } else {
+            toast.error(result.message || 'An error occurred while saving the trip');
+         }
       } catch (error) {
          console.error(error);
          toast.error('An error occurred while saving the trip');
@@ -376,13 +410,13 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
                      label="Destinations"
                      placeholder="Select destinations"
                      multiple
-                     options={[]} // This would be populated with actual destinations
-                     getOptionLabel={(option) => option.name || option.label || String(option)}
+                     options={destinations.length > 0 ? destinations : []}
+                     getOptionLabel={(option) => option.title || option.label || String(option)}
                      isOptionEqualToValue={(option, value) => option.id === value.id}
                      renderOption={(props, option) => (
                         <li {...props} key={option.id}>
                            <Typography variant="body2">
-                              {option.name || option.label || String(option)}
+                              {option.title || option.label || String(option)}
                            </Typography>
                         </li>
                      )}
@@ -527,9 +561,12 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
             </Box>
          </Form>
 
+         {/* Updated to use the destination form from the destinations module */}
          <DestinationForm
             open={addDestination.value}
-            onSuccess={() => console.log("Berhasil aksi form destination")}
+            onSuccess={() => {
+               all()
+            }}
             onClose={addDestination.onFalse}
          />
       </>

@@ -44,7 +44,7 @@ export const navData: NavSectionProps['data'] = [
       subheader: 'Content Management',
       items: [
          {
-            title: 'Manage Trips',
+            title: 'Trips',
             path: paths.dashboard.trip.root,
             icon: icon('solar:cup-hot-bold-duotone'),
             children: [
@@ -53,13 +53,31 @@ export const navData: NavSectionProps['data'] = [
             ],
          },
          {
+            title: 'Destinations',
+            path: paths.dashboard.destinations.root,
+            icon: icon('solar:point-on-map-bold-duotone'),
+         },
+         {
             title: 'Events',
-            path: paths.dashboard.event.root,
+            path: paths.dashboard.events.root,
             icon: icon('solar:calendar-mark-bold-duotone'),
             children: [
-               { title: 'Lists', path: paths.dashboard.event.root, },
-               { title: 'Create', path: paths.dashboard.event.create, },
+               { title: 'Lists', path: paths.dashboard.events.root, },
             ],
+         },
+         {
+            title: 'Event Types',
+            path: paths.dashboard.event_types.root,
+            icon: icon('solar:calendar-add-bold-duotone'),
+            children: [
+               { title: 'Lists', path: paths.dashboard.event_types.root, },
+               { title: 'Create', path: paths.dashboard.event_types.create, },
+            ],
+         },
+         {
+            title: 'Event Plan',
+            path: paths.dashboard.event_plans.root,
+            icon: icon('solar:checklist-minimalistic-bold-duotone'),
          },
          {
             title: 'Teams',
@@ -75,6 +93,11 @@ export const navData: NavSectionProps['data'] = [
             title: 'Testimonials',
             path: paths.dashboard.testimonial,
             icon: icon('solar:hand-stars-bold-duotone'),
+         },
+         {
+            title: 'FAQs',
+            path: paths.dashboard.faqs.root,
+            icon: icon('solar:question-square-bold-duotone'),
          },
       ],
    },

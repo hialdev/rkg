@@ -22,6 +22,7 @@ import { ProfileCover } from 'src/sections/user/profile-cover';
 import { ProfileFriends } from 'src/sections/user/profile-friends';
 import { ProfileGallery } from 'src/sections/user/profile-gallery';
 import { ProfileFollowers } from 'src/sections/user/profile-followers';
+import { ComingSoonView } from 'src/sections/coming-soon/view';
 
 // ----------------------------------------------------------------------
 
@@ -35,16 +36,6 @@ const NAV_ITEMS = [
       value: 'access',
       label: 'Access',
       icon: <Iconify width={24} icon="solar:lock-bold" />,
-   },
-   {
-      value: 'friends',
-      label: 'Friends',
-      icon: <Iconify width={24} icon="solar:users-group-rounded-bold" />,
-   },
-   {
-      value: 'gallery',
-      label: 'Gallery',
-      icon: <Iconify width={24} icon="solar:gallery-wide-bold" />,
    },
 ];
 
@@ -117,18 +108,9 @@ export function ProfileView() {
             </Box>
          </Card>
 
-         {selectedTab === '' && <ProfileHome info={_userAbout} posts={_userFeeds} sx={{ mt: 3 }} />}
+         {selectedTab === '' && <ComingSoonView />}
 
-         {selectedTab === 'access' && <ProfileFollowers followers={_userFollowers} />}
-
-         {selectedTab === 'friends' && (
-            <ProfileFriends
-               friends={_userFriends}
-               searchFriends={searchFriends}
-               onSearchFriends={handleSearchFriends}
-            />
-         )}
-         {selectedTab === 'gallery' && <ProfileGallery gallery={_userGallery} />}
+         {selectedTab === 'access' && <ComingSoonView />}
       </>
    );
 }

@@ -1,12 +1,9 @@
 "use client"
 
-import { TripForm } from "./components/form";
+import { TripListView } from "./list/view";
 
 export default function TripView({type}: {type?:string}){
-   const tripData = undefined ;
-   
    return (
-      <>
-      </>
+      <TripListView />
    )
 }

@@ -1,22 +1,20 @@
-import type { Metadata } from 'next';
-
 import { paths } from 'src/routes/al/paths';
 
 import { CONFIG } from 'src/global-config';
 import AuthGuard from 'src/guards/auth-guard';
-import { DashboardContent } from 'src/layouts/dashboard';
-import { ComingSoonView } from 'src/sections/coming-soon/view';
+
+import { EventListView } from 'src/views/dashboard/events/list/view';
 
 // ----------------------------------------------------------------------
 
-export const metadata: Metadata = { title: `List Events - ${CONFIG.appName}` };
+export const metadata = {
+   title: `Events - ${CONFIG.appName}`,
+};
 
 export default function Page() {
    return (
-      <AuthGuard currentPath={`${paths.dashboard.event.root}`} requiredPermissions={[]}>
-         <DashboardContent>
-            <ComingSoonView />
-         </DashboardContent>
+      <AuthGuard currentPath={`${paths.dashboard.root}/events`} requiredPermissions={['Read Event']}>
+         <EventListView />
       </AuthGuard>
    );
 }

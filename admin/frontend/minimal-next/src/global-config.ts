@@ -9,6 +9,7 @@ export type ConfigValue = {
    appVersion: string;
    serverUrl: string;
    apiHost: string;
+   apiHostUrl: string;
    apiPort: string;
    apiUrl: string;
    wsUrl: string;
@@ -39,6 +40,7 @@ export const CONFIG: ConfigValue = {
    appName: 'EMA - Admin',
    apiHost: 'localhost',
    apiPort: '1263',
+   apiHostUrl: process.env.NEXT_PUBLIC_API_HOST ?? '',
    apiUrl: process.env.NEXT_PUBLIC_API_HOST+'/api',
    wsUrl: process.env.NEXT_PUBLIC_API_HOST+'/ws',
    appVersion: packageJson.version,

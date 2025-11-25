@@ -44,15 +44,50 @@ export const paths = {
       trip: {
          root: `${ROOTS.DASHBOARD}/trips`,
          create: `${ROOTS.DASHBOARD}/trips/create`,
-         update: `${ROOTS.DASHBOARD}/trips/update`,
+         update: `${ROOTS.DASHBOARD}/trips/edit`,
       },
 
-      event: {
+      destinations: {
+         root: `${ROOTS.DASHBOARD}/destinations`,
+         create: `${ROOTS.DASHBOARD}/destinations/create`,
+         edit: (id: string) => `${ROOTS.DASHBOARD}/destinations/${id}/edit`,
+      },
+
+      events: {
          root: `${ROOTS.DASHBOARD}/events`,
          create: `${ROOTS.DASHBOARD}/events/create`,
-         update: `${ROOTS.DASHBOARD}/events/update`,
+         update: `${ROOTS.DASHBOARD}/events/edit`,
       },
 
+      event_services: {
+         root: `${ROOTS.DASHBOARD}/event-services`,
+         create: `${ROOTS.DASHBOARD}/event-services/create`,
+         update: `${ROOTS.DASHBOARD}/event-services/edit`,
+      },
+
+      event_types: {
+         root: `${ROOTS.DASHBOARD}/event-types`,
+         create: `${ROOTS.DASHBOARD}/event-types/create`,
+         edit: (id: string) => `${ROOTS.DASHBOARD}/event-types/${id}/edit`,
+      },
+
+      event_plans: {
+         root: `${ROOTS.DASHBOARD}/event-plans`,
+         create: `${ROOTS.DASHBOARD}/event-plans/create`,
+         edit: (id: string) => `${ROOTS.DASHBOARD}/event-plans/${id}/edit`,
+      },
+
+      faqs: {
+         root: `${ROOTS.DASHBOARD}/faqs`,
+         create: `${ROOTS.DASHBOARD}/faqs/create`,
+         edit: (id: string) => `${ROOTS.DASHBOARD}/faqs/${id}/edit`,
+      },
+
+      teams: {
+         root: `${ROOTS.DASHBOARD}/teams`,
+         create: `${ROOTS.DASHBOARD}/teams/create`,
+         edit: (id: string) => `${ROOTS.DASHBOARD}/teams/${id}/edit`,
+      },
       team: `${ROOTS.DASHBOARD}/teams`,
       client: `${ROOTS.DASHBOARD}/clients`,
       testimonial: `${ROOTS.DASHBOARD}/testimonials`,

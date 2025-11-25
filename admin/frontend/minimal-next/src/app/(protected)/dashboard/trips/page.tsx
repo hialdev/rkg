@@ -6,6 +6,7 @@ import { CONFIG } from 'src/global-config';
 import AuthGuard from 'src/guards/auth-guard';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { ComingSoonView } from 'src/sections/coming-soon/view';
+import { TripListView } from 'src/views/dashboard/trips/list/view';
 
 // ----------------------------------------------------------------------
 
@@ -15,7 +16,7 @@ export default function Page() {
    return (
       <AuthGuard currentPath={`${paths.dashboard.trip.root}`} requiredPermissions={[]}>
          <DashboardContent>
-            <ComingSoonView />
+            <TripListView />
          </DashboardContent>
       </AuthGuard>
    );

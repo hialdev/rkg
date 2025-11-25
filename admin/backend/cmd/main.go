@@ -35,9 +35,9 @@ func main() {
 	//  }))
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     os.Getenv("CORS_ALLOWORIGINS"),//"http://localhost:8082, http://localhost:8000, http://172.245.53.218:8082",
-		AllowMethods:     os.Getenv("CORS_ALLOWMETHODS"),//"GET,POST,DELETE,PATCH",
-		AllowHeaders:     os.Getenv("CORS_ALLOWHEADERS"),//"Origin,Content-Type,Authorization",
+		AllowOrigins:     os.Getenv("CORS_ALLOWORIGINS"), //"http://localhost:8082, http://localhost:8000, http://172.245.53.218:8082",
+		AllowMethods:     os.Getenv("CORS_ALLOWMETHODS"), //"GET,POST,DELETE,PATCH",
+		AllowHeaders:     os.Getenv("CORS_ALLOWHEADERS"), //"Origin,Content-Type,Authorization",
 		AllowCredentials: true,
 	}))
 
@@ -60,9 +60,19 @@ func main() {
 		// CMS
 		&CMSModels.SettingGroup{},
 		&CMSModels.Setting{},
+		&CMSModels.Trip{},
+		&CMSModels.Destination{},
+		&CMSModels.Event{},
+		&CMSModels.Team{},
 		&CMSModels.Tables{},
 		&CMSModels.TableField{},
 		&CMSModels.TableRecord{},
+		&CMSModels.EventType{},
+		&CMSModels.EventPlan{},
+		&CMSModels.EventService{},
+		&CMSModels.Client{},
+		&CMSModels.Testimonial{},
+		&CMSModels.Faq{},
 	)
 
 	routes.InitRoutes(app, connection.DB)
