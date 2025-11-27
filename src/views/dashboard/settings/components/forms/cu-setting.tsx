@@ -22,6 +22,7 @@ import useSettingStore from "src/stores/setting";
 
 import { toast } from "src/components/snackbar";
 import { Form, Field } from "src/components/hook-form";
+import { useRouter } from "src/routes/hooks";
 
 // 🔹 Schema validasi
 export const SettingSchema = z.object({
@@ -64,6 +65,8 @@ export default function CUSettingForm({
    const { tabs, all, add } = useSettingStore();
    const [previewSelectsValue, setPreviewSelectsValue] = useState<string[]>([]);
 
+   const router = useRouter();
+
    const methods = useForm<SettingFormValues>({
       resolver: zodResolver(SettingSchema),
       defaultValues: {
@@ -96,6 +99,7 @@ export default function CUSettingForm({
          if (storing.success) {
             toast.success(storing.message);
             onRequestFinished?.(true);
+            router.refresh()
          } else {
             toast.error(storing.message);
             onRequestFinished?.(false);

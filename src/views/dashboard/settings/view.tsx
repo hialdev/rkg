@@ -33,7 +33,7 @@ import AddSetting from "./components/add";
 import RenderInput from "./components/render-type";
 
 export default function SettingView() {
-   const { all, tabs, setValue: fillSetting, delete: destroy } = useSettingStore();
+   const { all, tabs, setValue: fillSetting, delete: destroy, deleteGroup } = useSettingStore();
    const [activeTab, setActiveTab] = useState<string | number>("");
    const openAddDialog = useBoolean();
    const deleteDialog = useBoolean();
@@ -104,6 +104,16 @@ export default function SettingView() {
       if (delSet.success){
          toast.success("Berhasil menghapus setting")
          all()
+      }
+   }
+
+   const handleDeleteGroup = async (id:string) => {
+      const delSet = await deleteGroup({id})
+      if (delSet.success){
+         toast.success("Berhasil menghapus group setting")
+         all()
+      }else{
+         toast.error("Gagal menghapus group setting")
       }
    }
    // -------------------------------------------------------------------------------------------
@@ -326,7 +336,7 @@ export default function SettingView() {
                         <Box>
                            <Typography variant="h6">All {currentTab.name} Settings</Typography>
                         </Box>
-                        <Button variant="outlined" color="error">
+                        <Button onClick={() => handleDeleteGroup(currentTab.id)} variant="outlined" color="error">
                            <Iconify icon="solar:trash-bin-trash-bold-duotone" />
                         </Button>
                      </Box>

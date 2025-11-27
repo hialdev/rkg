@@ -115,18 +115,16 @@ export function TeamTableRow({
 
             <TableCell align="right">
                <Box>
-                  <TableCell align="right">
-                     <IconButton
-                        onClick={editDialog.onTrue}
-                        color={editDialog.value ? 'primary' : 'default'}
-                     >
-                        <Iconify icon="solar:pen-bold" />
-                     </IconButton>
+                  <IconButton
+                     onClick={editDialog.onTrue}
+                     color={editDialog.value ? 'primary' : 'default'}
+                  >
+                     <Iconify icon="solar:pen-bold" />
+                  </IconButton>
 
-                     <IconButton color="error" onClick={confirmDialog.onTrue}>
-                        <Iconify icon="solar:trash-bin-trash-bold" />
-                     </IconButton>
-                  </TableCell>
+                  <IconButton color="error" onClick={confirmDialog.onTrue}>
+                     <Iconify icon="solar:trash-bin-trash-bold" />
+                  </IconButton>
                </Box>
             </TableCell>
          </TableRow>

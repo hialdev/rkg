@@ -45,6 +45,7 @@ import { redirect } from 'next/navigation';
 import { IFaqTableFilters } from 'src/types/faq';
 import { FaqTableToolbar } from './components/faq-table-toolbar';
 import { FaqTableFiltersResult } from './components/faq-table-filters-result';
+import { FaqForm } from './components/form';
 
 // ----------------------------------------------------------------------
 
@@ -220,7 +221,7 @@ export function FaqListView() {
                ]}
                action={
                   <Button
-                     onClick={() => redirect(paths.dashboard.faqs.create)}
+                     onClick={addDialog.onTrue}
                      variant="contained"
                      startIcon={<Iconify icon="mingcute:add-line" />}
                   >
@@ -347,6 +348,7 @@ export function FaqListView() {
          </DashboardContent>
 
          {renderConfirmDialog()}
+         <FaqForm open={addDialog.value} onClose={addDialog.onFalse} onSuccess={() => {addDialog.onFalse(); fetchData()}} />
       </>
    );
 }

@@ -12,6 +12,7 @@ import useSettingStore from "src/stores/setting";
 
 import { toast } from "src/components/snackbar";
 import { Form, Field } from "src/components/hook-form";
+import { useRouter } from "src/routes/hooks";
 
 export const SettingGroupSchema = z.object({
    name: z.string().min(1, "Name is required"),
@@ -28,6 +29,7 @@ type Props = {
 
 export default function CUSettingGroupForm({ defaultValues, onSubmit }: Props) {
 
+   const router = useRouter()
    const groupStore = useSettingStore();
    const { addGroup } = groupStore;
 
@@ -51,6 +53,7 @@ export default function CUSettingGroupForm({ defaultValues, onSubmit }: Props) {
          const add = await addGroup({data})
          if (add.success){
             toast.success("Setting group saved successfully!");
+            router.refresh()
          }else{
             toast.error("Setting group failed to save! Error : "+add.message);
          }
