@@ -27,7 +27,7 @@ var (
 		".tiff": true, ".svg": true, ".pdf": true,
 		".docx": true, ".ppt": true, ".pptx": true,
 		".doc": true, ".xlsx": true, ".csv": true,
-		".xls": true, ".txt": true,
+		".xls": true, ".txt": true, ".avif": true,
 	}
 )
 
