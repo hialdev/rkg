@@ -82,7 +82,7 @@ const TestiImageSlider: React.FC<TestiImageSliderProps> = ({
    }
 
    return (
-      <div className="w-full">
+      <div className="w-full md:aspect-3/4 max-w-[100em] md:max-w-[15em]">
          {/* Main slider - no arrows, portrait ratio, autoplay */}
          <Swiper
             modules={[Autoplay]}
@@ -93,7 +93,7 @@ const TestiImageSlider: React.FC<TestiImageSliderProps> = ({
                disableOnInteraction: false,
             }}
             loop={true}
-            className="w-full aspect-[3/4] max-h-[15em] md:max-h-[17em] lg:max-h-[20em]"
+            className="w-full aspect-3/4 max-h-[15em] md:max-h-[17em] lg:max-h-[20em]"
          >
             {images.map((image, index) => (
                <SwiperSlide key={index} className="!flex !items-center !justify-center">
@@ -106,7 +106,7 @@ const TestiImageSlider: React.FC<TestiImageSliderProps> = ({
                         alt={
                            altTexts[index] || `Testimonial image ${index + 1}`
                         }
-                        className="block aspect-[3/4] rounded-lg object-cover w-full h-full"
+                        className="block aspect-3/4 rounded-lg object-cover w-full h-full"
                      />
                   </div>
                </SwiperSlide>

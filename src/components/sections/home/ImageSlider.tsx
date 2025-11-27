@@ -6,7 +6,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 
 type ImageSliderProps = {
-   images: { path: string; alt: string }[];
+   images: string[];
    height?: number | string;
    autoplayDelay?: number;
    className?: string;
@@ -40,8 +40,8 @@ export default function ImageSlider({
                <SwiperSlide key={index}>
                   <Box
                      component="img"
-                     src={img.path}
-                     alt={img.alt}
+                     src={import.meta.env.PUBLIC_API_URL+'/'+img}
+                     alt={`Image Heroes ke `+index}
                      sx={{
                         width: "100%",
                         height,

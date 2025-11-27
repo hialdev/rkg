@@ -1,14 +1,6 @@
 import OfflineIcon from "../OfflineIcon";
 import { formatDate } from "../../utils/parses/date";
-
-interface Event {
-   id: string | number;
-   title: string;
-   excerpt: string;
-   company: string;
-   created_at: string;
-   image: string;
-}
+import type { Event } from "../../fetchers";
 
 interface EventCardProps {
    event: Event;
@@ -19,7 +11,7 @@ export default function EventCard({ event }: EventCardProps) {
       <div>
          <div className="relative h-screen md:aspect-video md:h-auto overflow-hidden">
             <img
-               src={event.image}
+               src={import.meta.env.PUBLIC_API_URL+'/'+event.image}
                alt={event.title + " Image"}
                width={1280}
                height={720}
@@ -32,12 +24,12 @@ export default function EventCard({ event }: EventCardProps) {
                   </div>
                   <div className="pb-4">
                      <h3 className="text-2xl font-medium">{event.title}</h3>
-                     <p className="text-sm mt-1">{event.excerpt}</p>
+                     <p className="text-sm mt-1">{event.description}</p>
                   </div>
                   <hr className="w-20" />
                   <div className="flex items-center gap-2 mt-2">
                      <OfflineIcon name="company" size={20} />
-                     <div className="font-medium leading-0 mt-1">{event.company}</div>
+                     <div className="font-medium leading-0 mt-1">{event.client}</div>
                   </div>
                </div>
             </div>

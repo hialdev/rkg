@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -8,18 +8,51 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TextField, Button, Box, Typography } from "@mui/material";
 import dayjs, { type Dayjs } from "dayjs";
 import { useLocale } from "../../contexts/LocaleContext";
+import { getSetting, type Trip } from "../../fetchers";
 
-const PrivateTripBook = () => {
+interface Props {
+   tripData? : Trip;
+}
+const PrivateTripBook = ({tripData} : Props) => {
    const { translations } = useLocale();
-   
+   const [whatsapp, setWhatsapp] = useState("6289671052050");
+
+   useEffect(() => {
+      async () => {
+         const res = await getSetting("com.whatsapp");
+         setWhatsapp(
+            res.data.data.set_value ? res.data.data.set_value : "6289671052050"
+         );
+      };
+   }, []);
+
    // Define the Zod schema for form validation
    const schema = z.object({
-      startDate: z.string().min(1, translations.validation?.start_date_required || "Start date is required"),
-      endDate: z.string().min(1, translations.validation?.end_date_required || "End date is required"),
+      startDate: z
+         .string()
+         .min(
+            1,
+            translations.validation?.start_date_required ||
+               "Start date is required"
+         ),
+      endDate: z
+         .string()
+         .min(
+            1,
+            translations.validation?.end_date_required || "End date is required"
+         ),
       message: z
          .string()
-         .min(10, translations.validation?.message_min_length || "Message must be at least 10 characters")
-         .max(500, translations.validation?.message_max_length || "Message must not exceed 500 characters"),
+         .min(
+            10,
+            translations.validation?.message_min_length ||
+               "Message must be at least 10 characters"
+         )
+         .max(
+            500,
+            translations.validation?.message_max_length ||
+               "Message must not exceed 500 characters"
+         ),
    });
 
    type FormData = z.infer<typeof schema>;
@@ -39,6 +72,24 @@ const PrivateTripBook = () => {
    ]);
 
    const onSubmit = (data: FormData) => {
+      const sendMessage = () => {
+         const message = `
+         Hello, I'm interested for take this ${tripData?.title} Trip, !
+
+         Start date : ${data.startDate}
+         End date : ${data.endDate}
+         
+         Link:
+         ${window.location.href}
+               `.trim();
+
+         const encodedMessage = encodeURIComponent(message);
+         const whatsappUrl = `https://wa.me/${whatsapp}?text=${encodedMessage}`;
+
+         window.open(whatsappUrl, "_blank");
+      };
+
+      sendMessage();
       console.log(data);
    };
 
@@ -62,7 +113,7 @@ const PrivateTripBook = () => {
             <Box className="flex flex-col sm:flex-row gap-4 mb-4">
                <Box className="w-full sm:w-1/2">
                   <DatePicker
-                     sx={{width:"100%"}}
+                     sx={{ width: "100%" }}
                      label={translations.label.start_date}
                      value={dateRange[0]}
                      onChange={(newValue) => {
@@ -91,7 +142,7 @@ const PrivateTripBook = () => {
                </Box>
                <Box className="w-full sm:w-1/2">
                   <DatePicker
-                     sx={{width:"100%"}}
+                     sx={{ width: "100%" }}
                      label={translations.label.end_date}
                      value={dateRange[1]}
                      onChange={(newValue) => {
@@ -132,9 +183,7 @@ const PrivateTripBook = () => {
                sx={{ mb: 2 }}
             />
 
-            <button
-               className="bg-linear-to-tl from-yellow-40 via-yellow-600 to-orange-300 text-white font-medium py-2 px-6 rounded-full hover:shadow-lg hover:scale-105 cursor-pointer"
-            >
+            <button className="bg-linear-to-tl from-yellow-40 via-yellow-600 to-orange-300 text-white font-medium py-2 px-6 rounded-full hover:shadow-lg hover:scale-105 cursor-pointer">
                {translations.contact.send}
             </button>
          </Box>

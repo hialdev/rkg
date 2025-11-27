@@ -23,6 +23,7 @@
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "astro": "^5.14.7",
+    "axios": "^1.13.2",
     "dayjs": "^1.11.19",
     "nanostores": "^1.0.1",
     "react": "^19.2.0",

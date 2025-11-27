@@ -7,9 +7,10 @@ import PrivateTripBook from "../../forms/PrivateTripBook";
 import OpenTripBook from "../../forms/OpenTripBook";
 import TripSections from "./TripSection";
 import { Icon } from "@iconify-icon/react";
+import type { Trip } from "../../../fetchers";
 
 interface LocaleDetailTripProps {
-   tripData: any;
+   tripData: Trip;
 }
 
 const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
@@ -31,20 +32,20 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
             <div className="container mx-auto px-4 py-8">
                <div>
                   <GalleryProgressBar
-                     images={tripData.images.map((image: any) => image.path)}
-                     altTexts={tripData.images.map((image: any) => image.alt)}
+                     images={[tripData.image ? import.meta.env.PUBLIC_API_URL+'/'+tripData.image : ""]}
+                     altTexts={[tripData.title ?? 'Trip Image']}
                   />
                </div>
                <div className="grid grid-cols-13 mt-6 gap-y-10 md:gap-5">
                   <div className="col-span-13 md:col-span-7">
                      <div
                         className={`${"p-2 px-4 text-white font-medium text-sm inline-flex rounded-full mb-3"} ${
-                           tripData.type == "open-trip"
+                           tripData?.type == "open-trip"
                               ? "bg-linear-to-bl from-emerald-300 to-cyan-700"
                               : "bg-linear-to-tl from-yellow-40 via-yellow-600 to-orange-300"
                         }`}
                      >
-                        {tripData.type == "open-trip"
+                        {tripData?.type == "open-trip"
                            ? translations.label.open_trip
                            : translations.label.private_trip}
                      </div>
@@ -78,7 +79,7 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                            />
                            <div>
                               <h4 className="font-medium">Season Terbaik</h4>
-                              <div className="">{tripData.best_season}</div>
+                              <div className="">{tripData?.best_season ?? 'All'}</div>
                            </div>
                         </div>
                         <div className="flex items-center gap-3 p-3 px-6 rounded-full bg-stone-100">
@@ -107,7 +108,7 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                   </div>
 
                   <div className="col-span-13 md:col-span-6">
-                     <PrivateTripBook />
+                     <PrivateTripBook tripData={tripData} />
                   </div>
                </div>
 
@@ -117,7 +118,7 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                   </h2>
                   <div
                      className="prose prose-stone mt-2"
-                     dangerouslySetInnerHTML={{ __html: tripData.content }}
+                     dangerouslySetInnerHTML={{ __html: tripData.content ?? '' }}
                   />
                </section>
 
@@ -129,12 +130,8 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                   <div className="col-span-6 lg:col-span-3">
                      <div className="md:sticky md:top-10">
                         <GalleryProgressBar
-                           images={tripData.images.map(
-                              (image: any) => image.path
-                           )}
-                           altTexts={tripData.images.map(
-                              (image: any) => image.alt
-                           )}
+                           images={[tripData.image ? import.meta.env.PUBLIC_API_URL+'/'+tripData.image : '']}
+                           altTexts={[tripData.title ?? "Image Trip" ]}
                         />
                      </div>
                   </div>
@@ -187,7 +184,7 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                                        Season Terbaik
                                     </h4>
                                     <div className="">
-                                       {tripData.best_season}
+                                       {tripData.best_season ?? "All"}
                                     </div>
                                  </div>
                               </div>
@@ -229,7 +226,7 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                   </h2>
                   <div
                      className="prose prose-stone mt-2"
-                     dangerouslySetInnerHTML={{ __html: tripData.content }}
+                     dangerouslySetInnerHTML={{ __html: tripData.content ?? "" }}
                   />
                </section>
 

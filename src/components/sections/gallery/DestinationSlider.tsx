@@ -72,7 +72,7 @@ const DestinationSlider: React.FC<DestinationSliderProps> = ({
                      </div>
                      <div className="">
                         <img
-                           src={destination.image}
+                           src={destination.image ? import.meta.env.PUBLIC_API_URL+'/'+destination.image : ''}
                            alt={destination.title}
                            className="aspect-video rounded-xl w-full object-cover"
                         />
@@ -114,7 +114,7 @@ const DestinationSlider: React.FC<DestinationSliderProps> = ({
                   <div className="flex flex-col md:flex-row gap-5 items-center">
                      <div className="">
                         <img
-                           src={selectedDestination.image}
+                           src={selectedDestination.image ? import.meta.env.PUBLIC_API_URL+'/'+selectedDestination.image : ''}
                            alt={selectedDestination.title}
                            className="w-full rounded-2xl mt-4 object-cover"
                         />

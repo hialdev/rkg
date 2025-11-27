@@ -1,16 +1,42 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocale } from "../../contexts/LocaleContext";
 import OfflineIcon from "../OfflineIcon";
 import { cities, countries, tripsData, type openTrips } from "../../mock";
+import { getSetting, type Trip } from "../../fetchers";
 
 interface OpenTripProps {
-   trip: (typeof tripsData)[0];
+   trip: Trip;
 }
 
 const LocaleOpenTrip: React.FC<OpenTripProps> = ({ trip }) => {
    const { translations } = useLocale();
-   const city = cities.find((c) => c.id === trip.city_id);
-   const country = countries.find((c) => c.id === city?.country_id);
+   const [whatsapp, setWhatsapp] = useState("6289671052050");
+
+   useEffect(() => {
+      async () => {
+         const res = await getSetting("com.whatsapp");
+         setWhatsapp(
+            res.data.data.set_value ? res.data.data.set_value : "6289671052050"
+         );
+      };
+   }, []);
+
+   const sendMessage = () => {
+      const message = `
+      I'm interested for This Trip !📩
+
+      Title: ${trip.title}
+      Location: ${trip.location}
+      
+      Link:
+      ${window.location.href+'trips/'+trip.slug}
+            `.trim();
+
+      const encodedMessage = encodeURIComponent(message);
+      const whatsappUrl = `https://wa.me/${whatsapp}?text=${encodedMessage}`;
+
+      window.open(whatsappUrl, "_blank");
+   };
 
    return (
       <div className="relative rounded-xl overflow-hidden">
@@ -24,23 +50,34 @@ const LocaleOpenTrip: React.FC<OpenTripProps> = ({ trip }) => {
             >
                {trip.type == "open-trip" ? "Open Trip" : "Private Trip"}
             </div>
-            <div className=" p-2 px-4 bg-emerald-600 text-white font-medium text-sm">
+            {/* <div className=" p-2 px-4 bg-emerald-600 text-white font-medium text-sm">
                {translations.label.best}{" "}
-               {/* Using first service item title as "Best Seller" */}
-            </div>
+            </div> */}
          </div>
          <img
-            src={trip.image.path}
-            alt={trip.image.alt}
+            src={
+               import.meta.env.PUBLIC_API_URL
+                  ? import.meta.env.PUBLIC_API_URL + "/" + trip.image
+                  : ""
+            }
+            alt={trip.title + " image"}
             width={426}
             height={240}
-            className="aspect-video rounded-xl w-full"
+            className="aspect-video object-cover rounded-xl w-full"
          />
 
-         <div className="py-4 cursor-pointer" onClick={() => window.location.href = `/trips/${trip.slug}`}>
-            <h2 className="font-medium text-lg">{trip.title}</h2>
+         <div className="py-4 cursor-pointer">
+            <h2
+               onClick={() => (window.location.href = `/trips/${trip.slug}`)}
+               className="font-medium text-lg"
+            >
+               {trip.title}
+            </h2>
 
-            <div className="flex items-center justify-between pt-2 pb-5 border-b">
+            <div
+               onClick={() => (window.location.href = `/trips/${trip.slug}`)}
+               className="flex items-center justify-between pt-2 pb-5 border-b"
+            >
                <div>
                   <div className="text-sm text-stone-400">
                      {translations.label.destination}
@@ -49,7 +86,7 @@ const LocaleOpenTrip: React.FC<OpenTripProps> = ({ trip }) => {
                   <div className="flex mt-1 items-center gap-2">
                      <OfflineIcon name="map" />
                      <div className="text-stone-800">
-                        {city?.name}, {country?.name}
+                        {trip.location}, {trip.country}
                      </div>
                   </div>
                </div>
@@ -70,12 +107,14 @@ const LocaleOpenTrip: React.FC<OpenTripProps> = ({ trip }) => {
                   <div className="fs-6">{translations.label.start_from}</div>{" "}
                   {/* Using contact send as "Start From" */}
                   <div className="text-xl font-medium">
-                     Rp{trip.price.toLocaleString("id-ID")}
+                     Rp{trip.price ? trip.price.toLocaleString("id-ID") : "-"}
                   </div>
                </div>
-               <button className="bg-red-700 hover:shadow-lg hover:bg-orange-600 text-white cursor-pointer p-2 px-4 rounded-full">
+               <button
+                  onClick={sendMessage}
+                  className="bg-red-700 hover:shadow-lg hover:bg-orange-600 text-white cursor-pointer p-2 px-4 rounded-full"
+               >
                   {translations.contact.send}{" "}
-                  {/* Using contact send as "Book Now" */}
                </button>
             </div>
          </div>

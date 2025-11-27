@@ -5,12 +5,11 @@ import { Navigation, FreeMode } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/free-mode";
+import { getGalleries } from "../../../fetchers";
 
 type Item = {
-   id: string;
-   src: string;
+   image: string;
    title?: string;
-   type?: 'image' | 'video'; // Add type to distinguish between image and video
 };
 
 type Props = {
@@ -20,10 +19,8 @@ type Props = {
 };
 
 const DEFAULT_ITEMS: Item[] = new Array(6).fill(0).map((_, i) => ({
-   id: String(i + 1),
-   src: `https://picsum.photos/seed/${i + 1}/1600/900`,
-   title: `${String(i + 1).padStart(3, '0')}`, // Format as 001, 002, etc.
-   type: 'image',
+   image: `https://picsum.photos/seed/${i + 1}/1600/900`,
+   title: `${String(i + 1).padStart(3, "0")}`, // Format as 001, 002, etc.
 }));
 
 export default function SplitWidthSlider({
@@ -42,42 +39,61 @@ export default function SplitWidthSlider({
    useEffect(() => {
       const el = containerRef.current;
       if (!el) return;
-      
+
       const checkScreenSize = () => {
          setIsMobile(window.innerWidth < 768); // md breakpoint
       };
-      
+
       checkScreenSize();
-      
+
       const resize = () => {
          setContainerWidth(el.clientWidth);
          checkScreenSize();
       };
-      
+
       resize();
       const ro = new ResizeObserver(resize);
       ro.observe(el);
-      window.addEventListener('resize', checkScreenSize);
-      
+      window.addEventListener("resize", checkScreenSize);
+
       return () => {
          ro.disconnect();
-         window.removeEventListener('resize', checkScreenSize);
+         window.removeEventListener("resize", checkScreenSize);
       };
    }, []);
 
    // For mobile view, we don't use hover effects and show regular slider
    if (isMobile) {
       return (
-         <Box ref={containerRef} sx={{ width: "100%", height }} className="relative">
+         <Box
+            ref={containerRef}
+            sx={{ width: "100%", height }}
+            className="relative"
+         >
             <button
                ref={prevRef}
                type="button"
                aria-label="Previous"
                className="absolute left-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white text-black focus:outline-none shadow-lg hover:shadow-xl transition-shadow"
-               style={{ border: "none", WebkitTapHighlightColor: "transparent" }}
+               style={{
+                  border: "none",
+                  WebkitTapHighlightColor: "transparent",
+               }}
             >
-               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+               <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+               >
+                  <path
+                     d="M15 18L9 12L15 6"
+                     stroke="currentColor"
+                     strokeWidth="2"
+                     strokeLinecap="round"
+                     strokeLinejoin="round"
+                  />
                </svg>
             </button>
 
@@ -86,10 +102,25 @@ export default function SplitWidthSlider({
                type="button"
                aria-label="Next"
                className="absolute right-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white text-black focus:outline-none shadow-lg hover:shadow-xl transition-shadow"
-               style={{ border: "none", WebkitTapHighlightColor: "transparent" }}
+               style={{
+                  border: "none",
+                  WebkitTapHighlightColor: "transparent",
+               }}
             >
-               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+               <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+               >
+                  <path
+                     d="M9 18L15 12L9 6"
+                     stroke="currentColor"
+                     strokeWidth="2"
+                     strokeLinecap="round"
+                     strokeLinejoin="round"
+                  />
                </svg>
             </button>
 
@@ -107,7 +138,7 @@ export default function SplitWidthSlider({
             >
                {items.map((item, idx) => (
                   <SwiperSlide
-                     key={item.id}
+                     key={idx}
                      className="!w-auto"
                      style={{
                         height: "100%",
@@ -127,14 +158,17 @@ export default function SplitWidthSlider({
                         <div
                            className={`w-full h-full bg-center bg-cover transition-all duration-300`}
                            style={{
-                              backgroundImage: `url(${item.src})`,
+                              backgroundImage: `url(${import.meta.env.PUBLIC_API_URL+'/'+item.image})`,
                               aspectRatio: "4 / 3", // Default aspect ratio for mobile
                               display: "block",
                            }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                         <div className="absolute left-3 bottom-3 text-white">
-                           <Typography variant="subtitle2" sx={{ color: "#fff", fontWeight: "bold" }}>
+                           <Typography
+                              variant="subtitle2"
+                              sx={{ color: "#fff", fontWeight: "bold" }}
+                           >
                               {item.title}
                            </Typography>
                         </div>
@@ -147,7 +181,8 @@ export default function SplitWidthSlider({
    }
 
    // For desktop view, we use the split width functionality
-   const baseWidth = containerWidth > 0 ? Math.max((containerWidth - gap * 5) / 6, 80) : 120; // 6 items
+   const baseWidth =
+      containerWidth > 0 ? Math.max((containerWidth - gap * 5) / 6, 80) : 120; // 6 items
    const shrinkWidth = 64; // approximately 4em
 
    const slideWidthStyle = (index: number) => {
@@ -158,7 +193,7 @@ export default function SplitWidthSlider({
          // Calculate width based on 16:9 aspect ratio using container height
          const calculatedWidth = height * (16 / 9);
          // Ensure the expanded width doesn't exceed available space
-         const availableSpace = containerWidth - (5 * shrinkWidth) - (5 * gap);
+         const availableSpace = containerWidth - 5 * shrinkWidth - 5 * gap;
          const finalWidth = Math.min(calculatedWidth, availableSpace);
          return { width: `${finalWidth}px` };
       }
@@ -166,7 +201,11 @@ export default function SplitWidthSlider({
    };
 
    return (
-      <Box ref={containerRef} sx={{ width: "100%", height }} className="relative">
+      <Box
+         ref={containerRef}
+         sx={{ width: "100%", height }}
+         className="relative"
+      >
          <button
             ref={prevRef}
             type="button"
@@ -174,8 +213,20 @@ export default function SplitWidthSlider({
             className="absolute left-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white text-black focus:outline-none shadow-lg hover:shadow-xl transition-shadow"
             style={{ border: "none", WebkitTapHighlightColor: "transparent" }}
          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-               <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <svg
+               width="18"
+               height="18"
+               viewBox="0 0 24 24"
+               fill="none"
+               xmlns="http://www.w3.org/2000/svg"
+            >
+               <path
+                  d="M15 18L9 12L15 6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+               />
             </svg>
          </button>
 
@@ -186,8 +237,20 @@ export default function SplitWidthSlider({
             className="absolute right-2 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white text-black focus:outline-none shadow-lg hover:shadow-xl transition-shadow"
             style={{ border: "none", WebkitTapHighlightColor: "transparent" }}
          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-               <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <svg
+               width="18"
+               height="18"
+               viewBox="0 0 24 24"
+               fill="none"
+               xmlns="http://www.w3.org/2000/svg"
+            >
+               <path
+                  d="M9 18L15 12L9 6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+               />
             </svg>
          </button>
 
@@ -205,7 +268,7 @@ export default function SplitWidthSlider({
          >
             {items.map((item, idx) => (
                <SwiperSlide
-                  key={item.id}
+                  key={idx}
                   style={{
                      ...slideWidthStyle(idx),
                      height: "100%",
@@ -227,19 +290,24 @@ export default function SplitWidthSlider({
                      <div
                         className={`w-full h-full bg-center bg-cover transition-all duration-300`}
                         style={{
-                           backgroundImage: `url(${item.src})`,
+                           backgroundImage: `url(${import.meta.env.PUBLIC_API_URL+'/'+item.image})`,
                            aspectRatio: hovered === idx ? "16 / 9" : undefined,
                            display: "block",
                         }}
                      />
                      <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300">
                         <div className="p-5 h-full flex flex-col items-center justify-center">
-                           <div className="font-medium text-center text-2xl text-white">Title of image</div>
+                           <div className="font-medium text-center text-2xl text-white">
+                              {item.title}
+                           </div>
                         </div>
                      </div>
                      <div className="absolute left-3 bottom-3 text-white z-10">
-                        <Typography variant="subtitle2" sx={{ color: "#fff", fontWeight: "bold" }}>
-                           {item.title}
+                        <Typography
+                           variant="subtitle2"
+                           sx={{ color: "#fff", fontWeight: "bold" }}
+                        >
+                           00{idx+1}
                         </Typography>
                      </div>
                   </Paper>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocale } from "../../../contexts/LocaleContext";
 import { imageLists, openTrips, tripsData } from "../../../mock/index";
 import LocaleOpenTrip from "../../cards/LocaleOpenTrip";
@@ -7,19 +7,111 @@ import ImageSlider from "./ImageSlider";
 import EventSlider from "./EventSlider";
 import TestimonialBox from "./TestimonialBox";
 import { Icon } from "@iconify-icon/react";
+import {
+   getClients,
+   getEvents,
+   getEventTypes,
+   getSetting,
+   getTeams,
+   getTestimonials,
+   getTrips,
+   type Client,
+   type Event,
+   type EventType,
+   type Setting,
+   type Team,
+   type Testimonial,
+   type Trip,
+} from "../../../fetchers";
+import TestimonialCard from "../../cards/TestimonialCard";
 
 interface LocaleHomeContentProps {
    isFloating?: boolean;
 }
 
+interface DataHomeType {
+   image_heroes: string[];
+   selected_trips: Trip[];
+   private_trips: Trip[];
+   events: Event[];
+   teams: Team[];
+   clients: Client[];
+}
 const LocaleHomeContent: React.FC<LocaleHomeContentProps> = ({
    isFloating = true,
 }) => {
    const { translations } = useLocale();
+   const [dataHome, setDataHome] = useState<DataHomeType | null>(null);
+   //-----------------------------------------------------------------
 
-   const isOdd = tripsData.length % 2 !== 0;
-   const firstRow = isOdd ? tripsData.slice(0, 2) : [];
-   const restRows = isOdd ? tripsData.slice(2) : tripsData;
+   const fetchHome = async () => {
+      try {
+         const resHero = await getSetting("hero.images");
+         const heroSetting = resHero.data.data;
+         const imageHeroes = JSON.parse(heroSetting.set_value || "[]");
+
+         const resTrips = await getTrips();
+         const trips = resTrips.data.data;
+
+         const privTrips = Array.from(
+            trips
+               .filter((t) => t.type === "private-trip")
+               .reduce((map, trip) => {
+                  const key = `${trip.location}-${trip.country}`;
+
+                  if (!map.has(key)) {
+                     map.set(key, {
+                        location: trip.location,
+                        country: trip.country,
+                        image: trip.image, // ambil dari item pertama
+                     });
+                  }
+
+                  return map;
+               }, new Map())
+               .values()
+         );
+
+         const resEvents = await getEvents();
+         const eventsData = resEvents.data.data;
+
+         const resTestimonials = await getTestimonials();
+         const testimonialsData = resTestimonials.data.data;
+
+         const resEventTypes = await getEventTypes();
+         const eventTypesData = resEventTypes.data.data;
+
+         const teamsData = await getTeams();
+
+         const clientsData = await getClients();
+
+         const responseDataHome = {
+            image_heroes: imageHeroes,
+            selected_trips: trips.slice(0, 5),
+            private_trips: privTrips,
+            events: eventsData,
+            event_types: eventTypesData,
+            teams: teamsData.data.data,
+            clients: clientsData.data.data,
+         };
+
+         setDataHome(responseDataHome);
+      } catch (error) {
+         console.error("Failed to fetch home apis :", error);
+      }
+   };
+
+   //-----------------------------------------------------------------
+   useEffect(() => {
+      fetchHome();
+   }, []);
+
+   //-----------------------------------------------------------------
+   const isOdd = dataHome && dataHome?.private_trips.length % 2 !== 0;
+   const firstRow = isOdd ? dataHome?.private_trips.slice(0, 2) : [];
+   const restRows = isOdd
+      ? dataHome?.private_trips.slice(2)
+      : dataHome?.private_trips;
 
    return (
       <>
@@ -27,7 +119,7 @@ const LocaleHomeContent: React.FC<LocaleHomeContentProps> = ({
          <section className="relative h-screen w-full flex-col items-center justify-center py-20 px-3 text-white overflow-hidden">
             {/* Background utama */}
             <div className="absolute inset-0">
-               <ImageSlider images={imageLists} />
+               <ImageSlider images={dataHome ? dataHome?.image_heroes : []} />
 
                {/* Overlay gradasi hitam dari atas */}
                <div className="absolute z-10 inset-0 bg-linear-to-b from-black/70 via-transparent to-black/70"></div>
@@ -44,7 +136,7 @@ const LocaleHomeContent: React.FC<LocaleHomeContentProps> = ({
                {translations.nav.services}
             </h2>
             <div className="grid grid-cols-12 gap-5">
-               {tripsData.map((trip, index) => (
+               {dataHome?.selected_trips.map((trip, index) => (
                   <div
                      key={index}
                      className="col-span-12 sm:col-span-6 md:col-span-4"
@@ -62,29 +154,29 @@ const LocaleHomeContent: React.FC<LocaleHomeContentProps> = ({
 
             <div className="space-y-5">
                {isOdd && (
-                  <div className="grid gap-5 sm:grid-cols-2">
+                  <div className="grid gap-5 sm:grid-cols-1 md:grid-cols-2">
                      {firstRow.map((trip, index) => (
                         <div
                            key={`first-${index}`}
                            className="group relative rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
                         >
                            <img
-                              src={trip.image.path}
-                              alt={trip.title}
+                              src={
+                                 import.meta.env.PUBLIC_API_URL +
+                                 "/" +
+                                 trip?.image
+                              }
+                              alt={trip.location}
                               className="w-full h-full object-cover aspect-[16/9]"
                            />
                            <div className="absolute inset-0 bg-black/40 hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
                               <h3 className="text-white text-lg font-medium text-center">
-                                 {trip.title}
+                                 {trip.location}
                               </h3>
                            </div>
                            <div className="hidden group-hover:flex absolute flex-col justify-center items-center inset-0 gap-5 bg-red-800 top-30 p-5">
-                              <div className="text-white text-center text-sm line-clamp-5">
-                                 {trip.description ||
-                                    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus voluptate modi obcaecati alias facilis ipsam doloremque fuga commodi sint"}
-                              </div>
                               <a
-                                 href=""
+                                 href={`/search?locations=`+trip.location}
                                  className="px-4 py-2 border-white border inline-flex text-white hover:bg-red-950 hover:border-red-950 hover:text-red-100 rounded-full items-center gap-3"
                               >
                                  {translations.cta?.seeDetail || "See Detail"}
@@ -98,39 +190,42 @@ const LocaleHomeContent: React.FC<LocaleHomeContentProps> = ({
 
                <div
                   className={`grid gap-6 ${
-                     isOdd ? "sm:grid-cols-6 md:grid-cols-3" : "sm:grid-cols-6 lg:grid-cols-3"
+                     isOdd
+                        ? "sm:grid-cols-6 md:grid-cols-3"
+                        : "sm:grid-cols-6 lg:grid-cols-3"
                   }`}
                >
-                  {restRows.map((trip, index) => (
-                     <div
-                        key={`rest-${index}`}
-                        className="group relative rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
-                     >
-                        <img
-                           src={trip.image.path}
-                           alt={trip.title}
-                           className="w-full h-full object-cover aspect-[16/9]"
-                        />
-                        <div className="absolute inset-0 bg-black/40 hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
-                           <h3 className="text-white text-lg font-medium text-center">
-                              {trip.title}
-                           </h3>
-                        </div>
-                        <div className="hidden group-hover:flex flex-col absolute inset-0 bg-red-800 top-10 p-5 items-center justify-center">
-                           <div className="text-white text-center mb-4 text-sm line-clamp-3">
-                              {trip.description ||
-                                 "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus voluptate modi obcaecati alias facilis ipsam doloremque fuga commodi sint"}
+                  {restRows &&
+                     restRows.map((trip, index) => (
+                        <div
+                           key={`rest-${index}`}
+                           className="group relative rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
+                        >
+                           <img
+                              src={
+                                 import.meta.env.PUBLIC_API_URL +
+                                 "/" +
+                                 trip?.image
+                              }
+                              alt={trip.location}
+                              className="w-full h-full object-cover aspect-[16/9]"
+                           />
+                           <div className="absolute inset-0 bg-black/40 hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+                              <h3 className="text-white text-lg font-medium text-center">
+                                 {trip.location}
+                              </h3>
                            </div>
-                           <a
-                              href=""
-                              className="px-4 py-2 border-white border inline-flex text-white hover:bg-red-950 hover:border-red-950 hover:text-red-100 rounded-full items-center gap-3"
-                           >
-                              {translations.cta?.seeDetail || "See Detail"}
-                              <Icon icon="mdi:arrow-right" />
-                           </a>
+                           <div className="hidden group-hover:flex flex-col absolute inset-0 bg-red-800 top-10 p-5 items-center justify-center">
+                              <a
+                                 href={`/search?locations=`+trip.location}
+                                 className="px-4 py-2 border-white border inline-flex text-white hover:bg-red-950 hover:border-red-950 hover:text-red-100 rounded-full items-center gap-3"
+                              >
+                                 {translations.cta?.seeDetail || "See Detail"}
+                                 <Icon icon="mdi:arrow-right" />
+                              </a>
+                           </div>
                         </div>
-                     </div>
-                  ))}
+                     ))}
                </div>
             </div>
          </section>
@@ -149,10 +244,9 @@ const LocaleHomeContent: React.FC<LocaleHomeContentProps> = ({
                <h2 className="text-5xl font-medium mb-10">
                   {translations.testimonials?.title || "Testimonials"}
                </h2>
-               <TestimonialBox />
+               <TestimonialCard />
             </div>
          </section>
-
       </>
    );
 };

@@ -2,25 +2,31 @@
 import type { GetStaticPaths } from "astro";
 import Layout from "../../layouts/Layout.astro";
 import type { PageMetaType } from "../../types/page";
-import { tripsData } from "../../mock";
 import { Icon } from "@iconify-icon/react";
 import LocaleDetailTrip from "../../components/sections/trips/LocaleDetailTrip";
+import { getTripBySlug, getTrips, type Trip } from "../../fetchers";
 
-export const getStaticPaths: GetStaticPaths = () => {
+
+
+export const getStaticPaths: GetStaticPaths = async () => {
+   const resTrips = await getTrips()
+   const tripsData = resTrips.data.data
    return tripsData.map((trip) => ({
       params: { slug: trip.slug },
    }));
 };
 
 const { slug } = Astro.params;
-const tripData = tripsData.find((trip) => trip.slug === slug);
+const resTrip = await getTripBySlug(String(slug) ?? '')
+const tripData:Trip = resTrip.data.data[0]
 
 const metaData: PageMetaType = {
    title: `${tripData?.title} | RKG Tour & Travel`,
-   description: tripData?.content || "",
-   image: tripData?.image?.path || "/assets/rkgtour.webp",
+   description: tripData?.description || "",
+   image: tripData?.image ? import.meta.env.PUBLIC_API_URL+'/'+tripData?.image : "/assets/rkgtour.webp",
    robot: true,
 };
+
 ---
 
 <Layout pageMeta={metaData}>

@@ -1,4 +1,5 @@
-import React from "react";
+// HeroFilter.tsx
+import React, { useEffect, useMemo, useState } from "react";
 import {
    Autocomplete,
    Box,
@@ -11,66 +12,81 @@ import {
    Typography,
    type SelectChangeEvent,
 } from "@mui/material";
-import { cities, countries, tripTypes } from "../../../mock";
+import { tripTypes } from "../../../mock";
 import { Icon } from "@iconify-icon/react";
 import { useStore } from "@nanostores/react";
 import {
    tripType,
-   selectedCityIds,
+   selectedLocations, // ✅
    setTripType,
-   setSelectedCities,
+   setSelectedLocations, // ✅
 } from "../../../stores/search";
 import { useLocale } from "../../../contexts/LocaleContext";
+import { getLocations } from "../../../fetchers/webprofile";
 
 interface HeroFilterProps {
-   initialCities?: string[];
+   initialLocations?: string[]; // ✅ ganti dari initialCities
    initialTripType?: string;
 }
 
 export default function HeroFilter({
-   initialCities = [],
+   initialLocations = [], // ✅
    initialTripType = "all",
 }: HeroFilterProps) {
    const { translations } = useLocale();
    const currentTripType = useStore(tripType);
-   const currentCities = useStore(selectedCityIds);
+   const currentLocations = useStore(selectedLocations); // ✅
 
    const [value, setValue] = React.useState(currentTripType);
    const [initialized, setInitialized] = React.useState(false);
+   const [locationOptions, setLocationOptions] = useState<
+      { label: string; location: string; country: string }[]
+   >([]);
+   const [loading, setLoading] = useState(true);
 
-   React.useEffect(() => {
-      if (!initialized) {
-         let citiesFromUrl: string[] = initialCities;
+   // Fetch locations
+   useEffect(() => {
+      const fetchLocations = async () => {
+         try {
+            const res = await getLocations();
+            const apiLocations = res.data.data;
+
+            const options = apiLocations.map((loc) => ({
+               label: `${loc.location}, ${loc.country_}`,
+               location: loc.location,
+               country: loc.country_,
+            }));
+            setTripType(initialTripType)
+            setLocationOptions(options);
+         } catch (error) {
+            console.error("Failed to fetch locations:", error);
+         } finally {
+            setLoading(false);
+         }
+      };
+      fetchLocations();
+   }, []);
+
+   // Initialize from URL or props
+   useEffect(() => {
+      if (!initialized && !loading) {
+         let locationsFromUrl: string[] = initialLocations;
          let tripTypeFromUrl: string = initialTripType;
 
-         // Jika props kosong, fallback ke query string
-         if (citiesFromUrl.length === 0 && typeof window !== "undefined") {
+         if (locationsFromUrl.length === 0 && typeof window !== "undefined") {
             const params = new URLSearchParams(window.location.search);
-            citiesFromUrl =
-               params.get("cities")?.split(",").filter(Boolean) || [];
+            locationsFromUrl = params.get("cities")?.split(",").filter(Boolean) || [];
             tripTypeFromUrl = params.get("tripType") || "all";
          }
 
-         console.log("HeroFilter init:");
-         console.log("citiesFromUrl:", citiesFromUrl);
-         console.log("tripTypeFromUrl:", tripTypeFromUrl);
-
-         const numericCities = citiesFromUrl
-            .map((id) => {
-               const num = Number(id);
-               if (isNaN(num)) console.warn("Invalid city id:", id);
-               return num;
-            })
-            .filter((id) => id > 0);
-
-         setSelectedCities(numericCities);
+         setSelectedLocations(locationsFromUrl);
          setTripType(tripTypeFromUrl);
          setValue(tripTypeFromUrl);
          setInitialized(true);
       }
-   }, [initialized, initialCities, initialTripType]);
+   }, [initialized, initialLocations, initialTripType, loading]);
 
-   React.useEffect(() => {
+   useEffect(() => {
       setValue(currentTripType);
    }, [currentTripType]);
 
@@ -81,12 +97,18 @@ export default function HeroFilter({
    };
 
    const handleSearch = () => {
-      const citiesParam = selectedCityIds.get().join(",");
+      const locationsParam = selectedLocations.get().join(",");
       const tripTypeParam = tripType.get();
-      window.location.href = `/search?cities=${citiesParam}&tripType=${tripTypeParam}`;
+      window.location.href = `/search?locations=${encodeURIComponent(locationsParam)}&tripType=${tripTypeParam}`;
    };
 
-   if (!initialized) {
+   const selectedOptions = useMemo(() => {
+      return locationOptions.filter((opt) =>
+         currentLocations.includes(opt.location)
+      );
+   }, [locationOptions, currentLocations]);
+
+   if (!initialized || loading) {
       return (
          <Box className="flex flex-wrap w-full max-w-screen md:max-w-[auto] md:w-auto items-center gap-2 bg-white rounded-md md:rounded-full overflow-hidden md:px-2 ps-4 py-10 md:py-2 md:mx-20 md:my-4 shadow-sm">
             <div className="w-full md:w-[400px] h-12 bg-gray-100 rounded-full animate-pulse"></div>
@@ -98,75 +120,40 @@ export default function HeroFilter({
 
    return (
       <Box className="flex flex-wrap w-full max-w-screen md:max-w-fit md:mx-auto md:w-auto items-center gap-2 bg-white rounded-md md:rounded-full overflow-hidden md:px-2 ps-4 py-10 md:py-2 md:my-4 shadow-sm">
-         {/* AUTOCOMPLETE */}
          <Autocomplete
-            id="country-select-demo"
             sx={{ width: { xs: "100%", md: 400 }, borderRadius: 30 }}
-            options={cities.map((city) => ({
-               ...city,
-               countryName:
-                  countries.find((c) => c.id === city.country_id)?.name || "",
-            }))}
+            options={locationOptions}
             multiple
-            getOptionLabel={(option: any) =>
-               `${option.name}, ${option.countryName}`
-            }
-            filterOptions={(options, { inputValue }) => {
-               const input = inputValue.toLowerCase();
-               return options.filter(
-                  (option) =>
-                     option.name.toLowerCase().includes(input) ||
-                     option.countryName.toLowerCase().includes(input)
-               );
+            getOptionLabel={(option) => option.label}
+            isOptionEqualToValue={(option, value) => option.location === value.location}
+            value={selectedOptions}
+            onChange={(e, newValue) => {
+               setSelectedLocations(newValue.map((opt) => opt.location));
             }}
-            value={cities
-               .filter((c) => currentCities.includes(c.id))
-               .map((city) => ({
-                  ...city,
-                  countryName:
-                     countries.find((c) => c.id === city.country_id)?.name ||
-                     "",
-               }))}
-            onChange={(e, newValue) =>
-               setSelectedCities(newValue.map((c) => c.id))
-            }
-            renderOption={(props: any, option: any) => {
+            renderOption={(props, option) => {
                const { key, ...optionProps } = props;
                return (
                   <Box
                      key={key}
                      component="li"
-                     sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
                      {...optionProps}
                   >
-                     <Box>
-                        <Box className="flex items-center gap-2">
-                           <Icon icon={`solar:map-point-linear`} width={20} />
-                           <Typography
-                              typography={`body`}
-                              className="whitespace-nowrap"
-                           >
-                              {option.name}
-                           </Typography>
-                           <Typography
-                              typography={`body2`}
-                              className="whitespace-nowrap text-stone-400"
-                           >
-                              {" "}
-                              - {option.countryName}
-                           </Typography>
-                        </Box>
+                     <Box className="flex items-center gap-2">
+                        <Icon icon="solar:map-point-linear" width={20} />
+                        <Typography typography="body" className="whitespace-nowrap">
+                           {option.location}
+                        </Typography>
                         <Typography
-                           typography={`body2`}
-                           className="italic text-stone-600 py-2"
+                           typography="body2"
+                           className="whitespace-nowrap text-stone-400"
                         >
-                           {option.description}
+                           {" "}– {option.country}
                         </Typography>
                      </Box>
                   </Box>
                );
             }}
-            renderInput={(params: any) => (
+            renderInput={(params) => (
                <TextField
                   {...params}
                   label={translations.filter?.title}
@@ -183,7 +170,6 @@ export default function HeroFilter({
             )}
          />
 
-         {/* SELECT */}
          <FormControl
             variant="outlined"
             sx={{
@@ -200,9 +186,7 @@ export default function HeroFilter({
                {translations.label?.typeTrip || "Type Trip"}
             </InputLabel>
             <Select value={value} onChange={handleChange} displayEmpty>
-               <MenuItem value="all">
-                  {translations.label?.all || "All"}
-               </MenuItem>
+               <MenuItem value="all">{translations.label?.all || "All"}</MenuItem>
                {tripTypes.map((trip) => (
                   <MenuItem key={trip.name} value={trip.name}>
                      {trip.label}
@@ -215,9 +199,9 @@ export default function HeroFilter({
             variant="contained"
             color="error"
             sx={{ padding: "0", aspectRatio: "1/1", borderRadius: 99 }}
-            onClick={handleSearch} // redirect ke /search
+            onClick={handleSearch}
          >
-            <Icon icon={`solar:magnifer-line-duotone`} width={25} />
+            <Icon icon="solar:magnifer-line-duotone" width={25} />
          </Button>
       </Box>
    );

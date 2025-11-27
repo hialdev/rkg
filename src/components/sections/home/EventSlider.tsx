@@ -4,9 +4,20 @@ import "swiper/css";
 import "swiper/css/pagination";
 
 import EventCard from "../../cards/EventCard";
-import { events } from "../../../mock";
+import { useEffect, useState } from "react";
+import { getEvents, type Event } from "../../../fetchers";
 
 export default function EventSliderReact() {
+   const [events, setEvents] = useState<Event[]>([]);
+
+   const fetchEvent = async () => {
+      const resEvents = await getEvents();
+      setEvents(resEvents.data.data);
+   }
+
+   useEffect(() => {
+      fetchEvent()
+   }, [])
    return (
       <Swiper
          modules={[Autoplay, Pagination]}

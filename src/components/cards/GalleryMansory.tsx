@@ -14,10 +14,8 @@ import {
 } from "@mui/icons-material";
 
 interface GalleryItem {
-   id: number;
-   media: string;
    title?: string;
-   excerpt?: string;
+   image?: string;
    type?: "image" | "video";
 }
 
@@ -52,15 +50,15 @@ const GalleryMansory: React.FC<GalleryMansoryProps> = ({ items }) => {
          <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4">
             {items.map((item, index) => (
                <div
-                  key={item.id || index}
+                  key={index}
                   className="mb-4 break-inside-avoid group cursor-pointer"
                   onClick={() => handleOpen(index)}
                >
                   <div className="relative overflow-hidden rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
-                     {item.type === "video" ? (
+                     {item?.type === "video" ? (
                         <div className="relative aspect-square bg-gray-200 rounded-xl flex items-center justify-center">
                            <video
-                              src={item.media}
+                              src={import.meta.env.PUBLIC_API_URL+'/'+item.image}
                               className="w-full h-full object-cover rounded-xl"
                               muted
                               loop
@@ -80,7 +78,7 @@ const GalleryMansory: React.FC<GalleryMansoryProps> = ({ items }) => {
                      ) : (
                         <div className="relative">
                            <img
-                              src={item.media}
+                              src={import.meta.env.PUBLIC_API_URL+'/'+item.image}
                               alt={item.title}
                               className="w-full h-auto object-cover rounded-xl transition-transform duration-300 group-hover:scale-105"
                            />
@@ -182,14 +180,14 @@ const GalleryMansory: React.FC<GalleryMansoryProps> = ({ items }) => {
                {/* Media Content */}
                {items[activeIndex]?.type === "video" ? (
                   <video
-                     src={items[activeIndex]?.media}
+                     src={import.meta.env.PUBLIC_API_URL+'/'+items[activeIndex]?.image}
                      autoPlay
                      controls
                      className="w-full h-full object-contain max-h-[90vh]"
                   />
                ) : (
                   <img
-                     src={items[activeIndex]?.media}
+                     src={import.meta.env.PUBLIC_API_URL+'/'+items[activeIndex]?.image}
                      alt={items[activeIndex]?.title}
                      className="w-full h-full object-contain"
                   />
@@ -210,9 +208,6 @@ const GalleryMansory: React.FC<GalleryMansoryProps> = ({ items }) => {
                >
                   <Typography variant="h6" component="h3" className="font-bold">
                      {items[activeIndex]?.title}
-                  </Typography>
-                  <Typography variant="body2" className="mt-2">
-                     {items[activeIndex]?.excerpt}
                   </Typography>
                </div>
             </DialogContent>

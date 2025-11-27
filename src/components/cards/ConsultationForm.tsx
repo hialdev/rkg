@@ -11,6 +11,8 @@ import {
    FormHelperText,
    Box,
 } from "@mui/material";
+import { useEffect, useState } from "react";
+import { getSetting } from "../../fetchers";
 
 const ConsultationSchema = z.object({
    name: z.string().min(3, "Name must be at least 3 characters"),
@@ -29,7 +31,23 @@ const ConsultationSchema = z.object({
 
 type ConsultationFormData = z.infer<typeof ConsultationSchema>;
 
+const SERVICE_LABELS: Record<string, string> = {
+   general: "General",
+   "open-trip": "Open Trip",
+   "private-trip": "Private Trip",
+   "event-organizer": "Event Organizer",
+};
+
 export default function ConsultationForm() {
+   const [whatsapp, setWhatsapp] = useState("6289671052050")
+
+   useEffect(() => {
+      async () => {
+         const res = await getSetting("com.whatsapp")
+         setWhatsapp(res.data.data.set_value ? res.data.data.set_value : "6289671052050")
+      }
+   },[])
+
    const {
       register,
       handleSubmit,
@@ -50,7 +68,23 @@ export default function ConsultationForm() {
    const serviceWatch = watch("service");
 
    const onSubmit = (data: ConsultationFormData) => {
-      console.log("✅ Submitted Data:", data);
+      const { name, email, phone, service, description } = data;
+
+      const message = `
+New Consultation Request 📩
+
+Name: ${name}
+Email: ${email}
+Phone: ${phone}
+Service: ${SERVICE_LABELS[service] || service}
+Message: ${description}
+      `.trim();
+
+      const encodedMessage = encodeURIComponent(message);
+      const whatsappUrl = `https://wa.me/${whatsapp}?text=${encodedMessage}`;
+
+      // Buka di tab baru
+      window.open(whatsappUrl, "_blank");
    };
 
    return (
@@ -119,7 +153,13 @@ export default function ConsultationForm() {
 
          {/* Submit Button */}
          <div className="col-span-2 flex justify-end">
-            <Button type="submit" variant="contained" fullWidth color="error" size="large">
+            <Button
+               type="submit"
+               variant="contained"
+               fullWidth
+               color="error"
+               size="large"
+            >
                Submit
             </Button>
          </div>

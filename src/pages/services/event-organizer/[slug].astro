@@ -3,22 +3,25 @@ import type { GetStaticPaths } from "astro";
 import Layout from "../../../layouts/Layout.astro";
 import type { PageMetaType } from "../../../types/page";
 import { Icon } from "@iconify-icon/react";
-import { ctgEvents } from "../../../mock";
 import LocaleDetailEvent from "../../../components/sections/event/LocaleDetailEvent";
+import { getEventBySlug, getEvents, getEventTypeBySlug, getEventTypes } from "../../../fetchers";
 
-export const getStaticPaths: GetStaticPaths = () => {
+export const getStaticPaths: GetStaticPaths = async () => {
+   const resEvents = await getEventTypes()
+   const ctgEvents = resEvents.data.data
    return ctgEvents.map((event) => ({
       params: { slug: event.slug },
    }));
 };
 
 const { slug } = Astro.params;
-const eventData = ctgEvents.find((event) => event.slug === slug);
+const resEvent = await getEventTypeBySlug(String(slug) ?? '')
+const eventData = resEvent.data.data[0];
 
 const metaData: PageMetaType = {
    title: `${eventData?.title} | RKG Tour & Travel`,
-   description: eventData?.content || "",
-   image: eventData?.image || "/assets/rkgtour.webp",
+   description: eventData?.description || "",
+   image: eventData?.image ? import.meta.env.PUBLIC_API_URL+'/'+eventData?.image : "/assets/rkgtour.webp",
    robot: true,
 };
 ---

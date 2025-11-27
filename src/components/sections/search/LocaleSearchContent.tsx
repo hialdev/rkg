@@ -5,6 +5,7 @@ import ImageGalleryBlock from "../gallery/ImageGalleryBlock";
 import WhyUsContent from "./WhyUsContent";
 import TestimonialBox from "../home/TestimonialBox";
 import FAQBlock from "./FAQBlock";
+import TestimonialCard from "../../cards/TestimonialCard";
 
 const LocaleSearchContent: React.FC = () => {
    const [isClient, setIsClient] = useState(false);
@@ -17,9 +18,7 @@ const LocaleSearchContent: React.FC = () => {
    if (!isClient) {
       return (
          <>
-            <section className="container mx-auto py-20 px-4">
-
-            </section>
+            <section className="container mx-auto py-20 px-4"></section>
          </>
       );
    }
@@ -39,7 +38,7 @@ const LocaleSearchContent: React.FC = () => {
                <h2 className="text-5xl font-medium mb-10">
                   {translations.testimonials?.title || "Testimonials"}
                </h2>
-               <TestimonialBox />
+               <TestimonialCard />
             </div>
          </section>
 

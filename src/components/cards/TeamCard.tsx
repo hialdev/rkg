@@ -1,15 +1,16 @@
 import React from "react";
 import type { teams } from "../../mock";
+import type { Team } from "../../fetchers";
 
 interface TeamCardProps {
-   team: (typeof teams)[0];
+   team: Team;
 }
 
 const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
    return (
       <div className="relative group rounded-2xl overflow-hidden">
          <img
-            src={team.image}
+            src={import.meta.env.PUBLIC_API_URL+'/'+team.image}
             alt={`Image Team ${team.name}`}
             className="rounded-2xl bg-stone-200 grayscale group-hover:grayscale-0 object-cover aspect-[2/3] group-hover:scale-90 w-full group-hover:-rotate-6"
             width={354}
@@ -49,7 +50,7 @@ const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
                      <h4 className="font-medium text-white">{team.role}</h4>
                   </div>
                </div>
-               <div className="text-sm">{team.about}</div>
+               <div className="text-sm">{team.summary}</div>
             </div>
          </div>
       </div>

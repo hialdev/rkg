@@ -7,6 +7,7 @@ import StepEvent from "../../../components/sections/event/StepEvent";
 import { Icon } from "@iconify-icon/react";
 import ClientList from "../../../components/sections/home/ClientList";
 import FAQBlock from "../../../components/sections/search/FAQBlock";
+import { getEventPlans, getEventTypes, type EventPlan } from "../../../fetchers";
 
 const metaData: PageMetaType = {
    title: "Our Service - Event Organizer | RKG Tour & Travel",
@@ -15,6 +16,12 @@ const metaData: PageMetaType = {
    image: "/assets/rkgtour.webp",
    robot: true,
 };
+
+const resEt = await getEventTypes()
+const eventTypes = resEt.data.data
+
+const resPlan = await getEventPlans()
+const eventPlans:EventPlan[] = resPlan.data.data
 ---
 
 <Layout pageMeta={metaData}>
@@ -24,10 +31,10 @@ const metaData: PageMetaType = {
          class="container mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5"
       >
          {
-            ctgEvents.map((ctg) => (
+            eventTypes.map((ctg) => (
                <div class="flex flex-col items-center justify-start">
                   <img
-                     src="https://placehold.co/400x400"
+                     src={ctg.image ? import.meta.env.PUBLIC_API_URL+'/'+ctg.image : "https://placehold.co/400x400"}
                      alt="Image of Event Item"
                      class="block aspect-square rounded-2xl w-full object-cover"
                   />
@@ -59,11 +66,11 @@ const metaData: PageMetaType = {
          efficiently.
       </p>
       <div class="container mx-auto mt-10">
-         <StepEvent client:load events={stepEvents} />
+         <StepEvent client:load events={eventPlans} />
       </div>
    </section>
 
-   <section class="pb-20 bg-black text-white px-4">
+   <!-- <section class="pb-20 bg-black text-white px-4">
       <div class="container mx-auto">
          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             <div class="">
@@ -168,7 +175,7 @@ const metaData: PageMetaType = {
             </div>
          </div>
       </div>
-   </section>
+   </section> -->
 
    {/* Client List Section */}
    <section class="py-20 px-4">

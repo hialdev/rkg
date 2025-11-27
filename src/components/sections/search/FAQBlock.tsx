@@ -1,21 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocale } from "../../../contexts/LocaleContext";
+import { type Faq, getFaqs } from "../../../fetchers";
 
 const FAQBlock: React.FC = () => {
    const { translations } = useLocale();
    const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-   // FAQ data would come from locale-specific content
-   const faqs = [
-      {
-         question: translations.services.items[0].title,
-         answer: translations.services.items[0].description,
-      },
-      {
-         question: translations.services.items[1].title,
-         answer: translations.services.items[1].description,
-      },
-   ];
+   const [faqs, setFaqs] = useState<Faq[]>([]);
+   const fetchFaqs = async () => {
+      const res = await getFaqs();
+      setFaqs(res.data.data);
+   };
+   useEffect(() => {fetchFaqs()}, []);
 
    const toggleFAQ = (index: number) => {
       setOpenIndex(openIndex === index ? null : index);
@@ -25,14 +20,14 @@ const FAQBlock: React.FC = () => {
       <div className="space-y-4">
          {faqs.map((faq, index) => (
             <div
-               key={index}
+               key={faq.id}
                className="bg-white rounded-lg shadow-md overflow-hidden"
             >
                <button
                   className="w-full flex justify-between items-center p-6 text-left hover:bg-gray-50 transition-colors"
                   onClick={() => toggleFAQ(index)}
                >
-                  <span className="font-medium text-lg">{faq.question}</span>
+                  <span className="font-medium text-lg">{faq.title}</span>
                   <svg
                      className={`w-5 h-5 transition-transform ${
                         openIndex === index ? "rotate-180" : ""
@@ -52,7 +47,7 @@ const FAQBlock: React.FC = () => {
                </button>
                {openIndex === index && (
                   <div className="px-6 pb-6 pt-2 border-t border-gray-100">
-                     <p className="text-gray-600">{faq.answer}</p>
+                     <p className="text-gray-600">{faq.content}</p>
                   </div>
                )}
             </div>

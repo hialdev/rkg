@@ -1,17 +1,18 @@
+// stores/search.ts
 import { atom } from "nanostores";
 
-export const tripType = atom("all"); // string
-export const selectedCityIds = atom<number[]>([]); // array of city.id
+export const tripType = atom("all");
+export const selectedLocations = atom<string[]>([]); // ✅ Ganti dari selectedCityIds
 
 export function setTripType(type: string) {
    tripType.set(type);
 }
 
-export function setSelectedCities(cityIds: number[]) {
-   selectedCityIds.set(cityIds);
+export function setSelectedLocations(locations: string[]) {
+   selectedLocations.set(locations);
 }
 
 export function resetSearch() {
    tripType.set("all");
-   selectedCityIds.set([]);
+   selectedLocations.set([]);
 }

@@ -21,14 +21,13 @@ import {
    ArrowForward,
 } from "@mui/icons-material";
 
-interface TripItem {
+interface ImageItem {
    image: string;
    title: string;
-   excerpt: string;
 }
 
 interface ImageGalleryProps {
-   items: TripItem[];
+   items: ImageItem[];
 }
 
 export default function ImageGallery({ items }: ImageGalleryProps) {
@@ -77,7 +76,7 @@ export default function ImageGallery({ items }: ImageGalleryProps) {
                         onClick={() => handleOpen(index)}
                      >
                         <img
-                           src={item.image}
+                           src={import.meta.env.PUBLIC_API_URL+'/'+item.image}
                            alt={item.title}
                            className="w-full h-48 object-cover"
                         />

@@ -2,6 +2,7 @@ import TestiImageSlider from "../gallery/TestiImageSlider";
 import DestinationSlider from "../gallery/DestinationSlider";
 import FAQBlock from "../search/FAQBlock";
 import { Icon } from "@iconify-icon/react";
+import TestimonialCard from "../../cards/TestimonialCard";
 
 export default function TripSection({ tripData }: { tripData: any }) {
    return (
@@ -12,43 +13,7 @@ export default function TripSection({ tripData }: { tripData: any }) {
                   <h2 className="text-4xl font-bold text-red-600 mb-10">
                      Testimonials
                   </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5 gap-y-10 sm:gap-y-5">
-                     {tripData.testimonials.map((testi: any) => {
-                        return (
-                           <div className="flex flex-col lg:flex-row items-start md:items-center gap-5">
-                              <TestiImageSlider
-                                 images={testi.images}
-                              />
-                              <div className="">
-                                 <h6 className="text-lg font-medium">
-                                    {testi.name}
-                                 </h6>
-                                 <div className="text-stone-400 italic">
-                                    {testi.role}
-                                 </div>
-                                 <div className="flex items-center gap-1 mb-4 mt-2">
-                                    {[...Array(5)].map((_, index) => (
-                                       <Icon
-                                          icon={
-                                             index < testi.star
-                                                ? "mdi:star"
-                                                : "mdi:star-outline"
-                                          }
-                                          width={20}
-                                          className={
-                                             index < testi.star
-                                                ? "text-yellow-400"
-                                                : "text-stone-300"
-                                          }
-                                       />
-                                    ))}
-                                 </div>
-                                 <q>{testi.review}</q>
-                              </div>
-                           </div>
-                        );
-                     })}
-                  </div>
+                  <TestimonialCard />
                </section>
 
                <section className="py-10">
