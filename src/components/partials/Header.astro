@@ -23,9 +23,9 @@ const logoImage = logo ? import.meta.env.PUBLIC_API_URL+'/'+logo.data.data.set_v
       <div class="flex items-center gap-2">
          <a href="/">
             {typeof logoImage === "string" ? (
-               <img src={logoImage} alt="logo RKG" width={60} height={60} class={`w-full max-h-[60px] object-contain`} />
+               <img src={logoImage} alt="logo RKG" width={60} height={45} class={`w-full max-h-[45px] object-contain`} />
             ) : (
-               <Image src={logoImage} alt="logo RKG" width={60} height={60} class={`w-full max-h-[60px] object-contain`} />
+               <Image src={logoImage} alt="logo RKG" width={60} height={45} class={`w-full max-h-[45px] object-contain`} />
             )}
          </a>
       </div>
