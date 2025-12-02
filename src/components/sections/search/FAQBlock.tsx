@@ -47,7 +47,7 @@ const FAQBlock: React.FC = () => {
                </button>
                {openIndex === index && (
                   <div className="px-6 pb-6 pt-2 border-t border-gray-100">
-                     <p className="text-gray-600">{faq.content}</p>
+                     <div dangerouslySetInnerHTML={{ __html: faq.content ?? "" }}></div>
                   </div>
                )}
             </div>
