@@ -4,17 +4,13 @@ import Layout from "../../layouts/Layout.astro";
 import type { PageMetaType } from "../../types/page";
 import { Icon } from "@iconify-icon/react";
 import LocaleDetailTrip from "../../components/sections/trips/LocaleDetailTrip";
-import { getTripBySlug, getTrips, type Trip } from "../../fetchers";
-
-
+import { getTripBySlug, type Trip } from "../../fetchers";
 
 export const getStaticPaths: GetStaticPaths = async () => {
-   const resTrips = await getTrips()
-   const tripsData = resTrips.data.data
-   return tripsData.map((trip) => ({
-      params: { slug: trip.slug },
-   }));
+   return []
 };
+
+export const prerender = false;
 
 const { slug } = Astro.params;
 const resTrip = await getTripBySlug(String(slug) ?? '')

@@ -87,7 +87,7 @@ const LocaleHomeContent: React.FC<LocaleHomeContentProps> = ({
 
          const responseDataHome = {
             image_heroes: imageHeroes,
-            selected_trips: trips.slice(0, 5),
+            selected_trips: trips.slice(0, 6),
             private_trips: privTrips,
             events: eventsData,
             event_types: eventTypesData,

@@ -26,14 +26,31 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
       );
    }
 
+   console.log("Trip Data in LocaleDetailTrip: ", tripData);
+
+   let galleriesImages = [];
+   let parsedImages = JSON.parse(tripData?.images || "[]");
+   if (parsedImages && Array.isArray(parsedImages)) {
+      galleriesImages = parsedImages.map((img) =>
+         typeof img === "string" && img != ""
+            ? import.meta.env.PUBLIC_API_URL + "/" + img
+            : img
+      );
+   }
+   galleriesImages.push(
+      tripData.image
+         ? import.meta.env.PUBLIC_API_URL + "/" + tripData.image
+         : ""
+   );
+
+   console.log("Galleries Images: ", galleriesImages);
    return (
       <>
          {tripData.type == "private-trip" ? (
             <div className="container mx-auto px-4 py-8">
                <div>
                   <GalleryProgressBar
-                     images={[tripData.image ? import.meta.env.PUBLIC_API_URL+'/'+tripData.image : ""]}
-                     altTexts={[tripData.title ?? 'Trip Image']}
+                     images={galleriesImages}
                   />
                </div>
                <div className="grid grid-cols-13 mt-6 gap-y-10 md:gap-5">
@@ -79,7 +96,9 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                            />
                            <div>
                               <h4 className="font-medium">Season Terbaik</h4>
-                              <div className="">{tripData?.best_season ?? 'All'}</div>
+                              <div className="">
+                                 {tripData?.best_season ?? "All"}
+                              </div>
                            </div>
                         </div>
                         <div className="flex items-center gap-3 p-3 px-6 rounded-full bg-stone-100">
@@ -118,7 +137,9 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                   </h2>
                   <div
                      className="prose prose-stone mt-2"
-                     dangerouslySetInnerHTML={{ __html: tripData.content ?? '' }}
+                     dangerouslySetInnerHTML={{
+                        __html: tripData.content ?? "",
+                     }}
                   />
                </section>
 
@@ -130,8 +151,10 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                   <div className="col-span-6 lg:col-span-3">
                      <div className="md:sticky md:top-10">
                         <GalleryProgressBar
-                           images={[tripData.image ? import.meta.env.PUBLIC_API_URL+'/'+tripData.image : '']}
-                           altTexts={[tripData.title ?? "Image Trip" ]}
+                           images={galleriesImages}
+                           altTexts={galleriesImages.map((_, index) => 
+                              tripData.title ? `${tripData.title} ${index + 1}` : `Image ${index + 1}`
+                           )}
                         />
                      </div>
                   </div>
@@ -226,7 +249,9 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                   </h2>
                   <div
                      className="prose prose-stone mt-2"
-                     dangerouslySetInnerHTML={{ __html: tripData.content ?? "" }}
+                     dangerouslySetInnerHTML={{
+                        __html: tripData.content ?? "",
+                     }}
                   />
                </section>
 

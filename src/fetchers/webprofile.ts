@@ -23,6 +23,7 @@ export interface Trip extends BaseModel {
    duration?: string;
    price?: number;
    image?: string;
+   images?: string;
    min_people?: number;
    meet_point?: string;
    content?: string;

@@ -22,7 +22,7 @@ export default function TestimonialCard() {
             images.push(testi.image, ...galleries)
             let parsedImages = images.map((image) => import.meta.env.PUBLIC_API_URL+'/'+image)
             return (
-               <div className="flex flex-col lg:flex-row items-start md:items-center gap-5">
+               <div key={testi.id} className="flex flex-col lg:flex-row items-start md:items-center gap-5">
                   <TestiImageSlider images={parsedImages} />
                   <div className="">
                      <h6 className="text-lg font-medium">{testi.name}</h6>
@@ -30,6 +30,7 @@ export default function TestimonialCard() {
                      <div className="flex items-center gap-1 mb-4 mt-2">
                         {[...Array(5)].map((_, index) => (
                            <Icon
+                              key={index}
                               icon={
                                  (testi.star && index < testi?.star) || 5
                                     ? "mdi:star"

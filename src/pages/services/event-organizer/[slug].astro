@@ -2,17 +2,14 @@
 import type { GetStaticPaths } from "astro";
 import Layout from "../../../layouts/Layout.astro";
 import type { PageMetaType } from "../../../types/page";
-import { Icon } from "@iconify-icon/react";
 import LocaleDetailEvent from "../../../components/sections/event/LocaleDetailEvent";
-import { getEventBySlug, getEvents, getEventTypeBySlug, getEventTypes } from "../../../fetchers";
+import { getEventTypeBySlug } from "../../../fetchers";
 
 export const getStaticPaths: GetStaticPaths = async () => {
-   const resEvents = await getEventTypes()
-   const ctgEvents = resEvents.data.data
-   return ctgEvents.map((event) => ({
-      params: { slug: event.slug },
-   }));
+   return []
 };
+
+export const prerender = false;
 
 const { slug } = Astro.params;
 const resEvent = await getEventTypeBySlug(String(slug) ?? '')
