@@ -24,6 +24,7 @@ type TripInitialInput struct {
 	Duration     *string     `json:"duration" validate:"omitempty,max=20"`
 	Price        *float64    `json:"price" validate:"omitempty,min=0"`
 	Image        *string     `json:"image,omitempty" validate:"omitempty"`
+	Images       *string     `json:"images,omitempty" validate:"omitempty"`
 	MinPeople    *int        `json:"min_people,omitempty" validate:"omitempty,min=1"`
 	MeetPoint    *string     `json:"meet_point,omitempty" validate:"omitempty,max=300"`
 	Content      *string     `json:"content,omitempty" validate:"omitempty"`
@@ -45,6 +46,19 @@ func (h *TripHandler) parseJSONField(data []byte) interface{} {
 	var result interface{}
 	if err := json.Unmarshal(data, &result); err != nil {
 		return nil
+	}
+	return result
+}
+
+// parseImagesField parses the images field which is stored as a JSON string in the database
+func parseImagesField(images *string) interface{} {
+	if images == nil || *images == "" {
+		return []string{}
+	}
+
+	var result []string
+	if err := json.Unmarshal([]byte(*images), &result); err != nil {
+		return []string{}
 	}
 	return result
 }
@@ -79,6 +93,7 @@ func (h *TripHandler) GetTrip(c *fiber.Ctx) error {
 		"duration":     trip.Duration,
 		"price":        trip.Price,
 		"image":        trip.Image,
+		"images":       trip.Images,
 		"min_people":   trip.MinPeople,
 		"meet_point":   trip.MeetPoint,
 		"content":      trip.Content,
@@ -172,6 +187,7 @@ func (h *TripHandler) GetAllTrips(c *fiber.Ctx) error {
 			"duration":     trip.Duration,
 			"price":        trip.Price,
 			"image":        trip.Image,
+			"images":       parseImagesField(trip.Images),
 			"min_people":   trip.MinPeople,
 			"meet_point":   trip.MeetPoint,
 			"content":      trip.Content,
@@ -232,17 +248,20 @@ func (h *TripHandler) AddTrip(c *fiber.Ctx) error {
 		}
 
 		input = TripInitialInput{
-			Title:       &title,
-			Slug:        &slug,
-			Description: &description,
-			Location:    &location,
-			Country:     &country,
-			Type:        &tripType,
-			Duration:    &duration,
-			Price:       price,
-			MinPeople:   minPeople,
-			MeetPoint:   &meetPoint,
-			Content:     &content,
+			Title:        &title,
+			Slug:         &slug,
+			Description:  &description,
+			Location:     &location,
+			Country:      &country,
+			Type:         &tripType,
+			Duration:     &duration,
+			Price:        price,
+			MinPeople:    minPeople,
+			MeetPoint:    &meetPoint,
+			Content:      &content,
+			OpenDates:    nil, // Will be set after parsing JSON
+			Destinations: nil, // Will be set after parsing JSON
+			Itinerary:    nil, // Will be set after parsing JSON
 		}
 
 		// Parse JSON fields if they exist
@@ -270,13 +289,25 @@ func (h *TripHandler) AddTrip(c *fiber.Ctx) error {
 			}
 		}
 
-		// Handle file upload
+		// Handle single image upload
 		if file, err := c.FormFile("image"); err == nil && file != nil {
 			filePath, err := utils.UploadFile(c, "image", "trips")
 			if err != nil {
 				return utils.RespApi(c, "bad", "Gagal upload image Trip", err.Error())
 			}
 			input.Image = &filePath
+		}
+
+		// Handle multiple images upload
+		if file, err := c.FormFile("images"); err == nil && file != nil {
+			imagePaths, err := utils.UploadFileFlex(c, "images", "trips")
+			if err == nil && len(imagePaths) > 0 {
+				jsonStr, err := json.Marshal(imagePaths)
+				if err == nil {
+					imgStr := string(jsonStr)
+					input.Images = &imgStr
+				}
+			}
 		}
 	} else {
 		// Handle JSON data
@@ -321,6 +352,11 @@ func (h *TripHandler) AddTrip(c *fiber.Ctx) error {
 		}
 	}
 
+	var imagesJSONStr *string
+	if input.Images != nil {
+		imagesJSONStr = input.Images
+	}
+
 	trip := models.Trip{
 		Title:        input.Title,
 		Slug:         input.Slug,
@@ -331,6 +367,7 @@ func (h *TripHandler) AddTrip(c *fiber.Ctx) error {
 		Duration:     input.Duration,
 		Price:        input.Price,
 		Image:        input.Image,
+		Images:       imagesJSONStr,
 		MinPeople:    input.MinPeople,
 		MeetPoint:    input.MeetPoint,
 		Content:      input.Content,
@@ -362,50 +399,73 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 
 	contentType := c.Get("Content-Type")
 	if strings.Contains(contentType, "multipart/form-data") {
-		// Handle multipart form data for file uploads
-		title := c.FormValue("title")
-		slug := c.FormValue("slug")
-		description := c.FormValue("description")
-		location := c.FormValue("location")
-		country := c.FormValue("country")
-		tripType := c.FormValue("type")
-		duration := c.FormValue("duration")
-		priceStr := c.FormValue("price")
-		minPeopleStr := c.FormValue("min_people")
-		meetPoint := c.FormValue("meet_point")
-		content := c.FormValue("content")
-		openDatesStr := c.FormValue("open_dates")
-		destinationsStr := c.FormValue("destinations")
-		itineraryStr := c.FormValue("itinerary")
+	// Handle multipart form data for file uploads
+		// Check if form values exist before setting them
+	var title, slug, description, location, country, tripType, duration, priceStr, minPeopleStr, meetPoint, content, openDatesStr, destinationsStr, itineraryStr string
+		
+		if c.FormValue("title") != "" {
+			title = c.FormValue("title")
+			input.Title = &title
+		}
+		if c.FormValue("slug") != "" {
+			slug = c.FormValue("slug")
+			input.Slug = &slug
+		}
+	if c.FormValue("description") != "" {
+			description = c.FormValue("description")
+			input.Description = &description
+		}
+		if c.FormValue("location") != "" {
+			location = c.FormValue("location")
+			input.Location = &location
+		}
+		if c.FormValue("country") != "" {
+			country = c.FormValue("country")
+			input.Country = &country
+		}
+		if c.FormValue("type") != "" {
+			tripType = c.FormValue("type")
+			input.Type = &tripType
+		}
+		if c.FormValue("duration") != "" {
+			duration = c.FormValue("duration")
+			input.Duration = &duration
+		}
+		if c.FormValue("price") != "" {
+			priceStr = c.FormValue("price")
+		}
+		if c.FormValue("min_people") != "" {
+			minPeopleStr = c.FormValue("min_people")
+		}
+		if c.FormValue("meet_point") != "" {
+			meetPoint = c.FormValue("meet_point")
+			input.MeetPoint = &meetPoint
+		}
+		if c.FormValue("content") != "" {
+			content = c.FormValue("content")
+			input.Content = &content
+		}
 
-		// Convert string values to appropriate types
-		var price *float64
+		// Convert string values to appropriate types if they exist
+	var price *float64
 		if priceStr != "" {
 			if p, err := strconv.ParseFloat(priceStr, 64); err == nil {
 				price = &p
 			}
 		}
+		if price != nil {
+			input.Price = price
+		}
 
-		var minPeople *int
+	var minPeople *int
 		if minPeopleStr != "" {
 			if mp, err := strconv.Atoi(minPeopleStr); err == nil {
 				minPeople = &mp
 			}
 		}
-
-		input = TripInitialInput{
-			Title:       &title,
-			Slug:        &slug,
-			Description: &description,
-			Location:    &location,
-			Country:     &country,
-			Type:        &tripType,
-			Duration:    &duration,
-			Price:       price,
-			MinPeople:   minPeople,
-			MeetPoint:   &meetPoint,
-			Content:     &content,
-		}
+		if minPeople != nil {
+			input.MinPeople = minPeople
+	}
 
 		// Parse JSON fields if they exist
 		if openDatesStr != "" {
@@ -432,7 +492,7 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 			}
 		}
 
-		// Handle file upload
+		// Handle single image upload
 		if file, err := c.FormFile("image"); err == nil && file != nil {
 			oldImagePath := ""
 			if trip.Image != nil {
@@ -444,6 +504,18 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 				return utils.RespApi(c, "bad", "Gagal memperbarui image Trip", err.Error())
 			}
 			input.Image = &filePath
+		}
+
+		// Handle multiple images upload
+	if file, err := c.FormFile("images"); err == nil && file != nil {
+			imagePaths, err := utils.UploadFileFlex(c, "images", "trips")
+			if err == nil && len(imagePaths) > 0 {
+				jsonStr, err := json.Marshal(imagePaths)
+				if err == nil {
+					imgStr := string(jsonStr)
+					input.Images = &imgStr
+				}
+			}
 		}
 	} else {
 		// Handle JSON data
@@ -459,60 +531,74 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 		return utils.RespApi(c, "bad", "Validasi gagal", err.Error())
 	}
 
-	// Konversi interface{} ke []byte untuk field JSON dalam update
-	var openDatesUpdate interface{}
+	// Build updates map only with provided fields
+	updates := make(map[string]interface{})
+	
+	if input.Title != nil {
+		updates["title"] = input.Title
+	}
+	if input.Slug != nil {
+		updates["slug"] = input.Slug
+	}
+	if input.Description != nil {
+		updates["description"] = input.Description
+	}
+	if input.Location != nil {
+		updates["location"] = input.Location
+	}
+	if input.Country != nil {
+		updates["country"] = input.Country
+	}
+	if input.Type != nil {
+		updates["type"] = input.Type
+	}
+	if input.Duration != nil {
+		updates["duration"] = input.Duration
+	}
+	if input.Price != nil {
+		updates["price"] = input.Price
+	}
+	if input.Image != nil {
+		updates["image"] = input.Image
+	}
+	if input.Images != nil {
+		updates["images"] = *input.Images
+	}
+	if input.MinPeople != nil {
+	updates["min_people"] = input.MinPeople
+	}
+	if input.MeetPoint != nil {
+		updates["meet_point"] = input.MeetPoint
+	}
+	if input.Content != nil {
+		updates["content"] = input.Content
+	}
 	if input.OpenDates != nil {
 		if bytes, err := json.Marshal(input.OpenDates); err == nil {
-			openDatesUpdate = bytes
+			updates["open_dates"] = bytes
 		} else {
-			openDatesUpdate = []byte("null")
+			updates["open_dates"] = []byte("null")
 		}
-	} else {
-		openDatesUpdate = nil
 	}
-
-	var destinationsUpdate interface{}
 	if input.Destinations != nil {
 		if bytes, err := json.Marshal(input.Destinations); err == nil {
-			destinationsUpdate = bytes
+			updates["destinations"] = bytes
 		} else {
-			destinationsUpdate = []byte("null")
+			updates["destinations"] = []byte("null")
 		}
-	} else {
-		destinationsUpdate = nil
 	}
-
-	var itineraryUpdate interface{}
 	if input.Itinerary != nil {
 		if bytes, err := json.Marshal(input.Itinerary); err == nil {
-			itineraryUpdate = bytes
+			updates["itinerary"] = bytes
 		} else {
-			itineraryUpdate = []byte("null")
+			updates["itinerary"] = []byte("null")
 		}
-	} else {
-		itineraryUpdate = nil
 	}
 
-	updates := map[string]interface{}{
-		"title":        input.Title,
-		"slug":         input.Slug,
-		"description":  input.Description,
-		"location":     input.Location,
-		"country":      input.Country,
-		"type":         input.Type,
-		"duration":     input.Duration,
-		"price":        input.Price,
-		"image":        input.Image,
-		"min_people":   input.MinPeople,
-		"meet_point":   input.MeetPoint,
-		"content":      input.Content,
-		"open_dates":   openDatesUpdate,
-		"destinations": destinationsUpdate,
-		"itinerary":    itineraryUpdate,
-	}
-
-	if err := h.DB.Model(&trip).Updates(updates).Error; err != nil {
-		return utils.RespApi(c, "ise", "Gagal memperbarui data Trip", err.Error())
+	if len(updates) > 0 {
+		if err := h.DB.Model(&trip).Updates(updates).Error; err != nil {
+			return utils.RespApi(c, "ise", "Gagal memperbarui data Trip", err.Error())
+		}
 	}
 
 	// Ambil data terbaru
@@ -532,12 +618,13 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 		"country":      trip.Country,
 		"type":         trip.Type,
 		"duration":     trip.Duration,
-		"price":        trip.Price,
+	"price":        trip.Price,
 		"image":        trip.Image,
+		"images":       parseImagesField(trip.Images),
 		"min_people":   trip.MinPeople,
 		"meet_point":   trip.MeetPoint,
 		"content":      trip.Content,
-		"open_dates":   h.parseJSONField(trip.OpenDates),
+	"open_dates":   h.parseJSONField(trip.OpenDates),
 		"destinations": h.parseJSONField(trip.Destinations),
 		"itinerary":    h.parseJSONField(trip.Itinerary),
 	}
@@ -560,6 +647,18 @@ func (h *TripHandler) DeleteTrip(c *fiber.Ctx) error {
 	// Hapus file terkait jika ada
 	if trip.Image != nil && *trip.Image != "" {
 		utils.DeleteFile(*trip.Image)
+	}
+
+	// Hapus multiple images jika ada
+	if trip.Images != nil && *trip.Images != "" {
+		var imagePaths []string
+		if err := json.Unmarshal([]byte(*trip.Images), &imagePaths); err == nil {
+			for _, imagePath := range imagePaths {
+				if imagePath != "" {
+					utils.DeleteFile(imagePath)
+				}
+			}
+		}
 	}
 
 	if err := h.DB.Delete(&trip).Error; err != nil {

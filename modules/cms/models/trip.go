@@ -16,6 +16,7 @@ type Trip struct {
 	Duration     *string          `json:"duration" gorm:"type:varchar(20)"`
 	Price        *float64         `json:"price" gorm:"type:decimal(15,2);default:0.00"`
 	Image        *string          `json:"image,omitempty" gorm:"type:text;omitempty"`
+	Images       *string           `json:"images,omitempty" gorm:"type:text;omitempty"`
 	MinPeople    *int             `json:"min_people,omitempty" gorm:"type:int;default:2"`
 	MeetPoint    *string          `json:"meet_point,omitempty" gorm:"type:varchar(300);omitempty"`
 	Content      *string          `json:"content,omitempty" gorm:"type:text;omitempty"`

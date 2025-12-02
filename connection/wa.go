@@ -630,7 +630,7 @@ func CheckNumber(phoneNumber string) (bool, error) {
 	}
 
 	// Check if number is registered on WhatsApp
-	resp, err := client.IsOnWhatsApp([]string{jid.User})
+	resp, err := client.IsOnWhatsApp(waCtx, []string{jid.User})
 	if err != nil {
 		return false, fmt.Errorf("failed to check WhatsApp registration: %w", err)
 	}
