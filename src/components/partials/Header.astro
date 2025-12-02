@@ -7,7 +7,7 @@ import { getSetting } from "../../fetchers";
 
 const { isFloating = false } = Astro.props;
 const logo = await getSetting("dash.logo");
-const logoImage = logo ? import.meta.env.PUBLIC_API_URL+logo.data.data.set_value : logoRkg;
+const logoImage = logo ? import.meta.env.PUBLIC_API_URL+'/'+logo.data.data.set_value : logoRkg;
 ---
 
 <header

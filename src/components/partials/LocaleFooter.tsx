@@ -22,7 +22,7 @@ const LocaleFooter: React.FC = () => {
       const footerData = {
          sales: resSales.data.data.set_value,
          admin: resAdmin.data.data.set_value,
-         logo: resLogo.data.data.set_value ? import.meta.env.PUBLIC_API_URL + resLogo.data.data.set_value : LogoRKG.src,
+         logo: resLogo.data.data.set_value ? import.meta.env.PUBLIC_API_URL +'/'+ resLogo.data.data.set_value : LogoRKG.src,
          gmap: resGmap.data.data.set_value,
       };
 
