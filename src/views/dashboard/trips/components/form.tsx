@@ -15,7 +15,7 @@ import DialogContent from '@mui/material/DialogContent';
 import Stack from '@mui/material/Stack';
 
 import { toast } from 'src/components/snackbar';
-import { Form, Field, schemaUtils } from 'src/components/hook-form';
+import { Field, Form } from 'src/components/hook-form';
 import { countries } from 'src/stores/countries';
 import { useBoolean } from 'minimal-shared/hooks';
 import { slugify } from '../helpers/slug';
@@ -26,53 +26,9 @@ import { DestinationForm } from 'src/views/dashboard/destinations/components/for
 import useDestinationStore from 'src/stores/destination';
 import { paths } from 'src/routes/al/paths';
 import { useRouter } from 'src/routes/hooks';
+import { TripSchema, TripType } from 'src/types/trip';
 
 // ----------------------------------------------------------------------
-
-// Define the schema for the trip form
-export type TripType = z.infer<typeof TripSchema> & {
-   id?: string;
-};
-
-export const TripSchema = z.object({
-   title: z.string().optional(),
-   slug: z.string().optional(),
-   description: z.string().optional(),
-   location: z.string().optional(),
-   country: z.string().optional(),
-   type: z.string().optional(),
-   duration: z.string().optional(),
-   price: z.number().optional(),
-   image: schemaUtils.file().optional(),
-   min_people: z.number().optional(),
-   meet_point: z.string().optional(),
-   destinations: z.array(z.any()).optional(),
-   content: z.string().optional(),
-   open_dates: z
-      .array(
-         z.object({
-            from_date: z.string().optional(),
-            to_date: z.string().optional(),
-         })
-      )
-      .optional(),
-   itinerary: z
-      .array(
-         z.object({
-            day: z.number().optional(),
-            activities: z
-               .array(
-                  z.object({
-                     time: z.string().optional(),
-                     description: z.string().optional(),
-                  })
-               )
-               .optional(),
-         })
-      )
-      .optional(),
-});
-
 const ctgTrips = [
    { key: 'open-trip', value: 'Open Trip' },
    { key: 'private-trip', value: 'Private Trip' },
@@ -85,10 +41,60 @@ type Props = {
 };
 
 export function TripForm({ currentTrip, onSuccess }: Props) {
-   const { destinations, all } = useDestinationStore()
+   const { destinations, all } = useDestinationStore();
    const router = useRouter();
-   const addDestination = useBoolean()
-   const [slug, setSlug] = useState<string>(currentTrip?.slug ?? "")
+   const addDestination = useBoolean();
+   const [slug, setSlug] = useState<string>(currentTrip?.slug ?? '');
+
+   let parsedImages: string[] = [];
+
+   if (currentTrip?.images) {
+      let imageList: any[] = [];
+
+      // Kasus 1: images sudah berupa array (File atau string)
+      if (Array.isArray(currentTrip.images)) {
+         imageList = currentTrip.images;
+      }
+      // Kasus 2: images adalah string JSON array
+      else if (typeof currentTrip.images === 'string') {
+         try {
+            const parsed = JSON.parse(currentTrip.images);
+            if (Array.isArray(parsed)) {
+               imageList = parsed;
+            } else {
+               // Misalnya: "image.jpg" (bukan array JSON) → anggap sebagai satu item
+               imageList = [currentTrip.images];
+            }
+         } catch (e) {
+            // Jika gagal parse JSON, anggap sebagai satu string gambar
+            imageList = [currentTrip.images];
+         }
+      }
+
+      // Sekarang proses imageList menjadi URL lengkap
+      parsedImages = imageList
+         .map((img) => {
+            if (!img) return null;
+
+            if (typeof img === 'string') {
+               // Langsung string → jadi URL
+               return img.startsWith('http') ? img : `${CONFIG.apiHostUrl}/${img}`;
+            }
+
+            if (typeof img === 'object') {
+               // Cari properti yang berisi path
+               const path = img.path || img.url || img.image || img.src || img;
+               if (typeof path === 'string') {
+                  return path.startsWith('http') ? path : `${CONFIG.apiHostUrl}/${path}`;
+               }
+            }
+
+            return null;
+         })
+         .filter((url): url is string => !!url); // Hanya ambil string non-null
+   }
+
+   console.log('🔧 Final parsedImages:', parsedImages);
 
    // Default values for the form
    const defaultValues: TripType = {
@@ -100,10 +106,12 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
       type: currentTrip?.type || 'open-trip',
       duration: currentTrip?.duration || '',
       price: currentTrip?.price || 0,
-      image:
-         typeof currentTrip?.image === "string" && currentTrip?.image
+      image: currentTrip?.image
+         ? typeof currentTrip.image === 'string'
             ? `${CONFIG.apiHostUrl}/${currentTrip.image}`
-            : currentTrip?.image,
+            : currentTrip.image
+         : null,
+      images: parsedImages,
       min_people: currentTrip?.min_people || 2,
       meet_point: currentTrip?.meet_point || '',
       destinations: currentTrip?.destinations || [],
@@ -126,6 +134,15 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
       defaultValues,
    });
 
+   useEffect(() => {
+      const subscription = methods.watch((value, { name }) => {
+         if (name === 'images') {
+            console.log('📸 Watch images:', value);
+         }
+      });
+      return () => subscription.unsubscribe();
+   }, [methods]);
+
    const {
       reset,
       handleSubmit,
@@ -136,8 +153,8 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
    } = methods;
 
    useEffect(() => {
-      all()
-   },[]) 
+      all();
+   }, []);
    // Watch for changes in open_dates and itinerary
    const openDates = watch('open_dates');
    const itinerary = watch('itinerary');
@@ -154,6 +171,29 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
             slug: slug || data.slug,
          };
 
+         // Filter out image URLs, only send new file objects to the backend
+         if (formData.images) {
+            const filteredImages = formData.images.filter(
+               (img) => typeof img !== 'string' // Only keep file objects, not URLs
+            );
+            formData.images = filteredImages;
+         }
+
+         // For updates, if image fields are not being updated, preserve the existing values
+         if (currentTrip?.id) {
+            // Check if the image field was touched (changed) - if not, remove it from formData to preserve existing value
+            const imageField = methods.getFieldState('image');
+            if (!imageField.isDirty && !formData.image) {
+               delete formData.image;
+            }
+            
+            // Check if the images field was touched (changed) - if not, remove it from formData to preserve existing value
+            const imagesField = methods.getFieldState('images');
+            if (!imagesField.isDirty && !formData.images) {
+               delete formData.images;
+            }
+         }
+
          let result;
          if (currentTrip?.id) {
             // Update existing trip
@@ -164,10 +204,12 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
          }
 
          if (result.success) {
-            toast.success(currentTrip ? 'Trip updated successfully!' : 'Trip created successfully!');
+            toast.success(
+               currentTrip ? 'Trip updated successfully!' : 'Trip created successfully!'
+            );
             onSuccess?.();
             reset();
-            router.replace(paths.dashboard.trip.root)
+            router.replace(paths.dashboard.trip.root);
          } else {
             toast.error(result.message || 'An error occurred while saving the trip');
          }
@@ -250,9 +292,11 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
          <Form methods={methods} onSubmit={onSubmit}>
             <Box sx={{ pt: 1, pb: 0, flexGrow: 1, overflow: 'auto' }}>
                <Grid container spacing={3}>
-                  {/* Left Column - Basic Info */}
                   <Grid size={{ xs: 12 }}>
                      <Box sx={{ mb: 3 }}>
+                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                           Cover Image
+                        </Typography>
                         <Field.Upload
                            name="image"
                            maxSize={5242880} // 5MB
@@ -266,15 +310,45 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
                                     color: 'text.disabled',
                                  }}
                               >
-                                 Allowed *.jpeg, *.jpg, *.png, max size of 5MB
+                                 Allowed *.jpeg, *.jpg, *.png, *.webp max size of 5MB
                               </Typography>
                            }
                         />
                      </Box>
-
+                     <Box sx={{ mb: 3 }}>
+                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                           Slider Images
+                        </Typography>
+                        <Field.Upload
+                           name="images"
+                           maxSize={5242880} // 5MB
+                           multiple
+                           helperText={
+                              <Typography
+                                 variant="caption"
+                                 sx={{
+                                    mt: 1,
+                                    display: 'block',
+                                    textAlign: 'center',
+                                    color: 'text.disabled',
+                                 }}
+                              >
+                                 Allowed *.jpeg, *.jpg, *.png, *.webp max size of 5MB each
+                              </Typography>
+                           }
+                        />
+                     </Box>
+                  </Grid>
+                  {/* Left Column - Basic Info */}
+                  <Grid size={{ xs: 12 }}>
                      <Grid container spacing={3}>
                         <Grid size={{ xs: 12, md: 6 }} sx={{ mb: 1 }}>
-                           <Field.Text name="title" label="Trip Title" fullWidth onBlur={(e) => setSlug(slugify(e.target.value))} />
+                           <Field.Text
+                              name="title"
+                              label="Trip Title"
+                              fullWidth
+                              onBlur={(e) => setSlug(slugify(e.target.value))}
+                           />
                         </Grid>
                         <Grid size={{ xs: 12, md: 6 }} sx={{ mb: 1 }}>
                            <Field.Text
@@ -309,7 +383,7 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
                               autoHighlight
                               options={countries}
                               getOptionLabel={(option) => option?.name ?? ''}
-                              isOptionEqualToValue={(option, value) => option.slug === value}
+                              isOptionEqualToValue={(option, value) => option?.slug === value?.slug}
                               onChange={(_, value) =>
                                  methods.setValue('country', value?.name || '')
                               }
@@ -565,7 +639,7 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
          <DestinationForm
             open={addDestination.value}
             onSuccess={() => {
-               all()
+               all();
             }}
             onClose={addDestination.onFalse}
          />

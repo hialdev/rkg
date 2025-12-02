@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: `Edit Trip - ${CONFIG.appName}` };
 
 export default function Page() {
    return (
-      <AuthGuard currentPath={`${paths.dashboard.trip.update}`} requiredPermissions={[]}>
+      <AuthGuard currentPath={`${paths.dashboard.trip}`} requiredPermissions={[]}>
          <DashboardContent>
             <TripEdit />
          </DashboardContent>

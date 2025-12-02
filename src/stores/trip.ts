@@ -14,6 +14,7 @@ export interface TripData {
    duration?: string;
    price?: number;
    image?: any;
+   images?: any[];
    min_people?: number;
    meet_point?: string;
    destinations?: any[];
@@ -49,7 +50,7 @@ const useTripStore = create<TripState>()(
          trips: [],
          all: async (params?: any) => {
             const queryParams = new URLSearchParams();
-            
+
             if (params) {
                if (params.page !== undefined) queryParams.append('page', params.page.toString());
                if (params.limit !== undefined) queryParams.append('limit', params.limit.toString());
@@ -59,10 +60,10 @@ const useTripStore = create<TripState>()(
                if (params.type !== undefined) queryParams.append('type', params.type);
                if (params.country !== undefined) queryParams.append('country', params.country);
             }
-            
+
             const queryString = queryParams.toString();
             const url = queryString ? `/trips?${queryString}` : '/trips';
-            
+
             const response = await protectedApi.get(url);
             if (response.data.success && response.data.data) {
                set({ trips: response.data.data.trips || response.data.data });
@@ -78,7 +79,10 @@ const useTripStore = create<TripState>()(
             let config = {};
 
             // Jika ada field image yang instanceof File, gunakan FormData
-            if (data.image instanceof File) {
+            if (
+               data.image instanceof File ||
+               (data.images && data.images.some((img) => img instanceof File))
+            ) {
                const formData = new FormData();
 
                // Mapping field satu per satu — aman dari TypeScript
@@ -99,7 +103,12 @@ const useTripStore = create<TripState>()(
                if (data.destinations)
                   formData.append('destinations', JSON.stringify(data.destinations));
                if (data.itinerary) formData.append('itinerary', JSON.stringify(data.itinerary));
-               formData.append('image', data.image); // image selalu ada di sini (karena dicek instanceof File)
+               if (data.image) formData.append('image', data.image);
+               if (data.images && data.images.length > 0) {
+                  data.images.forEach((img: any) => {
+                     formData.append('images', img);
+                  });
+               }
 
                payload = formData;
                config = {
@@ -117,9 +126,13 @@ const useTripStore = create<TripState>()(
             let config = {};
 
             // Jika ada field image yang instanceof File, gunakan FormData
-            if (data.image instanceof File) {
+            if (
+               data.image instanceof File ||
+               (data.images && data.images.some((img) => img instanceof File))
+            ) {
                const formData = new FormData();
 
+               // Only append fields that have values to avoid sending empty values to the backend
                if (data.title) formData.append('title', data.title);
                if (data.slug) formData.append('slug', data.slug);
                if (data.description) formData.append('description', data.description);
@@ -137,7 +150,17 @@ const useTripStore = create<TripState>()(
                if (data.destinations)
                   formData.append('destinations', JSON.stringify(data.destinations));
                if (data.itinerary) formData.append('itinerary', JSON.stringify(data.itinerary));
-               formData.append('image', data.image); // image selalu ada di sini (karena dicek instanceof File)
+               // Only append image if it's a new file (not a URL)
+               if (data.image && data.image instanceof File) formData.append('image', data.image);
+               // Only append images if there are new files (not URLs)
+               if (data.images && data.images.length > 0) {
+                  const newImageFiles = data.images.filter((img) => img instanceof File);
+                  if (newImageFiles.length > 0) {
+                     newImageFiles.forEach((img: any) => {
+                        formData.append('images', img);
+                     });
+                  }
+               }
 
                payload = formData;
                config = {
