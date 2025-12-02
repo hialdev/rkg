@@ -3,8 +3,11 @@ import { Image } from "astro:assets";
 import logoRkg from "../../assets/rkgtour.webp";
 import LocaleMenu from "./LocaleMenu";
 import LocaleMobileMenu from "./LocaleMobileMenu";
+import { getSetting } from "../../fetchers";
 
 const { isFloating = false } = Astro.props;
+const logo = await getSetting("dash.logo");
+const logoImage = logo ? import.meta.env.PUBLIC_API_URL+logo.data.data.set_value : logoRkg;
 ---
 
 <header
@@ -19,7 +22,7 @@ const { isFloating = false } = Astro.props;
       <!-- LOGO -->
       <div class="flex items-center gap-2">
          <a href="/">
-            <Image src={logoRkg} alt="logo RKG" width={60} height={60} />
+            <Image src={logoImage} alt="logo RKG" width={60} height={60} class={`w-full max-h-[60px] object-contain`} />
          </a>
       </div>
 

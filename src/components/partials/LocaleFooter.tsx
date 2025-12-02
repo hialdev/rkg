@@ -7,18 +7,22 @@ interface FooterType {
    sales?: string;
    admin?: string;
    gmap?: string;
+   logo?: string;
 }
 const LocaleFooter: React.FC = () => {
    const { translations } = useLocale();
    const [footer, setFooter] = useState<FooterType>();
+
    const fetchFooter = async () => {
       const resSales = await getSetting("com.sales");
       const resAdmin = await getSetting("com.admin");
       const resGmap = await getSetting("com.gmap");
+      const resLogo = await getSetting("dash.logo");
 
       const footerData = {
          sales: resSales.data.data.set_value,
          admin: resAdmin.data.data.set_value,
+         logo: resLogo.data.data.set_value ? import.meta.env.PUBLIC_API_URL + resLogo.data.data.set_value : LogoRKG.src,
          gmap: resGmap.data.data.set_value,
       };
 
@@ -32,7 +36,7 @@ const LocaleFooter: React.FC = () => {
             <div className="flex flex-col md:flex-row justify-between gap-10">
                <div className="w-full md:max-w-[40%]">
                   <img
-                     src={LogoRKG.src}
+                     src={footer?.logo || LogoRKG.src}
                      alt={`Footer logo RKG`}
                      className="mb-5 max-w-[12em] max-h-[8em] object-left object-contain brightness-0 invert"
                   />
