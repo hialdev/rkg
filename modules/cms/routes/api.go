@@ -24,10 +24,10 @@ func SetupCMSRoutes(app *fiber.App, db *gorm.DB) {
 	setting := api.Group("/settings")
 	setting.Get("/key/:key", settings.GetSettingByKey)
 	setting.Use(middlewares.JWTProtected())
-	setting.Use(middlewares.DoACL("Read Setting")).Get("/:id", settings.GetSetting)
 	setting.Use(middlewares.DoACL("Add Setting")).Post("/", settings.AddSetting)
 	setting.Use(middlewares.DoACL("Update Setting")).Post("/:id/value", settings.ValueSetting)
 	setting.Use(middlewares.DoACL("Update Setting")).Patch("/:id", settings.UpdateSetting)
+	setting.Use(middlewares.DoACL("Read Setting")).Get("/:id", settings.GetSetting)
 	setting.Use(middlewares.DoACL("Delete Setting")).Delete("/:id", settings.DeleteSetting)
 
 	tables := handlers.NewTableHandler(db)
