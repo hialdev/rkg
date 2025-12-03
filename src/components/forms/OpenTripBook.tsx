@@ -29,14 +29,15 @@ interface OpenTripBookProps {
 const OpenTripBook = ({ tripData }: OpenTripBookProps) => {
    const { translations } = useLocale();
    const [whatsapp, setWhatsapp] = useState("6289671052050");
+   const fetchWhatsapp = async () => {
+      const res = await getSetting("com.whatsapp");
+      setWhatsapp(
+         res.data.data.set_value ? res.data.data.set_value : "6289671052050"
+      );
+   };
 
    useEffect(() => {
-      async () => {
-         const res = await getSetting("com.whatsapp");
-         setWhatsapp(
-            res.data.data.set_value ? res.data.data.set_value : "6289671052050"
-         );
-      };
+      fetchWhatsapp();
    }, []);
 
    // Define the Zod schema for form validation
@@ -86,7 +87,7 @@ const OpenTripBook = ({ tripData }: OpenTripBookProps) => {
 
          Selected date : ${data.openDate}
          Additional information : 
-         ${data.additionalInfo ?? '-'}
+         ${data.additionalInfo ?? "-"}
 
          Link:
          ${window.location.href}
@@ -123,7 +124,7 @@ const OpenTripBook = ({ tripData }: OpenTripBookProps) => {
                   {translations.label.available_dates}
                </Typography>
                <Box className="flex flex-wrap gap-2 mb-2">
-                  {tripData.open_dates.map((dateRange:any, index:number) => {
+                  {tripData.open_dates.map((dateRange: any, index: number) => {
                      const isSelected =
                         selectedDate ===
                         `${dayjs(dateRange.from_date).format(

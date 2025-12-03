@@ -11,19 +11,20 @@ import { useLocale } from "../../contexts/LocaleContext";
 import { getSetting, type Trip } from "../../fetchers";
 
 interface Props {
-   tripData? : Trip;
+   tripData?: Trip;
 }
-const PrivateTripBook = ({tripData} : Props) => {
+const PrivateTripBook = ({ tripData }: Props) => {
    const { translations } = useLocale();
    const [whatsapp, setWhatsapp] = useState("6289671052050");
+   const fetchWhatsapp = async () => {
+      const res = await getSetting("com.whatsapp");
+      setWhatsapp(
+         res.data.data.set_value ? res.data.data.set_value : "6289671052050"
+      );
+   };
 
    useEffect(() => {
-      async () => {
-         const res = await getSetting("com.whatsapp");
-         setWhatsapp(
-            res.data.data.set_value ? res.data.data.set_value : "6289671052050"
-         );
-      };
+      fetchWhatsapp();
    }, []);
 
    // Define the Zod schema for form validation
