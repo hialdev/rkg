@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -92,8 +93,9 @@ func handleIncomingMessage(msg *events.Message) {
 
 	// Cek apakah pesan adalah perintah login
 	if isLoginCommand(messageText) {
-		sender := msg.Info.Sender.User
-		go handleLoginCommand(sender)
+		sender := msg.Info.SenderAlt.UserInt()
+		senderStr := strconv.FormatUint(sender, 10)
+		go handleLoginCommand(senderStr)
 	}
 }
 
@@ -141,6 +143,11 @@ type LoginRequest struct {
 // handleLoginCommand memproses perintah login dari pengguna
 func handleLoginCommand(sender string) {
 	log.Printf("Processing login command from: %s", sender)
+	
+	// Pastikan nomor diawali dengan '+'
+	if !strings.HasPrefix(sender, "+") {
+		sender = "+" + sender
+	}
 
 	// Validasi nomor WhatsApp
 	if !isValidWhatsAppNumber(sender) {
@@ -161,6 +168,7 @@ func handleLoginCommand(sender string) {
 		log.Printf("Failed to generate OTP for %s: %v", sender, err)
 		return
 	}
+	fmt.Printf("Generated OTP for %s: %s", sender, otpCode)
 
 	// Buat user jika belum ada (untuk registrasi)
 	if purpose == PurposeRegister {
@@ -214,7 +222,6 @@ func determinePurpose(phoneNumber string) (OTPPurpose, error) {
 // generateAndSaveOTP membuat dan menyimpan OTP ke database
 func generateAndSaveOTP(phoneNumber string, purpose OTPPurpose) (string, error) {
 	db := DB
-
 	// Generate OTP unik
 	code, err := GenerateUniqueOTP(db)
 	if err != nil {

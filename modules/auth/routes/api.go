@@ -43,6 +43,7 @@ func SetupAuthRoutes(app *fiber.App, db *gorm.DB) {
 	otpHandler := handlers.OtpHandler{DB: db}
 	otp := api.Group("/otp")
 	otp.Post("/request", otpHandler.SendOTP)
+	otp.Post("/request-change", otpHandler.ChangeSecurityOTP)
 	otp.Post("/validate", otpHandler.ValidateOTP)
 
 	auth := handlers.NewAuthHandler(services.NewAuthService(db))
@@ -61,10 +62,10 @@ func SetupAuthRoutes(app *fiber.App, db *gorm.DB) {
 	profile := handlers.NewProfileHandler(db)
 	pf := api.Group("/profile")
 	pf.Use(middlewares.JWTProtected())
-	pf.Get("/:id", profile.Get)
-	pf.Post("/:id", profile.Update)
-	pf.Patch("/:id/change/email", profile.UpdateEmail)
-	pf.Patch("/:id/change/phone", profile.UpdatePhone)
+	pf.Get("/", profile.Get)
+	pf.Post("/change", profile.UpdateBasic)
+	pf.Post("/change/email", profile.UpdateEmail)
+	pf.Post("/change/phone", profile.UpdatePhone)
 
 	// -------------- Access Control list Routes
 	userHandler := handlers.NewUserHandler(db)
