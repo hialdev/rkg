@@ -21,7 +21,7 @@ export function NavProfileBottom({ sx, ...other }: BoxProps) {
       >
          <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
             <Box sx={{ position: 'relative' }}>
-               <Avatar src={user?.image} alt={user?.name} sx={{ width: 48, height: 48 }}>
+               <Avatar src={user?.image ? process.env.NEXT_PUBLIC_API_HOST + '/' + user?.image : ''} alt={user?.name} sx={{ width: 48, height: 48 }}>
                   {user?.name?.charAt(0).toUpperCase()}
                </Avatar>
 

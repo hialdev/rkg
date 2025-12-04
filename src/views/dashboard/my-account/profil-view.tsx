@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
@@ -23,6 +23,10 @@ import { ProfileFriends } from 'src/sections/user/profile-friends';
 import { ProfileGallery } from 'src/sections/user/profile-gallery';
 import { ProfileFollowers } from 'src/sections/user/profile-followers';
 import { ComingSoonView } from 'src/sections/coming-soon/view';
+import ProfileForm from './components/profile-form';
+import { Typography } from '@mui/material';
+import { ProfileData } from 'src/stores/profile';
+import AccessForm from './components/access-form';
 
 // ----------------------------------------------------------------------
 
@@ -74,10 +78,10 @@ export function ProfileView() {
 
          <Card sx={{ height: 290 }}>
             <ProfileCover
-               role="Software Engineer"
+               role={user?.role?.name ?? ''}
                name={user?.name ?? ''}
                username={user?.username ?? ''}
-               avatarUrl={user?.image ?? ''}
+               avatarUrl={user?.image ? process.env.NEXT_PUBLIC_API_HOST + '/' + user.image : ''}
                coverUrl={_userAbout.coverUrl}
             />
 
@@ -108,9 +112,19 @@ export function ProfileView() {
             </Box>
          </Card>
 
-         {selectedTab === '' && <ComingSoonView />}
+         {selectedTab === '' && (
+            <Box sx={{ mt: 3 }}>
+               <Typography typography={`h6`}>Edit Profile</Typography>
+               <ProfileForm currentUser={user as ProfileData || null} />
+            </Box>
+         )}
 
-         {selectedTab === 'access' && <ComingSoonView />}
+         {selectedTab === 'access' && (
+            <Box sx={{ mt: 3 }}>
+               <Typography typography={`h6`} sx={{ mb: 3 }}>Edit Access</Typography>
+               <AccessForm currentUser={user as ProfileData || null} />
+            </Box>
+         )}
       </>
    );
 }

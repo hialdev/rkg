@@ -52,7 +52,7 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
             primaryBorder: { size: 120, sx: { color: 'primary.main' } },
          }}
       >
-         <Avatar src={user?.image} alt={user?.name} sx={{ width: 1, height: 1 }}>
+         <Avatar src={user?.image ? process.env.NEXT_PUBLIC_API_HOST + '/' + user?.image : ''} alt={user?.name} sx={{ width: 1, height: 1 }}>
             {user?.name?.charAt(0).toUpperCase()}
          </Avatar>
       </AnimateBorder>
@@ -116,7 +116,7 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
       <>
          <AccountButton
             onClick={onOpen}
-            photoURL={user?.image ?? ''}
+            photoURL={user?.image ? process.env.NEXT_PUBLIC_API_HOST + '/' + user?.image : ''}
             displayName={user?.name ?? ''}
             sx={sx}
             {...other}

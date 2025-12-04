@@ -94,7 +94,7 @@ export const paths = {
 
       account: {
          root: `${ROOTS.DASHBOARD}/my-account`,
-         setting: `${ROOTS.DASHBOARD}/my-account/settings`,
+         setting: `${ROOTS.DASHBOARD}/my-account?tab=access`,
       },
       // Core Settings
       settings: `${ROOTS.DASHBOARD}/settings`,

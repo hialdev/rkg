@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import * as z from 'zod';
 import { useForm } from 'react-hook-form';
@@ -35,13 +35,18 @@ export const SignUpSchema = z.object({
 export default function SignUpView() {
    const router = useRouter();
    const { registData, setRegist, register: daftar } = useAuthStore();
-
+   let phoneNumberStr = registData?.phone
+         ? String(registData.phone).startsWith('+')
+            ? String(registData.phone)
+            : `+${registData.phone}`
+         : '';
+   phoneNumberStr = phoneNumberStr.replace(/\s/g, '');
    const defaultValues: SignUpType = {
       name: '',
       username: '',
-      email: registData?.email ||'',
-      phoneNumber: String(registData?.phone) || '',
-      phoneNumber_country_code: parsePhoneNumber(String(registData?.phone))?.country || '',
+      email: registData?.email || '',
+      phoneNumber: phoneNumberStr,
+      phoneNumber_country_code: parsePhoneNumber(String(phoneNumberStr))?.country || '',
    };
 
    const methods = useForm({
@@ -58,15 +63,21 @@ export default function SignUpView() {
    } = methods;
 
    const onSubmit = handleSubmit(async (data) => {
-      console.log("Submitting:", data);
+      console.log('Submitting:', data);
       try {
-         const reg = await daftar({name: data.name, username: data.username, phone: data.phoneNumber, country_code: data.phoneNumber_country_code, email: data.email});
-         if (reg.success){
-            toast.success("Register Successfully!.. now you can login with your account");
-            setRegist({isEmail: false, phone: null, email: null, purpose: null});
+         const reg = await daftar({
+            name: data.name,
+            username: data.username,
+            phone: data.phoneNumber,
+            country_code: data.phoneNumber_country_code,
+            email: data.email,
+         });
+         if (reg.success) {
+            toast.success('Register Successfully!.. now you can login with your account');
+            setRegist({ isEmail: false, phone: null, email: null, purpose: null });
             reset();
             router.replace(paths.auth.signIn);
-         }else{
+         } else {
             toast.error(`Ooopss, failed register! Error : ${reg.message}`);
          }
       } catch (error: any) {
@@ -76,9 +87,7 @@ export default function SignUpView() {
 
    return (
       <Form methods={methods} onSubmit={onSubmit}>
-         <Box
-            sx={{ mb: 2 }}
-         >
+         <Box sx={{ mb: 2 }}>
             <Typography variant="h4" gutterBottom>
                Sign up
             </Typography>
