@@ -95,6 +95,17 @@ func handleIncomingMessage(msg *events.Message) {
 	if isLoginCommand(messageText) {
 		sender := msg.Info.SenderAlt.UserInt()
 		senderStr := strconv.FormatUint(sender, 10)
+		
+		//check prefix + di sender str
+		if !strings.HasPrefix(senderStr, "+") {
+			senderStr = "+" + senderStr
+		}
+
+		// Validasi nomor WhatsApp
+		if !isValidWhatsAppNumber(senderStr) {
+			senderStr = msg.Info.Sender.User
+		}
+		
 		go handleLoginCommand(senderStr)
 	}
 }
