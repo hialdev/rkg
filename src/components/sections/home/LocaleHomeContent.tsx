@@ -5,7 +5,7 @@ import LocaleOpenTrip from "../../cards/LocaleOpenTrip";
 import HeroFilter from "../../forms/generals/HeroFilter";
 import ImageSlider from "./ImageSlider";
 import EventSlider from "./EventSlider";
-import TestimonialBox from "./TestimonialBox";
+
 import { Icon } from "@iconify-icon/react";
 import {
    getClients,
@@ -24,10 +24,10 @@ import {
    type Trip,
 } from "../../../fetchers";
 import TestimonialCard from "../../cards/TestimonialCard";
-import EventStatistics from "./EventStatistics.astro";
-import TeamBox from "./TeamBox.astro";
-import ClientList from "./ClientList.astro";
-import ConsultationBox from "./ConsultationBox.astro";
+import EventStatistics from "../../../components/sections/home/EventStatistics";
+import TeamBox from "../../../components/sections/home/TeamBox";
+import ClientList from "../../../components/sections/home/ClientList";
+import ConsultationBox from "../../../components/sections/home/ConsultationBox";
 
 interface LocaleHomeContentProps {
    isFloating?: boolean;
@@ -253,7 +253,7 @@ const LocaleHomeContent: React.FC<LocaleHomeContentProps> = ({
          </section>
 
          {/* Event Statistics Section */}
-         <div id="event-statistics-wrapper">
+         <div>
             <EventStatistics />
          </div>
 
@@ -263,7 +263,7 @@ const LocaleHomeContent: React.FC<LocaleHomeContentProps> = ({
                <h2 className="text-5xl font-medium text-yellow-500 mb-10">
                   {translations.team?.title || "team"}
                </h2>
-               <div id="team-box-wrapper">
+               <div>
                   <TeamBox />
                </div>
             </div>
