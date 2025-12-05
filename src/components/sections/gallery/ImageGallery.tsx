@@ -170,7 +170,7 @@ export default function ImageGallery({ items }: ImageGalleryProps) {
 
                {/* Image */}
                <img
-                  src={items[activeIndex]?.image}
+                  src={items[activeIndex]?.image ? import.meta.env.PUBLIC_API_URL+items[activeIndex]?.image : ""}
                   alt={items[activeIndex]?.title}
                   className="w-full h-full object-contain"
                />
