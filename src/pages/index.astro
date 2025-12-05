@@ -13,37 +13,10 @@ const metaData: PageMetaType = {
    image: "/assets/rkgtour.webp",
    robot: true,
 };
+
+export const prerender = false;
 ---
 
 <Layout isFloating={true} pageMeta={metaData}>
    <LocaleHomeContent client:only="react" />
-   
-   {/* Event Statistics Section */}
-   <div id="event-statistics-wrapper">
-      <EventStatistics client:only="react" />
-   </div>
-   
-   {/* Team Box Section */}
-   <section class="py-10 bg-stone-950 px-3">
-      <div class="container mx-auto">
-         <h2 class="text-5xl font-medium text-yellow-500 mb-10">Our Team</h2>
-         <div id="team-box-wrapper">
-            <TeamBox client:only="react" />
-         </div>
-      </div>
-   </section>
-   
-   {/* Client List Section */}
-   <section class="py-20 px-3">
-      <div id="client-list-wrapper">
-         <ClientList client:only="react" />
-      </div>
-   </section>
-   
-   {/* Consultation Box Section */}
-   <section class="py-20 px-3">
-      <div id="consultation-box-wrapper">
-         <ConsultationBox client:only="react" />
-      </div>
-   </section>
 </Layout>

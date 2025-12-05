@@ -18,6 +18,10 @@ export const id = {
       title: "Apa Kata Klien Kami",
    },
 
+   team:{
+      title: "Tim Kami",
+   },
+
    faq: {
       title: "Pertanyaan yang Sering Diajukan",
    },

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocale } from "../../contexts/LocaleContext";
 import LogoRKG from "../../assets/rkgtour.webp";
 import { getSetting } from "../../fetchers";
+import { menuPaths } from "../../config/menu";
 
 interface FooterType {
    sales?: string;
@@ -62,14 +63,11 @@ const LocaleFooter: React.FC = () => {
                      {translations.nav.services}
                   </h4>
                   <nav className="flex flex-col gap-2">
-                     <a href="#" className="text-white">
+                     <a href={menuPaths.home+"/search"} className="text-white">
                         {translations.services.items[0]?.title || "Travel"}
                      </a>
-                     <a href="#" className="text-white">
+                     <a href={menuPaths.service.event_organizer} className="text-white">
                         {translations.services.items[2]?.title || "Event"}
-                     </a>
-                     <a href="#" className="text-white">
-                        {translations.services.items[3]?.title || "Production"}
                      </a>
                   </nav>
                </div>
@@ -80,16 +78,13 @@ const LocaleFooter: React.FC = () => {
                         "About RKG Tour & Travel"}
                   </h4>
                   <nav className="flex flex-col gap-2">
-                     <a href="#" className="text-white">
+                     <a href={menuPaths.about} className="text-white">
                         {translations.nav.about}
                      </a>
-                     <a href="#" className="text-white">
+                     <a href={menuPaths.home+"#contact"} className="text-white">
                         {translations.nav.contact}
                      </a>
-                     <a href="#" className="text-white">
-                        {translations.footer?.terms || "Terms & Conditions"}
-                     </a>
-                     <a href="#" className="text-white">
+                     <a href={menuPaths.service.open_trip+"#faq"} className="text-white">
                         {translations.nav.faq || "FAQ"}
                      </a>
                   </nav>
@@ -100,10 +95,10 @@ const LocaleFooter: React.FC = () => {
                         {translations.footer?.contactTitle || "Contact Us"}
                      </h4>
                      <nav className="flex flex-col gap-2">
-                        <a href="#" className="text-white">
+                        <a href={`mailto:${footer?.sales}`} className="text-white">
                            Email : {footer?.sales}
                         </a>
-                        <a href="#" className="text-white">
+                        <a href={`https://wa.me/${footer?.admin}`} className="text-white">
                            Admin : {footer?.admin}
                         </a>
                      </nav>

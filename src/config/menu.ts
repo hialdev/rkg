@@ -5,7 +5,7 @@ export interface MenuItem {
    childerns: MenuItem[];
 }
 
-const menuPaths = {
+export const menuPaths = {
    home: "/",
    about: "/about",
    gallery: "/gallery",

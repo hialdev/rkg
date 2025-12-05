@@ -43,6 +43,10 @@ export const en = {
       title: "What Our Clients Say",
    },
 
+   team:{
+      title: "Our Team",
+   },
+
    // Hero section
    hero: {
       title: "Discover the Beauty of Indonesia",

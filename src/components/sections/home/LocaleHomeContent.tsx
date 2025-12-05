@@ -24,6 +24,10 @@ import {
    type Trip,
 } from "../../../fetchers";
 import TestimonialCard from "../../cards/TestimonialCard";
+import EventStatistics from "./EventStatistics.astro";
+import TeamBox from "./TeamBox.astro";
+import ClientList from "./ClientList.astro";
+import ConsultationBox from "./ConsultationBox.astro";
 
 interface LocaleHomeContentProps {
    isFloating?: boolean;
@@ -176,7 +180,7 @@ const LocaleHomeContent: React.FC<LocaleHomeContentProps> = ({
                            </div>
                            <div className="hidden group-hover:flex absolute flex-col justify-center items-center inset-0 gap-5 bg-red-800 top-30 p-5">
                               <a
-                                 href={`/search?locations=`+trip.location}
+                                 href={`/search?locations=` + trip.location}
                                  className="px-4 py-2 border-white border inline-flex text-white hover:bg-red-950 hover:border-red-950 hover:text-red-100 rounded-full items-center gap-3"
                               >
                                  {translations.cta?.seeDetail || "See Detail"}
@@ -217,7 +221,7 @@ const LocaleHomeContent: React.FC<LocaleHomeContentProps> = ({
                            </div>
                            <div className="hidden group-hover:flex flex-col absolute inset-0 bg-red-800 top-10 p-5 items-center justify-center">
                               <a
-                                 href={`/search?locations=`+trip.location}
+                                 href={`/search?locations=` + trip.location}
                                  className="px-4 py-2 border-white border inline-flex text-white hover:bg-red-950 hover:border-red-950 hover:text-red-100 rounded-full items-center gap-3"
                               >
                                  {translations.cta?.seeDetail || "See Detail"}
@@ -245,6 +249,37 @@ const LocaleHomeContent: React.FC<LocaleHomeContentProps> = ({
                   {translations.testimonials?.title || "Testimonials"}
                </h2>
                <TestimonialCard />
+            </div>
+         </section>
+
+         {/* Event Statistics Section */}
+         <div id="event-statistics-wrapper">
+            <EventStatistics />
+         </div>
+
+         {/* Team Box Section */}
+         <section className="py-10 bg-stone-950 px-3">
+            <div className="container mx-auto">
+               <h2 className="text-5xl font-medium text-yellow-500 mb-10">
+                  {translations.team?.title || "team"}
+               </h2>
+               <div id="team-box-wrapper">
+                  <TeamBox />
+               </div>
+            </div>
+         </section>
+
+         {/* Client List Section */}
+         <section className="py-20 px-3">
+            <div>
+               <ClientList />
+            </div>
+         </section>
+
+         {/* Consultation Box Section */}
+         <section id="contact" className="py-20 px-3">
+            <div>
+               <ConsultationBox />
             </div>
          </section>
       </>

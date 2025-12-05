@@ -9,6 +9,8 @@ const metaData: PageMetaType = {
    image: "/assets/rkgtour.webp",
    robot: true,
 };
+
+export const prerender = false;
 ---
 <Layout pageMeta={metaData}>
    <GalleryView client:only />

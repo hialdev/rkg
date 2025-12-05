@@ -22,6 +22,8 @@ const eventTypes = resEt.data.data
 
 const resPlan = await getEventPlans()
 const eventPlans:EventPlan[] = resPlan.data.data
+
+export const prerender = false;
 ---
 
 <Layout pageMeta={metaData}>
