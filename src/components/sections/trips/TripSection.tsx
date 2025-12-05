@@ -35,7 +35,7 @@ export default function TripSection({ tripData }: { tripData: any }) {
                   />
                </section>
 
-               <section className="py-10">
+               <section id="faq" className="py-10">
                   <h2 className="text-4xl mb-10 text-stone-900 font-bold underline decoration-yellow-400 decoration-12 underline-offset-3">
                      FAQ
                   </h2>
