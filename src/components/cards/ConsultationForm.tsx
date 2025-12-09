@@ -40,12 +40,12 @@ const SERVICE_LABELS: Record<string, string> = {
 
 export default function ConsultationForm() {
    const [whatsapp, setWhatsapp] = useState("6289671052050")
-
+   const fetchWhatsapp = async () => {
+      const res = await getSetting("com.whatsapp")
+      setWhatsapp(res.data.data.set_value ? res.data.data.set_value : "6289671052050")
+   }
    useEffect(() => {
-      async () => {
-         const res = await getSetting("com.whatsapp")
-         setWhatsapp(res.data.data.set_value ? res.data.data.set_value : "6289671052050")
-      }
+      fetchWhatsapp()
    },[])
 
    const {
