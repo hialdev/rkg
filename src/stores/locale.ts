@@ -1,47 +1,60 @@
-import { atom, map } from "nanostores";
+import { atom } from "nanostores";
 import { persistentAtom } from "@nanostores/persistent";
 import { en } from "../mock/en";
 import { id } from "../mock/id";
 
 export type Locale = "en" | "id";
 
-// Use persistent atom for locale to automatically sync with localStorage
+/**
+ * Current active locale.
+ * Auto-saved to localStorage.
+ */
 export const currentLocale = persistentAtom<Locale>("locale", "en", {
-  encode: (value) => value,
-  decode: (value) => {
-    // Validate the locale value from storage
-    if (value === "en" || value === "id") {
-      return value;
-    }
-    // Default to "en" if invalid value is found
-    return "en";
-  }
+   encode: (value) => value,
+   decode: (value) => (value === "en" || value === "id" ? value : "en"),
 });
 
-// Create a reactive translations atom that updates when locale changes
+/**
+ * Static dictionary for UI texts.
+ * Example: nav.home, cta.seeDetail, etc.
+ */
 export const currentTranslations = atom(en);
 
-// Subscribe to locale changes to update translations and HTML lang attribute
+/**
+ * Dynamic translation cache (hasil doTranslate API)
+ * Format:
+ * {
+ *   "Hello World": "Halo Dunia",
+ *   "Our Service": "Layanan Kami"
+ * }
+ */
+export const translationCache = persistentAtom<Record<string, string>>(
+   "translation-cache",
+   {},
+   {
+      encode: (value) => JSON.stringify(value),
+      decode: (value) => JSON.parse(value),
+   }
+);
+
+// When locale changes, update dictionary + HTML lang
 currentLocale.subscribe((locale) => {
-  // Update translations based on locale
-  const translations = locale === "en" ? en : id;
-  currentTranslations.set(translations);
-  
-  // Update the HTML lang attribute
-  if (typeof document !== "undefined") {
-    document.documentElement.lang = locale;
-  }
+   currentTranslations.set(locale === "en" ? en : id);
+
+   if (typeof document !== "undefined") {
+      document.documentElement.lang = locale;
+   }
 });
 
+/**
+ * Helper function to change locale
+ */
 export function setLocale(locale: Locale) {
-  currentLocale.set(locale);
+   currentLocale.set(locale);
 }
 
-// Initialize locale from browser preference if not set
-if (!currentLocale.get()) {
-  if (typeof window !== "undefined") {
-    // Try to detect browser language
-    const browserLang = navigator.language.startsWith("id") ? "id" : "en";
-    currentLocale.set(browserLang as Locale);
-  }
+// Initialize browser preference (only if nothing saved yet)
+if (!currentLocale.get() && typeof window !== "undefined") {
+   const browserLang = navigator.language.startsWith("id") ? "id" : "en";
+   currentLocale.set(browserLang as Locale);
 }

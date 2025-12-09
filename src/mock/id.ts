@@ -14,12 +14,16 @@ export const id = {
       seeDetail: "Lihat Detail",
    },
 
-   testimonials:{
+   testimonials: {
       title: "Apa Kata Klien Kami",
    },
 
-   team:{
+   team: {
       title: "Tim Kami",
+   },
+
+   event: {
+      title: "Penyelenggara Acara",
    },
 
    faq: {
@@ -78,7 +82,7 @@ export const id = {
 
                <p>Kami berkomitmen untuk menjembatani mimpi pelanggan kami menjadi kenyataan dengan
                   menyediakan layanan perjalanan berkualitas tinggi, termasuk paket liburan, tur
-                  perjalanan, pemesanan hotel, tiket pesawat, dan masih banyak lagi.</p>`
+                  perjalanan, pemesanan hotel, tiket pesawat, dan masih banyak lagi.</p>`,
    },
 
    // Services section
@@ -124,7 +128,8 @@ export const id = {
 
    // Footer
    footer: {
-      description: "RKG Tour adalah agen perjalanan dan penyelenggara acara profesional, yang berdedikasi untuk menciptakan perjalanan tak terlupakan dan pengalaman yang mulus.",
+      description:
+         "RKG Tour adalah agen perjalanan dan penyelenggara acara profesional, yang berdedikasi untuk menciptakan perjalanan tak terlupakan dan pengalaman yang mulus.",
       copyright: "© 2025 RKG Tour. Hak cipta dilindungi.",
       privacy: "Kebijakan Privasi",
       terms: "Ketentuan Layanan",

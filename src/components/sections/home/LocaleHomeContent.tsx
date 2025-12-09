@@ -79,9 +79,6 @@ const LocaleHomeContent: React.FC<LocaleHomeContentProps> = ({
          const resEvents = await getEvents();
          const eventsData = resEvents.data.data;
 
-         const resTestimonials = await getTestimonials();
-         const testimonialsData = resTestimonials.data.data;
-
          const resEventTypes = await getEventTypes();
          const eventTypesData = resEventTypes.data.data;
 
@@ -195,8 +192,8 @@ const LocaleHomeContent: React.FC<LocaleHomeContentProps> = ({
                <div
                   className={`grid gap-6 ${
                      isOdd
-                        ? "sm:grid-cols-6 md:grid-cols-3"
-                        : "sm:grid-cols-6 lg:grid-cols-3"
+                        ? "sm:grid-cols-2 md:grid-cols-3"
+                        : "sm:grid-cols-2 md:grid-cols-3"
                   }`}
                >
                   {restRows &&

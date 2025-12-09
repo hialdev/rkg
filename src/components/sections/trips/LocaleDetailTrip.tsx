@@ -49,22 +49,20 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
          {tripData.type == "private-trip" ? (
             <div className="container mx-auto px-4 py-8">
                <div>
-                  <GalleryProgressBar
-                     images={galleriesImages}
-                  />
+                  <GalleryProgressBar images={galleriesImages} />
                </div>
                <div className="grid grid-cols-13 mt-6 gap-y-10 md:gap-5">
                   <div className="col-span-13 md:col-span-7">
                      <div
                         className={`${"p-2 px-4 text-white font-medium text-sm inline-flex rounded-full mb-3"} ${
-                           tripData?.type == "open-trip"
-                              ? "bg-linear-to-bl from-emerald-300 to-cyan-700"
-                              : "bg-linear-to-tl from-yellow-40 via-yellow-600 to-orange-300"
+                           tripData?.type == "private-trip"
+                              ? "bg-linear-to-tl from-yellow-40 via-yellow-600 to-orange-300"
+                              : "bg-linear-to-bl from-emerald-300 to-cyan-700"
                         }`}
                      >
-                        {tripData?.type == "open-trip"
-                           ? translations.label.open_trip
-                           : translations.label.private_trip}
+                        {tripData?.type == "private-trip"
+                           ? translations.label.private_trip
+                           : translations.label.open_trip}
                      </div>
                      <h1 className="text-3xl md:text-5xl font-bold text-red-600">
                         {tripData.title}
@@ -96,9 +94,7 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                            />
                            <div>
                               <h4 className="font-medium">Season Terbaik</h4>
-                              <div className="">
-                                 {tripData?.best_season ?? "All"}
-                              </div>
+                              <div className="">All</div>
                            </div>
                         </div>
                         <div className="flex items-center gap-3 p-3 px-6 rounded-full bg-stone-100">
@@ -152,8 +148,10 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                      <div className="md:sticky md:top-10">
                         <GalleryProgressBar
                            images={galleriesImages}
-                           altTexts={galleriesImages.map((_, index) => 
-                              tripData.title ? `${tripData.title} ${index + 1}` : `Image ${index + 1}`
+                           altTexts={galleriesImages.map((_, index) =>
+                              tripData.title
+                                 ? `${tripData.title} ${index + 1}`
+                                 : `Image ${index + 1}`
                            )}
                         />
                      </div>
@@ -206,9 +204,7 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                                     <h4 className="font-medium">
                                        Season Terbaik
                                     </h4>
-                                    <div className="">
-                                       {tripData.best_season ?? "All"}
-                                    </div>
+                                    <div className="">All</div>
                                  </div>
                               </div>
                               <div className="flex items-center gap-3 p-3 px-6 rounded-full bg-stone-100">

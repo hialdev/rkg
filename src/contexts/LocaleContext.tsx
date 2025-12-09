@@ -1,46 +1,93 @@
-import React, { createContext, useContext, type ReactNode, useEffect } from "react";
-import { currentLocale, currentTranslations, setLocale, type Locale } from "../stores/locale";
+import React, { createContext, useContext, type ReactNode } from "react";
+import {
+   currentLocale,
+   currentTranslations,
+   translationCache,
+   setLocale,
+   type Locale,
+} from "../stores/locale";
 import { useStore } from "@nanostores/react";
+import { doTranslate } from "../fetchers/webprofile";
 
-// Create context
 interface LocaleContextType {
    locale: Locale;
-   translations: any;
+   translations: Record<string, any>;
    setLocale: (locale: Locale) => void;
+   t: (text: string) => Promise<string>;
 }
 
 const LocaleContext = createContext<LocaleContextType | undefined>(undefined);
 
-// Provider component that uses nanostore persistent
 export const LocaleProvider: React.FC<{ children: ReactNode }> = ({
    children,
 }) => {
-   // Get values from nanostore
    const locale = useStore(currentLocale);
    const translations = useStore(currentTranslations);
+   const cache = useStore(translationCache);
+
+   const t = async (text: string): Promise<string> => {
+      if (!text) return "";
+
+      // EN langsung return asli
+      if (locale === "en") return text;
+
+      // 1. Check static dictionary
+      const translationsDict = translations as Record<string, any>;
+      if (translationsDict[text]) return translationsDict[text];
+
+      // 2. Check dynamic cache
+      const cacheStore = translationCache.get();
+      if (cacheStore[text]) return cacheStore[text];
+
+      // 3. Translate with API
+      const translated = await doTranslate(text, locale);
+
+      // 4. Save to cache
+      translationCache.set({
+         ...cacheStore,
+         [text]: translated,
+      });
+
+      return translated;
+   };
 
    return (
-      <LocaleContext.Provider value={{ locale, translations, setLocale }}>
+      <LocaleContext.Provider value={{ locale, translations, setLocale, t }}>
          {children}
       </LocaleContext.Provider>
    );
 };
 
-// Custom hook to use locale context
+// Hook
 export const useLocale = () => {
    const context = useContext(LocaleContext);
+
    if (!context) {
-      // Return nanostore values during SSR
       const locale = currentLocale.get();
       const translations = currentTranslations.get();
+
       return {
-         locale: locale,
-         translations: translations,
-         setLocale: (locale: Locale) => {
-            // Update nanostore directly
-            currentLocale.set(locale);
+         locale,
+         translations,
+         setLocale: (locale: Locale) => currentLocale.set(locale),
+         t: async (text: string) => {
+            if (!text) return "";
+            if (locale === "en") return text;
+
+            const cacheStore = translationCache.get();
+            if (cacheStore[text]) return cacheStore[text];
+
+            const translated = await doTranslate(text, locale);
+
+            translationCache.set({
+               ...cacheStore,
+               [text]: translated,
+            });
+
+            return translated;
          },
       };
    }
+
    return context;
 };

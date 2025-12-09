@@ -191,3 +191,23 @@ export const getSetting = (key: string) => {
       `/api/web/setting/${key}`
    );
 };
+
+export async function doTranslate(
+   text: string,
+   target: string = "id",
+   source: string = "auto"
+) {
+   const res = await fetch("https://libretranslate.com/translate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+         q: text,
+         source,
+         target,
+         format: "text",
+      }),
+   });
+
+   const data = await res.json();
+   return data.translatedText;
+}

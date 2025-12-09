@@ -43,8 +43,12 @@ export const en = {
       title: "What Our Clients Say",
    },
 
-   team:{
+   team: {
       title: "Our Team",
+   },
+
+   event: {
+      title: "Event Organizer",
    },
 
    // Hero section
