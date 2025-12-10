@@ -171,25 +171,40 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
             slug: slug || data.slug,
          };
 
-         // Filter out image URLs, only send new file objects to the backend
-         if (formData.images) {
-            const filteredImages = formData.images.filter(
-               (img) => typeof img !== 'string' // Only keep file objects, not URLs
-            );
-            formData.images = filteredImages;
-         }
-
-         // For updates, if image fields are not being updated, preserve the existing values
+         // For updates, handle image fields carefully to support independent updates
          if (currentTrip?.id) {
-            // Check if the image field was touched (changed) - if not, remove it from formData to preserve existing value
+            // Handle single cover image
             const imageField = methods.getFieldState('image');
-            if (!imageField.isDirty && !formData.image) {
+            if (formData.image) {
+               // Keep if it's a new File, delete if it's a URL string
+               if (typeof formData.image === 'string') {
+                  delete formData.image;
+               }
+               // If it's a File object, keep it (will be sent to backend)
+            } else if (!imageField.isDirty) {
+               // Field not touched and no value → delete to preserve DB
                delete formData.image;
             }
-            
-            // Check if the images field was touched (changed) - if not, remove it from formData to preserve existing value
+
+            // Handle multiple slider images
             const imagesField = methods.getFieldState('images');
-            if (!imagesField.isDirty && !formData.images) {
+            if (formData.images && Array.isArray(formData.images)) {
+               // Filter to keep only new File objects
+               const newFiles = formData.images.filter((img) => img instanceof File);
+
+               if (newFiles.length > 0) {
+                  // User uploaded new files → send them
+                  formData.images = newFiles;
+               } else if (!imagesField.isDirty) {
+                  // No new files and field not touched → delete to preserve DB
+                  delete formData.images;
+               } else {
+                  // Field was touched but no new files (user might have removed all)
+                  // Still delete to avoid sending empty array
+                  delete formData.images;
+               }
+            } else if (!imagesField.isDirty) {
+               // No images array and field not touched → delete to preserve DB
                delete formData.images;
             }
          }
