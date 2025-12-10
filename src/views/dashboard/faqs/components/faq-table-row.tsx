@@ -18,6 +18,7 @@ import { useBoolean } from 'minimal-shared/hooks';
 import { Iconify } from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import useFaqStore from 'src/stores/faq';
+import { FaqForm } from './form';
 
 // ----------------------------------------------------------------------
 
@@ -26,21 +27,14 @@ type Props = {
    selected: boolean;
    onSelectRow: () => void;
    onDeleteRow: () => void;
-   editHref: string;
    onSuccessEdit?: () => void;
 };
 
-export function FaqTableRow({
-   row,
-   selected,
-   onSelectRow,
-   onDeleteRow,
-   editHref,
-   onSuccessEdit,
-}: Props) {
+export function FaqTableRow({ row, selected, onSelectRow, onDeleteRow, onSuccessEdit }: Props) {
    const { id, title, content } = row;
 
    const confirm = useBoolean();
+   const editDialog = useBoolean();
    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
    const openMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -96,27 +90,23 @@ export function FaqTableRow({
             anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
          >
-            <Link href={editHref} underline="none">
-               <MenuItem
-                  onClick={() => {
-                     closeMenu();
-                     if (onSuccessEdit) {
-                        onSuccessEdit();
-                     }
-                  }}
-                  sx={{ px:2, gap:2 }}
-               >
-                  <Iconify icon="solar:pen-bold" width={20} />
-                  Edit
-               </MenuItem>
-            </Link>
+            <MenuItem
+               onClick={() => {
+                  closeMenu();
+                  editDialog.onTrue();
+               }}
+               sx={{ px: 2, gap: 2 }}
+            >
+               <Iconify icon="solar:pen-bold" width={20} />
+               Edit
+            </MenuItem>
 
             <MenuItem
                onClick={() => {
                   confirm.onTrue();
                   closeMenu();
                }}
-               sx={{ color: 'error.main', px:2, gap:2 }}
+               sx={{ color: 'error.main', px: 2, gap: 2 }}
             >
                <Iconify icon="solar:trash-bin-trash-bold" width={20} />
                Delete
@@ -140,6 +130,16 @@ export function FaqTableRow({
                   Delete
                </Button>
             }
+         />
+
+         <FaqForm
+            open={editDialog.value}
+            onClose={editDialog.onFalse}
+            onSuccess={() => {
+               editDialog.onFalse();
+               onSuccessEdit?.();
+            }}
+            editData={row}
          />
       </>
    );
