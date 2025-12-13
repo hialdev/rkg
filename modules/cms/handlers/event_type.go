@@ -346,6 +346,11 @@ func (h *EventTypeHandler) UpdateEventType(c *fiber.Ctx) error {
 		return utils.RespApi(c, "ise", "Gagal mendapatkan data terbaru", err.Error())
 	}
 
+	// Reload eventType data to get fresh values (especially for sanitized galleries)
+	if err := h.DB.First(&eventType, "id = ?", id).Error; err != nil {
+		return utils.RespApi(c, "ise", "Gagal mengambil data event type terbaru", err.Error())
+	}
+
 	// Buat response object dengan format JSON yang benar
 	responseEventType := map[string]interface{}{
 		"id":          eventType.ID,
