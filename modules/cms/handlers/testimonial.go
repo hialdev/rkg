@@ -15,10 +15,10 @@ import (
 )
 
 type TestimonialInitialInput struct {
-	Name    *string  `json:"name" validate:"omitempty,max=300"`
-	Role    *string  `json:"role" validate:"omitempty,max=300"`
-	Image   *string  `json:"image,omitempty" validate:"omitempty"`
-	Quote   *string  `json:"quote" validate:"omitempty"`
+	Name      *string  `json:"name" validate:"omitempty,max=300"`
+	Role      *string  `json:"role" validate:"omitempty,max=300"`
+	Image     *string  `json:"image,omitempty" validate:"omitempty"`
+	Quote     *string  `json:"quote" validate:"omitempty"`
 	Galleries []string `json:"galleries,omitempty" validate:"omitempty,max=5"`
 }
 
@@ -58,7 +58,7 @@ func (h *TestimonialHandler) GetAllTestimonials(c *fiber.Ctx) error {
 
 	// --- Filter search
 	if search != "" {
-	db = db.Where(`
+		db = db.Where(`
 			LOWER(name) LIKE ? OR 
 			LOWER(role) LIKE ? OR 
 			LOWER(quote) LIKE ?`,
@@ -74,9 +74,9 @@ func (h *TestimonialHandler) GetAllTestimonials(c *fiber.Ctx) error {
 
 	// --- Sorting (whitelisted)
 	validSortFields := map[string]string{
-	"id":    "id",
-		"name":  "name",
-		"role":  "role",
+		"id":         "id",
+		"name":       "name",
+		"role":       "role",
 		"created_at": "created_at",
 	}
 	sortBy, ok := validSortFields[sort]
@@ -98,14 +98,14 @@ func (h *TestimonialHandler) GetAllTestimonials(c *fiber.Ctx) error {
 	for _, testimonial := range testimonials {
 		// Buat response object dengan format JSON yang benar
 		responseTestimonial := map[string]interface{}{
-			"id":          testimonial.ID,
-			"created_at":  testimonial.CreatedAt,
-			"updated_at":  testimonial.UpdatedAt,
-			"name":        testimonial.Name,
-			"role":        testimonial.Role,
-			"image":       testimonial.Image,
-			"quote":       testimonial.Quote,
-			"galleries":   testimonial.Galleries,
+			"id":         testimonial.ID,
+			"created_at": testimonial.CreatedAt,
+			"updated_at": testimonial.UpdatedAt,
+			"name":       testimonial.Name,
+			"role":       testimonial.Role,
+			"image":      testimonial.Image,
+			"quote":      testimonial.Quote,
+			"galleries":  testimonial.Galleries,
 		}
 		responseTestimonials = append(responseTestimonials, responseTestimonial)
 	}
@@ -190,7 +190,7 @@ func (h *TestimonialHandler) AddTestimonial(c *fiber.Ctx) error {
 		if verrs, ok := err.(validator.ValidationErrors); ok {
 			return utils.RespApi(c, "bad", "Validasi gagal", verrs.Translate(utils.Translator))
 		}
-	return utils.RespApi(c, "bad", "Validasi gagal", err.Error())
+		return utils.RespApi(c, "bad", "Validasi gagal", err.Error())
 	}
 
 	// Convert galleries slice to JSON string for storage
@@ -242,7 +242,7 @@ func (h *TestimonialHandler) UpdateTestimonial(c *fiber.Ctx) error {
 
 		input = TestimonialInitialInput{
 			Name:  &name,
-			Role: &role,
+			Role:  &role,
 			Quote: &quote,
 		}
 
@@ -265,31 +265,41 @@ func (h *TestimonialHandler) UpdateTestimonial(c *fiber.Ctx) error {
 
 		// Handle galleries upload
 		var galleries []string
-		// Parse existing galleries from JSON string if they exist
-		if testimonial.Galleries != nil {
-			if err := json.Unmarshal([]byte(*testimonial.Galleries), &galleries); err != nil {
-				galleries = []string{} // Initialize as empty if parsing fails
+
+		// Step 1: Ambil galleries yang berupa string (URL) dari form value "galleries"
+		form, err := c.MultipartForm()
+		if err == nil {
+			if values, ok := form.Value["galleries"]; ok {
+				for _, v := range values {
+					if v != "" {
+						// Hapus domain/base URL jika ada, simpan path relatif saja
+						if strings.Contains(v, "/uploads/") {
+							parts := strings.Split(v, "/uploads/")
+							if len(parts) > 1 {
+								v = "uploads/" + parts[1]
+							}
+						}
+						galleries = append(galleries, v)
+					}
+				}
 			}
 		}
 
-		// Check if new gallery files are being uploaded
-	galleryFiles, _ := c.MultipartForm()
-		if galleryFiles != nil {
-			galleryFileList := galleryFiles.File["galleries"]
-			if len(galleryFileList) > 0 {
-				// Upload new gallery files
+		// Step 2: Upload new gallery files
+		if galleryFiles, err := c.MultipartForm(); err == nil && galleryFiles != nil {
+			if len(galleryFiles.File["galleries"]) > 0 {
 				if filePaths, err := utils.UploadFileFlex(c, "galleries", "testimonials"); err == nil && len(filePaths) > 0 {
-					// Append new galleries to existing galleries
 					galleries = append(galleries, filePaths...)
 				}
 			}
 		}
+
 		input.Galleries = galleries
 	} else {
 		// Handle JSON data
 		if err := c.BodyParser(&input); err != nil {
 			return utils.RespApi(c, "bad", "Request Body tidak valid", err.Error())
-	}
+		}
 	}
 
 	if err := utils.Validate.Struct(input); err != nil {
@@ -322,21 +332,21 @@ func (h *TestimonialHandler) UpdateTestimonial(c *fiber.Ctx) error {
 		return utils.RespApi(c, "ise", "Gagal memperbarui data Testimonial", err.Error())
 	}
 
-	// Ambil data terbaru
+	// Ambil data terbaru (reload) untuk memastikan data galleries tersanitasi
 	if err := h.DB.First(&testimonial, "id = ?", id).Error; err != nil {
 		return utils.RespApi(c, "ise", "Gagal mendapatkan data terbaru", err.Error())
 	}
 
 	// Buat response object dengan format JSON yang benar
 	responseTestimonial := map[string]interface{}{
-	"id":          testimonial.ID,
-		"created_at":  testimonial.CreatedAt,
-		"updated_at":  testimonial.UpdatedAt,
-		"name":        testimonial.Name,
-		"role":        testimonial.Role,
-		"image":       testimonial.Image,
-		"quote":       testimonial.Quote,
-		"galleries":   testimonial.Galleries,
+		"id":         testimonial.ID,
+		"created_at": testimonial.CreatedAt,
+		"updated_at": testimonial.UpdatedAt,
+		"name":       testimonial.Name,
+		"role":       testimonial.Role,
+		"image":      testimonial.Image,
+		"quote":      testimonial.Quote,
+		"galleries":  testimonial.Galleries,
 	}
 
 	return utils.RespApi(c, "ok", "Berhasil memperbarui data Testimonial", responseTestimonial)
