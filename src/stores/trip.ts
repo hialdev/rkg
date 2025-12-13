@@ -153,13 +153,11 @@ const useTripStore = create<TripState>()(
                // Only append image if it's a new file (not a URL)
                if (data.image && data.image instanceof File) formData.append('image', data.image);
                // Only append images if there are new files (not URLs)
+               // Append images (both new Files and existing URL strings)
                if (data.images && data.images.length > 0) {
-                  const newImageFiles = data.images.filter((img) => img instanceof File);
-                  if (newImageFiles.length > 0) {
-                     newImageFiles.forEach((img: any) => {
-                        formData.append('images', img);
-                     });
-                  }
+                  data.images.forEach((img: any) => {
+                     formData.append('images', img);
+                  });
                }
 
                payload = formData;

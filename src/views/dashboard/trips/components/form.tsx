@@ -158,8 +158,14 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
    // Watch for changes in open_dates and itinerary
    const openDates = watch('open_dates');
    const itinerary = watch('itinerary');
+   const images = watch('images');
 
    const { add, update } = useTripStore();
+
+   const handleRemoveFile = (inputFile: File | string) => {
+      const filtered = images?.filter((file) => file !== inputFile);
+      setValue('images', filtered, { shouldValidate: true, shouldDirty: true });
+   };
 
    const onSubmit = handleSubmit(async (data) => {
       try {
@@ -187,25 +193,15 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
             }
 
             // Handle multiple slider images
-            const imagesField = methods.getFieldState('images');
-            if (formData.images && Array.isArray(formData.images)) {
-               // Filter to keep only new File objects
-               const newFiles = formData.images.filter((img) => img instanceof File);
-
-               if (newFiles.length > 0) {
-                  // User uploaded new files → send them
-                  formData.images = newFiles;
-               } else if (!imagesField.isDirty) {
-                  // No new files and field not touched → delete to preserve DB
-                  delete formData.images;
-               } else {
-                  // Field was touched but no new files (user might have removed all)
-                  // Still delete to avoid sending empty array
+            // We pass the mixed array (File objects + URL strings) directly to the store
+            // The store will handle appending them to FormData
+            if (formData.images && Array.isArray(formData.images) && formData.images.length > 0) {
+               // No filtering here, pass everything
+            } else {
+               // If empty or not array, delete to be safe or let store handle it
+               if (!formData.images || formData.images.length === 0) {
                   delete formData.images;
                }
-            } else if (!imagesField.isDirty) {
-               // No images array and field not touched → delete to preserve DB
-               delete formData.images;
             }
          }
 
@@ -338,6 +334,7 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
                            name="images"
                            maxSize={5242880} // 5MB
                            multiple
+                           onRemove={handleRemoveFile}
                            helperText={
                               <Typography
                                  variant="caption"

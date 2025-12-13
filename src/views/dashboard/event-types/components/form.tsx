@@ -77,6 +77,14 @@ export function EventTypeForm({ currentEventType, onSuccess }: Props) {
       formState: { isSubmitting },
    } = methods;
 
+   const values = watch();
+
+   const handleRemoveFile = (inputFile: File | string) => {
+      const filtered =
+         values.galleries && values.galleries?.filter((file: any) => file !== inputFile);
+      setValue('galleries', filtered, { shouldValidate: true, shouldDirty: true });
+   };
+
    const { add, update } = useEventTypeStore();
 
    const onSubmit = handleSubmit(async (data) => {
@@ -84,8 +92,7 @@ export function EventTypeForm({ currentEventType, onSuccess }: Props) {
          console.info('Event Type Form Data:', data);
 
          // Process galleries to separate files from URLs
-         const processedGalleries =
-            data.galleries?.filter((gallery) => gallery instanceof File) || [];
+         const processedGalleries = (data.galleries || []).filter((item) => item !== null);
 
          // Manually include the slug value since the field is disabled
          const formData = {
@@ -196,6 +203,7 @@ export function EventTypeForm({ currentEventType, onSuccess }: Props) {
                         name="galleries"
                         maxSize={5242880} // 5MB
                         multiple
+                        onRemove={handleRemoveFile}
                         helperText={
                            <Typography
                               variant="caption"
