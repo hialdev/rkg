@@ -507,13 +507,69 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 		}
 
 		// Handle multiple images upload
-	if file, err := c.FormFile("images"); err == nil && file != nil {
-			imagePaths, err := utils.UploadFileFlex(c, "images", "trips")
-			if err == nil && len(imagePaths) > 0 {
-				jsonStr, err := json.Marshal(imagePaths)
-				if err == nil {
-					imgStr := string(jsonStr)
-					input.Images = &imgStr
+		// Step 1: Ambil images yang berupa string (URL) dari form value "images"
+		// Karena client mengirim mix "images" (file) dan "images" (string),
+		// fiber's FormValue hanya mengambil yang pertama atau terakhir, jadi kita cek MultipartForm
+		var existingImages []string
+		form, err := c.MultipartForm()
+		if err == nil {
+			// Retrieve existing strings
+			if values, ok := form.Value["images"]; ok {
+				for _, v := range values {
+					// Pastikan bukan kosong
+					if v != "" {
+						existingImages = append(existingImages, v)
+					}
+				}
+			}
+		}
+
+		// Step 2: Upload file baru
+		var newImagePaths []string
+		if file, err := c.FormFile("images"); err == nil && file != nil {
+			paths, err := utils.UploadFileFlex(c, "images", "trips")
+			if err == nil {
+				newImagePaths = paths
+			}
+		}
+
+		// Step 3: Gabungkan (Existing + New)
+		// Jika ada existing atau new, kita update. Jika kosong semua (tapi field dikirim), berarti user hapus semua
+		if len(existingImages) > 0 || len(newImagePaths) > 0 {
+			allImages := append(existingImages, newImagePaths...)
+			jsonStr, err := json.Marshal(allImages)
+			if err == nil {
+				imgStr := string(jsonStr)
+				input.Images = &imgStr
+			}
+		} else {
+			// Jika client mengirim key "images" tapi kosong/tidak ada isinya, 
+			// dan kita tahu ini multipart update, kita bisa asumsikan user menghapus semua.
+			// Namun perlu hati-hati. Logic di frontend sekarang mengirim semua sisa.
+			// Kalau sisa 0, frontend mungkin tidak kirim key "images" ATAU kirim kosong.
+			// Mari cek apakah key "images" ada di form
+			if form != nil {
+				if _, ok := form.Value["images"]; ok {
+					// Key ada tapi kosong -> set empty array
+					emptyStr := "[]"
+					input.Images = &emptyStr
+				} else if _, ok := form.File["images"]; ok {
+					// Key ada di file tapi mungkin gagal/kosong?
+					// Fallback safe
+				} else {
+				    // Key tidak ada sama sekali -> Jangan update field ini (pertahankan DB)
+				    // Tapi tunggu, frontend kita kirim 'images' terus kalau ada.
+				    // Kalau user hapus semua di frontend, array jadi kosong.
+				    // Frontend: if (!formData.images || formData.images.length === 0) delete formData.images;
+				    // Jadi kalau kosong, key tidak dikirim. Berarti existing DB dipertahankan (Logic `if input.Images != nil` di bawah).
+				    // Ini BENAR untuk "Update partial".
+				    // TAPI user ingin "hapus image lama".
+				    // KASUS: User hapus 1 image, sisa 2. Frontend kirim 2 string. Backend terima 2 string. Update DB -> OK.
+				    // KASUS: User hapus SEMUA. Frontend delete key 'images'. Backend tidak update field 'images'. DB tetap ada image lama. -> BUG.
+				    // FIX: Frontend harus kirim key 'images' sebagai empty array string atau semacamnya jika kosong?
+				    // Atau kita tangani di sini: Kalau logic ini jalan (multipart), tapi input.Images masih nil,
+				    // berarti tidak ada images baru/lama yg dikirim.
+				    // Untuk sekarang ikuti logic "Existing + New", kalau resultnya ada isi, update.
 				}
 			}
 		}

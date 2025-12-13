@@ -271,25 +271,30 @@ func (h *EventTypeHandler) UpdateEventType(c *fiber.Ctx) error {
 
 		// Handle galleries upload
 		var galleries []string
-		// Parse existing galleries from JSON string if they exist
-		if eventType.Galleries != nil {
-			if err := json.Unmarshal([]byte(*eventType.Galleries), &galleries); err != nil {
-				galleries = []string{} // Initialize as empty if parsing fails
+
+		// Step 1: Ambil galleries yang berupa string (URL) dari form value "galleries"
+		// Jangan ambil dari DB (eventType.Galleries) karena kita ingin STATE TERBARU dari frontend (hasil penghapusan user)
+		galleryForm, err := c.MultipartForm()
+		if err == nil {
+			// Retrieve existing strings
+			if values, ok := galleryForm.Value["galleries"]; ok {
+				for _, v := range values {
+					if v != "" {
+						galleries = append(galleries, v)
+					}
+				}
 			}
 		}
 
-		// Check if new gallery files are being uploaded
-		galleryFiles, _ := c.MultipartForm()
-		if galleryFiles != nil {
-			galleryFileList := galleryFiles.File["galleries"]
-			if len(galleryFileList) > 0 {
-				// Upload new gallery files
+		// Step 2: Upload file baru
+		if galleryFiles, err := c.MultipartForm(); err == nil && galleryFiles != nil {
+			if len(galleryFiles.File["galleries"]) > 0 {
 				if filePaths, err := utils.UploadFileFlex(c, "galleries", "event_types"); err == nil && len(filePaths) > 0 {
-					// Append new galleries to existing galleries
 					galleries = append(galleries, filePaths...)
 				}
 			}
 		}
+
 		input.Galleries = galleries
 	} else {
 		// Handle JSON data
