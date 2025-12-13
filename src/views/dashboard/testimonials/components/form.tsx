@@ -86,24 +86,33 @@ export function TestimonialForm({ currentTestimonial, onSuccess, onClose }: Prop
 
    const { add, update } = useTestimonialStore();
 
+   const handleRemoveFile = (inputFile: File | string) => {
+      const filtered =
+         watch('galleries')?.filter((file: any) => {
+            // Handle duplicate URL checking: match exactly
+            // For Files: references are unique in memory usually, but good to check
+            return file !== inputFile;
+         }) || [];
+      setValue('galleries', filtered, { shouldValidate: true, shouldDirty: true });
+   };
+
    const onSubmit = handleSubmit(async (data) => {
       try {
          console.info('Testimonial Form Data:', data);
 
-         // For image and galleries, we need to pass the actual File objects to the service layer
-         // The service layer will handle the multipart form data correctly
-         // Separate File objects from string URLs to match the expected types
-         const imageValue = data.image !== null && data.image instanceof File ? data.image : undefined;
-         const galleriesFiles = data.galleries ? 
-            data.galleries.filter(gallery => gallery !== null && gallery instanceof File) as File[] 
-            : [];
-         
+         const imageValue =
+            data.image !== null && data.image instanceof File ? data.image : undefined;
+
+         // Fix: Do not filter for File instances only. Pass mixed array (File | string).
+         // Filter out nulls.
+         const processedGalleries = (data.galleries || []).filter((item) => item !== null);
+
          const formData = {
             name: data.name,
             role: data.role,
             quote: data.quote,
             image: imageValue,
-            galleries: galleriesFiles,
+            galleries: processedGalleries,
          };
 
          // Use the store methods but make sure the data matches the expected types
@@ -162,27 +171,13 @@ export function TestimonialForm({ currentTestimonial, onSuccess, onClose }: Prop
 
                   <Grid container spacing={3}>
                      <Grid size={{ xs: 12 }} sx={{ mb: 1 }}>
-                        <Field.Text
-                           name="name"
-                           label="Name"
-                           fullWidth
-                        />
+                        <Field.Text name="name" label="Name" fullWidth />
                      </Grid>
                      <Grid size={{ xs: 12 }} sx={{ mb: 1 }}>
-                        <Field.Text
-                           name="role"
-                           label="Role"
-                           fullWidth
-                        />
+                        <Field.Text name="role" label="Role" fullWidth />
                      </Grid>
                      <Grid size={{ xs: 12 }} sx={{ mb: 3 }}>
-                        <Field.Text
-                           multiline
-                           name="quote"
-                           label="Quote"
-                           minRows={3}
-                           fullWidth
-                        />
+                        <Field.Text multiline name="quote" label="Quote" minRows={3} fullWidth />
                      </Grid>
                   </Grid>
                </Grid>
@@ -197,6 +192,7 @@ export function TestimonialForm({ currentTestimonial, onSuccess, onClose }: Prop
                         name="galleries"
                         maxSize={5242880} // 5MB
                         multiple
+                        onRemove={handleRemoveFile}
                         helperText={
                            <Typography
                               variant="caption"
