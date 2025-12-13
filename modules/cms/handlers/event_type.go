@@ -280,6 +280,13 @@ func (h *EventTypeHandler) UpdateEventType(c *fiber.Ctx) error {
 			if values, ok := galleryForm.Value["galleries"]; ok {
 				for _, v := range values {
 					if v != "" {
+						// Hapus domain/base URL jika ada, simpan path relatif saja
+						if strings.Contains(v, "/uploads/") {
+							parts := strings.Split(v, "/uploads/")
+							if len(parts) > 1 {
+								v = "uploads/" + parts[1]
+							}
+						}
 						galleries = append(galleries, v)
 					}
 				}

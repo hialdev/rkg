@@ -399,10 +399,10 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 
 	contentType := c.Get("Content-Type")
 	if strings.Contains(contentType, "multipart/form-data") {
-	// Handle multipart form data for file uploads
+		// Handle multipart form data for file uploads
 		// Check if form values exist before setting them
-	var title, slug, description, location, country, tripType, duration, priceStr, minPeopleStr, meetPoint, content, openDatesStr, destinationsStr, itineraryStr string
-		
+		var title, slug, description, location, country, tripType, duration, priceStr, minPeopleStr, meetPoint, content, openDatesStr, destinationsStr, itineraryStr string
+
 		if c.FormValue("title") != "" {
 			title = c.FormValue("title")
 			input.Title = &title
@@ -411,7 +411,7 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 			slug = c.FormValue("slug")
 			input.Slug = &slug
 		}
-	if c.FormValue("description") != "" {
+		if c.FormValue("description") != "" {
 			description = c.FormValue("description")
 			input.Description = &description
 		}
@@ -447,7 +447,7 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 		}
 
 		// Convert string values to appropriate types if they exist
-	var price *float64
+		var price *float64
 		if priceStr != "" {
 			if p, err := strconv.ParseFloat(priceStr, 64); err == nil {
 				price = &p
@@ -457,7 +457,7 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 			input.Price = price
 		}
 
-	var minPeople *int
+		var minPeople *int
 		if minPeopleStr != "" {
 			if mp, err := strconv.Atoi(minPeopleStr); err == nil {
 				minPeople = &mp
@@ -465,7 +465,7 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 		}
 		if minPeople != nil {
 			input.MinPeople = minPeople
-	}
+		}
 
 		// Parse JSON fields if they exist
 		if openDatesStr != "" {
@@ -518,6 +518,14 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 				for _, v := range values {
 					// Pastikan bukan kosong
 					if v != "" {
+						// Hapus domain/base URL jika ada, simpan path relatif saja
+						// Contoh: http://localhost:8080/uploads/file.jpg -> uploads/file.jpg
+						if strings.Contains(v, "/uploads/") {
+							parts := strings.Split(v, "/uploads/")
+							if len(parts) > 1 {
+								v = "uploads/" + parts[1]
+							}
+						}
 						existingImages = append(existingImages, v)
 					}
 				}
@@ -543,7 +551,7 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 				input.Images = &imgStr
 			}
 		} else {
-			// Jika client mengirim key "images" tapi kosong/tidak ada isinya, 
+			// Jika client mengirim key "images" tapi kosong/tidak ada isinya,
 			// dan kita tahu ini multipart update, kita bisa asumsikan user menghapus semua.
 			// Namun perlu hati-hati. Logic di frontend sekarang mengirim semua sisa.
 			// Kalau sisa 0, frontend mungkin tidak kirim key "images" ATAU kirim kosong.
@@ -557,19 +565,19 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 					// Key ada di file tapi mungkin gagal/kosong?
 					// Fallback safe
 				} else {
-				    // Key tidak ada sama sekali -> Jangan update field ini (pertahankan DB)
-				    // Tapi tunggu, frontend kita kirim 'images' terus kalau ada.
-				    // Kalau user hapus semua di frontend, array jadi kosong.
-				    // Frontend: if (!formData.images || formData.images.length === 0) delete formData.images;
-				    // Jadi kalau kosong, key tidak dikirim. Berarti existing DB dipertahankan (Logic `if input.Images != nil` di bawah).
-				    // Ini BENAR untuk "Update partial".
-				    // TAPI user ingin "hapus image lama".
-				    // KASUS: User hapus 1 image, sisa 2. Frontend kirim 2 string. Backend terima 2 string. Update DB -> OK.
-				    // KASUS: User hapus SEMUA. Frontend delete key 'images'. Backend tidak update field 'images'. DB tetap ada image lama. -> BUG.
-				    // FIX: Frontend harus kirim key 'images' sebagai empty array string atau semacamnya jika kosong?
-				    // Atau kita tangani di sini: Kalau logic ini jalan (multipart), tapi input.Images masih nil,
-				    // berarti tidak ada images baru/lama yg dikirim.
-				    // Untuk sekarang ikuti logic "Existing + New", kalau resultnya ada isi, update.
+					// Key tidak ada sama sekali -> Jangan update field ini (pertahankan DB)
+					// Tapi tunggu, frontend kita kirim 'images' terus kalau ada.
+					// Kalau user hapus semua di frontend, array jadi kosong.
+					// Frontend: if (!formData.images || formData.images.length === 0) delete formData.images;
+					// Jadi kalau kosong, key tidak dikirim. Berarti existing DB dipertahankan (Logic `if input.Images != nil` di bawah).
+					// Ini BENAR untuk "Update partial".
+					// TAPI user ingin "hapus image lama".
+					// KASUS: User hapus 1 image, sisa 2. Frontend kirim 2 string. Backend terima 2 string. Update DB -> OK.
+					// KASUS: User hapus SEMUA. Frontend delete key 'images'. Backend tidak update field 'images'. DB tetap ada image lama. -> BUG.
+					// FIX: Frontend harus kirim key 'images' sebagai empty array string atau semacamnya jika kosong?
+					// Atau kita tangani di sini: Kalau logic ini jalan (multipart), tapi input.Images masih nil,
+					// berarti tidak ada images baru/lama yg dikirim.
+					// Untuk sekarang ikuti logic "Existing + New", kalau resultnya ada isi, update.
 				}
 			}
 		}
@@ -589,7 +597,7 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 
 	// Build updates map only with provided fields
 	updates := make(map[string]interface{})
-	
+
 	if input.Title != nil {
 		updates["title"] = input.Title
 	}
@@ -621,7 +629,7 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 		updates["images"] = *input.Images
 	}
 	if input.MinPeople != nil {
-	updates["min_people"] = input.MinPeople
+		updates["min_people"] = input.MinPeople
 	}
 	if input.MeetPoint != nil {
 		updates["meet_point"] = input.MeetPoint
@@ -674,13 +682,13 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 		"country":      trip.Country,
 		"type":         trip.Type,
 		"duration":     trip.Duration,
-	"price":        trip.Price,
+		"price":        trip.Price,
 		"image":        trip.Image,
 		"images":       parseImagesField(trip.Images),
 		"min_people":   trip.MinPeople,
 		"meet_point":   trip.MeetPoint,
 		"content":      trip.Content,
-	"open_dates":   h.parseJSONField(trip.OpenDates),
+		"open_dates":   h.parseJSONField(trip.OpenDates),
 		"destinations": h.parseJSONField(trip.Destinations),
 		"itinerary":    h.parseJSONField(trip.Itinerary),
 	}
