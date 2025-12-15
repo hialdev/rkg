@@ -153,7 +153,7 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
    } = methods;
 
    useEffect(() => {
-      all();
+      all({limit: 1000});
    }, []);
    // Watch for changes in open_dates and itinerary
    const openDates = watch('open_dates');
