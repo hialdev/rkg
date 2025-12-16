@@ -24,7 +24,7 @@ type TripInitialInput struct {
 	Duration     *string     `json:"duration" validate:"omitempty,max=20"`
 	Price        *float64    `json:"price" validate:"omitempty,min=0"`
 	Image        *string     `json:"image,omitempty" validate:"omitempty"`
-	Images       *string     `json:"images,omitempty" validate:"omitempty"`
+	Images       interface{} `json:"images,omitempty" validate:"omitempty"`
 	MinPeople    *int        `json:"min_people,omitempty" validate:"omitempty,min=1"`
 	MeetPoint    *string     `json:"meet_point,omitempty" validate:"omitempty,max=300"`
 	Content      *string     `json:"content,omitempty" validate:"omitempty"`
@@ -61,6 +61,37 @@ func parseImagesField(images *string) interface{} {
 		return []string{}
 	}
 	return result
+}
+
+// processImagesInput converts various input types for images into a JSON string pointer
+func processImagesInput(data interface{}) *string {
+	if data == nil {
+		return nil
+	}
+
+	switch v := data.(type) {
+	case string:
+		if v == "" {
+			return nil
+		}
+		return &v
+	case *string:
+		return v
+	case []interface{}, []string:
+		bytes, err := json.Marshal(v)
+		if err == nil {
+			s := string(bytes)
+			return &s
+		}
+	}
+
+	// Fallback for other types
+	bytes, err := json.Marshal(data)
+	if err == nil {
+		s := string(bytes)
+		return &s
+	}
+	return nil
 }
 
 func NewTripHandler(db *gorm.DB) *TripHandler {
@@ -354,7 +385,7 @@ func (h *TripHandler) AddTrip(c *fiber.Ctx) error {
 
 	var imagesJSONStr *string
 	if input.Images != nil {
-		imagesJSONStr = input.Images
+		imagesJSONStr = processImagesInput(input.Images)
 	}
 
 	trip := models.Trip{
@@ -626,7 +657,9 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 		updates["image"] = input.Image
 	}
 	if input.Images != nil {
-		updates["images"] = *input.Images
+		if processed := processImagesInput(input.Images); processed != nil {
+			updates["images"] = *processed
+		}
 	}
 	if input.MinPeople != nil {
 		updates["min_people"] = input.MinPeople
