@@ -17,7 +17,7 @@ type WebProfileHandler struct {
 func (h *WebProfileHandler) GetLocations(c *fiber.Ctx) error {
 	var locations []struct {
 		Location string `json:"location"`
-		Country string `json:"country_"`
+		Country  string `json:"country_"`
 	}
 
 	result := h.DB.Model(&models.Trip{}).
@@ -47,21 +47,21 @@ func (h *WebProfileHandler) GetTrips(c *fiber.Ctx) error {
 	query := h.DB.Model(&models.Trip{})
 
 	if slug != "" {
-	// Get specific trip by slug
-	query = query.Where("slug = ?", slug)
+		// Get specific trip by slug
+		query = query.Where("slug = ?", slug)
 		result := query.First(&trips)
 		if result.Error != nil {
 			if result.Error == gorm.ErrRecordNotFound {
 				return utils.RespApi(c, "empty", "Trip not found", nil)
 			}
 			return utils.RespApi(c, "ise", "Failed to fetch trip", nil)
-	}
+		}
 	} else {
 		// Apply filters for list view
 		if tripType != "" {
 			query = query.Where("type = ?", tripType)
 		}
-		
+
 		if locationQuery != "" {
 			// Split location query by comma to handle multiple locations
 			locations := strings.Split(locationQuery, ",")
@@ -69,19 +69,19 @@ func (h *WebProfileHandler) GetTrips(c *fiber.Ctx) error {
 			for i, loc := range locations {
 				locations[i] = strings.TrimSpace(loc)
 			}
-			
+
 			// Use IN clause to filter by multiple locations
 			query = query.Where("location IN ?", locations)
 		}
-		
+
 		result := query.Find(&trips)
 		if result.Error != nil {
 			return utils.RespApi(c, "ise", "Failed to fetch trips", nil)
-	}
+		}
 
 		if len(trips) == 0 {
 			return utils.RespApi(c, "empty", "No trips found", nil)
-	}
+		}
 	}
 
 	return utils.RespApi(c, "ok", "Trips retrieved successfully", trips)
@@ -105,7 +105,7 @@ func (h *WebProfileHandler) GetEvents(c *fiber.Ctx) error {
 	} else {
 		// Get all events
 		result := h.DB.Find(&events)
-	if result.Error != nil {
+		if result.Error != nil {
 			return utils.RespApi(c, "ise", "Failed to fetch events", nil)
 		}
 
@@ -329,7 +329,7 @@ func (h *WebProfileHandler) GetSetting(c *fiber.Ctx) error {
 
 	result := h.DB.Where("set_key = ?", key).First(&setting)
 	if result.Error != nil {
-	if result.Error == gorm.ErrRecordNotFound {
+		if result.Error == gorm.ErrRecordNotFound {
 			return utils.RespApi(c, "empty", "Setting not found", nil)
 		}
 		return utils.RespApi(c, "ise", "Failed to fetch setting", nil)
