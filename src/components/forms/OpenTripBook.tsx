@@ -123,28 +123,40 @@ const OpenTripBook = ({ tripData }: OpenTripBookProps) => {
                <Typography variant="body2" sx={{ mb: 1 }}>
                   {translations.label.available_dates}
                </Typography>
+
                <Box className="flex flex-wrap gap-2 mb-2">
-                  {tripData.open_dates.map((dateRange: any, index: number) => {
-                     const isSelected =
-                        selectedDate ===
-                        `${dayjs(dateRange.from_date).format(
-                           "DD MMM YYYY"
-                        )} - ${dayjs(dateRange.to_date).format("DD MMM YYYY")}`;
-                     return (
-                        <Chip
-                           key={index}
-                           label={`${dayjs(dateRange.from_date).format(
-                              "DD MMM YYYY"
-                           )} - ${dayjs(dateRange.to_date).format(
-                              "DD MMM YYYY"
-                           )}`}
-                           onClick={() => handleDateSelect(dateRange)}
-                           variant={isSelected ? "filled" : "outlined"}
-                           color={isSelected ? "primary" : "default"}
-                           className="cursor-pointer"
-                        />
-                     );
-                  })}
+                  {(() => {
+                     const dates =
+                        typeof tripData.open_dates === "string"
+                           ? JSON.parse(tripData.open_dates)
+                           : tripData.open_dates;
+
+                     return Array.isArray(dates)
+                        ? dates.map((dateRange: any, index: number) => {
+                             const isSelected =
+                                selectedDate ===
+                                `${dayjs(dateRange.from_date).format(
+                                   "DD MMM YYYY"
+                                )} - ${dayjs(dateRange.to_date).format(
+                                   "DD MMM YYYY"
+                                )}`;
+                             return (
+                                <Chip
+                                   key={index}
+                                   label={`${dayjs(dateRange.from_date).format(
+                                      "DD MMM YYYY"
+                                   )} - ${dayjs(dateRange.to_date).format(
+                                      "DD MMM YYYY"
+                                   )}`}
+                                   onClick={() => handleDateSelect(dateRange)}
+                                   variant={isSelected ? "filled" : "outlined"}
+                                   color={isSelected ? "primary" : "default"}
+                                   className="cursor-pointer"
+                                />
+                             );
+                          })
+                        : null;
+                  })()}
                </Box>
                {errors.openDate && (
                   <FormHelperText>{errors.openDate.message}</FormHelperText>

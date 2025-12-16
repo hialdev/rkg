@@ -9,21 +9,20 @@ interface TeamCardProps {
 const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
    const { t } = useLocale();
    const [summary, setSummary] = useState(team.summary);
+   const [isMounted, setIsMounted] = useState(true)
+
+   const runTranslate = async () => {
+      if (!team.summary) return;
+      const translated = await t(team.summary);
+      if (isMounted) setSummary(translated);
+      console.log(team.summary);
+      console.log(translated);
+   };
 
    useEffect(() => {
-      let isMounted = true;
-
-      const runTranslate = async () => {
-         if (!team.summary) return;
-         const translated = await t(team.summary);
-         if (isMounted) setSummary(translated);
-         console.log(team.summary)
-         console.log(translated)
-      };
-
       runTranslate();
       return () => {
-         isMounted = false;
+         setIsMounted(false);
       };
    }, [team.summary, t]);
 

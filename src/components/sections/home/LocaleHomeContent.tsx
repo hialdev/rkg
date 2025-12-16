@@ -28,6 +28,7 @@ import EventStatistics from "../../../components/sections/home/EventStatistics";
 import TeamBox from "../../../components/sections/home/TeamBox";
 import ClientList from "../../../components/sections/home/ClientList";
 import ConsultationBox from "../../../components/sections/home/ConsultationBox";
+import OfflineIcon from "../../OfflineIcon";
 
 interface LocaleHomeContentProps {
    isFloating?: boolean;
@@ -35,6 +36,7 @@ interface LocaleHomeContentProps {
 
 interface DataHomeType {
    image_heroes: string[];
+   trips: Trip[];
    selected_trips: Trip[];
    private_trips: Trip[];
    events: Event[];
@@ -88,6 +90,7 @@ const LocaleHomeContent: React.FC<LocaleHomeContentProps> = ({
 
          const responseDataHome = {
             image_heroes: imageHeroes,
+            trips: trips,
             selected_trips: trips.slice(0, 6),
             private_trips: privTrips,
             events: eventsData,
@@ -146,6 +149,17 @@ const LocaleHomeContent: React.FC<LocaleHomeContentProps> = ({
                   </div>
                ))}
             </div>
+            {dataHome?.trips && dataHome?.trips.length > 6 && (
+               <div className="flex items-center justify-center pt-10 w-full">
+                  <a
+                     href="/search"
+                     className="flex items-center gap-3 justify-center px-4 py-2 rounded-full border-2 border-stone-700 bg-transparent hover:bg-stone-700 hover:text-white transition-colors duration-300 text-stone-700"
+                  >
+                     <span className="whitespace-nowrap">See More</span>
+                     <OfflineIcon name="arrow" />
+                  </a>
+               </div>
+            )}
          </section>
 
          <section className="container mx-auto pb-20 pt-10 px-3">

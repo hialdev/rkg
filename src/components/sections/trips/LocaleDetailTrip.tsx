@@ -28,6 +28,23 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
 
    console.log("Trip Data in LocaleDetailTrip: ", tripData);
 
+   // Parse JSON fields if they are strings
+   const parsedTripData = {
+      ...tripData,
+      open_dates:
+         typeof tripData.open_dates === "string"
+            ? JSON.parse(tripData.open_dates)
+            : tripData.open_dates,
+      destinations:
+         typeof tripData.destinations === "string"
+            ? JSON.parse(tripData.destinations)
+            : tripData.destinations,
+      itinerary:
+         typeof tripData.itinerary === "string"
+            ? JSON.parse(tripData.itinerary)
+            : tripData.itinerary,
+   };
+
    let galleriesImages = [];
    let parsedImages = JSON.parse(tripData?.images || "[]");
    if (parsedImages && Array.isArray(parsedImages)) {
@@ -44,9 +61,11 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
    );
 
    console.log("Galleries Images: ", galleriesImages);
+   // Use parsedTripData instead of tripData for rendering
+   const displayTripData = parsedTripData; // Alias for cleaner usage below
    return (
       <>
-         {tripData.type == "private-trip" ? (
+         {displayTripData.type == "private-trip" ? (
             <div className="container mx-auto px-4 py-8">
                <div>
                   <GalleryProgressBar images={galleriesImages} />
@@ -55,22 +74,22 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                   <div className="col-span-13 md:col-span-7">
                      <div
                         className={`${"p-2 px-4 text-white font-medium text-sm inline-flex rounded-full mb-3"} ${
-                           tripData?.type == "private-trip"
+                           displayTripData?.type == "private-trip"
                               ? "bg-linear-to-tl from-yellow-40 via-yellow-600 to-orange-300"
                               : "bg-linear-to-bl from-emerald-300 to-cyan-700"
                         }`}
                      >
-                        {tripData?.type == "private-trip"
+                        {displayTripData?.type == "private-trip"
                            ? translations.label.private_trip
                            : translations.label.open_trip}
                      </div>
                      <h1 className="text-3xl md:text-5xl font-bold text-red-600">
-                        {tripData.title}
+                        {displayTripData.title}
                      </h1>
                      <h2 className="text-xl md:text-2xl my-3">
                         {translations.label.start_from}{" "}
                         <strong>
-                           Rp{tripData.price?.toLocaleString("id-ID")}
+                           Rp{displayTripData.price?.toLocaleString("id-ID")}
                         </strong>
                         /{translations.label.person}
                      </h2>
@@ -83,7 +102,7 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                            <div>
                               <h4 className="font-medium">Meeting Point</h4>
                               <div className="line-clamp-1 whitespace-nowrap">
-                                 {tripData.meet_point}
+                                 {displayTripData.meet_point}
                               </div>
                            </div>
                         </div>
@@ -105,7 +124,8 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                            <div>
                               <h4 className="font-medium">Destinasi</h4>
                               <div className="">
-                                 {tripData.destinations.length} Destinasi
+                                 {displayTripData.destinations?.length || 0}{" "}
+                                 Destinasi
                               </div>
                            </div>
                         </div>
@@ -116,14 +136,14 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                            />
                            <div>
                               <h4 className="font-medium">Duration</h4>
-                              <div className="">{tripData.duration}</div>
+                              <div className="">{displayTripData.duration}</div>
                            </div>
                         </div>
                      </div>
                   </div>
 
                   <div className="col-span-13 md:col-span-6">
-                     <PrivateTripBook tripData={tripData} />
+                     <PrivateTripBook tripData={displayTripData} />
                   </div>
                </div>
 
@@ -134,12 +154,12 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                   <div
                      className="prose prose-stone mt-2"
                      dangerouslySetInnerHTML={{
-                        __html: tripData.content ?? "",
+                        __html: displayTripData.content ?? "",
                      }}
                   />
                </section>
 
-               <TripSections tripData={tripData} />
+               <TripSections tripData={displayTripData} />
             </div>
          ) : (
             <div className="container mx-auto px-4 py-8">
@@ -149,8 +169,8 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                         <GalleryProgressBar
                            images={galleriesImages}
                            altTexts={galleriesImages.map((_, index) =>
-                              tripData.title
-                                 ? `${tripData.title} ${index + 1}`
+                              displayTripData.title
+                                 ? `${displayTripData.title} ${index + 1}`
                                  : `Image ${index + 1}`
                            )}
                         />
@@ -161,22 +181,25 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                         <div className="col-span-13">
                            <div
                               className={`${"p-2 px-4 text-white font-medium text-sm inline-flex rounded-full mb-3"} ${
-                                 tripData.type == "open-trip"
+                                 displayTripData.type == "open-trip"
                                     ? "bg-linear-to-bl from-emerald-300 to-cyan-700"
                                     : "bg-linear-to-tl from-yellow-40 via-yellow-600 to-orange-300"
                               }`}
                            >
-                              {tripData.type == "open-trip"
+                              {displayTripData.type == "open-trip"
                                  ? translations.label.open_trip
                                  : translations.label.private_trip}
                            </div>
                            <h1 className="text-2xl md:text-5xl font-bold text-red-600">
-                              {tripData.title}
+                              {displayTripData.title}
                            </h1>
                            <h2 className="text-xl md:text-2xl my-3">
                               {translations.label.start_from}{" "}
                               <strong>
-                                 Rp{tripData.price?.toLocaleString("id-ID")}
+                                 Rp
+                                 {displayTripData.price?.toLocaleString(
+                                    "id-ID"
+                                 )}
                               </strong>
                               /{translations.label.person}
                            </h2>
@@ -191,7 +214,7 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                                        Meeting Point
                                     </h4>
                                     <div className="line-clamp-1 whitespace-nowrap">
-                                       {tripData.meet_point}
+                                       {displayTripData.meet_point}
                                     </div>
                                  </div>
                               </div>
@@ -215,7 +238,9 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                                  <div>
                                     <h4 className="font-medium">Destinasi</h4>
                                     <div className="">
-                                       {tripData.destinations.length} Destinasi
+                                       {displayTripData.destinations?.length ||
+                                          0}{" "}
+                                       Destinasi
                                     </div>
                                  </div>
                               </div>
@@ -226,14 +251,16 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                                  />
                                  <div>
                                     <h4 className="font-medium">Duration</h4>
-                                    <div className="">{tripData.duration}</div>
+                                    <div className="">
+                                       {displayTripData.duration}
+                                    </div>
                                  </div>
                               </div>
                            </div>
                         </div>
 
                         <div className="col-span-13">
-                           <OpenTripBook tripData={tripData} />
+                           <OpenTripBook tripData={displayTripData} />
                         </div>
                      </div>
                   </div>
@@ -246,7 +273,7 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                   <div
                      className="prose prose-stone mt-2"
                      dangerouslySetInnerHTML={{
-                        __html: tripData.content ?? "",
+                        __html: displayTripData.content ?? "",
                      }}
                   />
                </section>
@@ -256,11 +283,11 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                      {translations.label.itinerary}
                   </h2>
                   <div className="">
-                     <ItineraryPath itinerary={tripData.itinerary} />
+                     <ItineraryPath itinerary={displayTripData.itinerary} />
                   </div>
                </section>
 
-               <TripSections tripData={tripData} />
+               <TripSections tripData={displayTripData} />
             </div>
          )}
       </>

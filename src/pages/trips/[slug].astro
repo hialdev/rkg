@@ -7,22 +7,27 @@ import LocaleDetailTrip from "../../components/sections/trips/LocaleDetailTrip";
 import { getTripBySlug, type Trip } from "../../fetchers";
 
 export const getStaticPaths: GetStaticPaths = async () => {
-   return []
+   return [];
 };
 
 export const prerender = false;
 
 const { slug } = Astro.params;
-const resTrip = await getTripBySlug(String(slug) ?? '')
-const tripData:Trip = resTrip.data.data[0]
+const resTrip = await getTripBySlug(String(slug) ?? "");
+const tripData: Trip | undefined = resTrip?.data?.data?.[0];
+
+if (!tripData) {
+   return Astro.redirect("/404");
+}
 
 const metaData: PageMetaType = {
-   title: `${tripData?.title} | RKG Tour & Travel`,
-   description: tripData?.description || "",
-   image: tripData?.image ? import.meta.env.PUBLIC_API_URL+'/'+tripData?.image : "/assets/rkgtour.webp",
+   title: `${tripData.title} | RKG Tour & Travel`,
+   description: tripData.description || "",
+   image: tripData.image
+      ? import.meta.env.PUBLIC_API_URL + "/" + tripData.image
+      : "/assets/rkgtour.webp",
    robot: true,
 };
-
 ---
 
 <Layout pageMeta={metaData}>
