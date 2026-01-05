@@ -28,6 +28,8 @@ type TripInitialInput struct {
 	MinPeople    *int        `json:"min_people,omitempty" validate:"omitempty,min=1"`
 	MeetPoint    *string     `json:"meet_point,omitempty" validate:"omitempty,max=300"`
 	Content      *string     `json:"content,omitempty" validate:"omitempty"`
+	UseOpenDates *bool       `json:"use_open_dates,omitempty" validate:"omitempty"`
+	UseItinerary *bool       `json:"use_itinerary,omitempty" validate:"omitempty"`
 	OpenDates    interface{} `json:"open_dates" validate:"omitempty"`
 	Destinations interface{} `json:"destinations" validate:"omitempty"`
 	Itinerary    interface{} `json:"itinerary" validate:"omitempty"`
@@ -63,7 +65,29 @@ func parseImagesField(images *string) interface{} {
 	return result
 }
 
+// stripServerURL removes server URL prefix from image path
+// Converts "http://localhost:8080/uploads/..." to "uploads/..."
+func stripServerURL(imagePath string) string {
+	if imagePath == "" {
+		return imagePath
+	}
+
+	// Check if it starts with http:// or https://
+	if strings.HasPrefix(imagePath, "http://") || strings.HasPrefix(imagePath, "https://") {
+		// Find the position of "uploads/"
+		uploadsIndex := strings.Index(imagePath, "uploads/")
+		if uploadsIndex != -1 {
+			// Return from "uploads/" onwards
+			return imagePath[uploadsIndex:]
+		}
+	}
+
+	// If no server URL found, return as is
+	return imagePath
+}
+
 // processImagesInput converts various input types for images into a JSON string pointer
+// and strips server URLs from image paths
 func processImagesInput(data interface{}) *string {
 	if data == nil {
 		return nil
@@ -74,11 +98,45 @@ func processImagesInput(data interface{}) *string {
 		if v == "" {
 			return nil
 		}
+		// Parse the JSON string to clean URLs
+		var images []string
+		if err := json.Unmarshal([]byte(v), &images); err == nil {
+			// Clean each image URL
+			for i, img := range images {
+				images[i] = stripServerURL(img)
+			}
+			// Marshal back to JSON
+			if bytes, err := json.Marshal(images); err == nil {
+				s := string(bytes)
+				return &s
+			}
+		}
 		return &v
 	case *string:
-		return v
-	case []interface{}, []string:
-		bytes, err := json.Marshal(v)
+		if v == nil {
+			return nil
+		}
+		return processImagesInput(*v)
+	case []interface{}:
+		// Clean URLs in the slice
+		cleaned := make([]string, 0, len(v))
+		for _, item := range v {
+			if str, ok := item.(string); ok {
+				cleaned = append(cleaned, stripServerURL(str))
+			}
+		}
+		bytes, err := json.Marshal(cleaned)
+		if err == nil {
+			s := string(bytes)
+			return &s
+		}
+	case []string:
+		// Clean URLs in the slice
+		cleaned := make([]string, 0, len(v))
+		for _, str := range v {
+			cleaned = append(cleaned, stripServerURL(str))
+		}
+		bytes, err := json.Marshal(cleaned)
 		if err == nil {
 			s := string(bytes)
 			return &s
@@ -112,25 +170,27 @@ func (h *TripHandler) GetTrip(c *fiber.Ctx) error {
 
 	// Buat response object dengan format JSON yang benar
 	responseTrip := map[string]interface{}{
-		"id":           trip.ID,
-		"created_at":   trip.CreatedAt,
-		"updated_at":   trip.UpdatedAt,
-		"title":        trip.Title,
-		"slug":         trip.Slug,
-		"description":  trip.Description,
-		"location":     trip.Location,
-		"country":      trip.Country,
-		"type":         trip.Type,
-		"duration":     trip.Duration,
-		"price":        trip.Price,
-		"image":        trip.Image,
-		"images":       trip.Images,
-		"min_people":   trip.MinPeople,
-		"meet_point":   trip.MeetPoint,
-		"content":      trip.Content,
-		"open_dates":   h.parseJSONField(trip.OpenDates),
-		"destinations": h.parseJSONField(trip.Destinations),
-		"itinerary":    h.parseJSONField(trip.Itinerary),
+		"id":             trip.ID,
+		"created_at":     trip.CreatedAt,
+		"updated_at":     trip.UpdatedAt,
+		"title":          trip.Title,
+		"slug":           trip.Slug,
+		"description":    trip.Description,
+		"location":       trip.Location,
+		"country":        trip.Country,
+		"type":           trip.Type,
+		"duration":       trip.Duration,
+		"price":          trip.Price,
+		"image":          trip.Image,
+		"images":         trip.Images,
+		"min_people":     trip.MinPeople,
+		"meet_point":     trip.MeetPoint,
+		"content":        trip.Content,
+		"use_open_dates": trip.UseOpenDates,
+		"use_itinerary":  trip.UseItinerary,
+		"open_dates":     h.parseJSONField(trip.OpenDates),
+		"destinations":   h.parseJSONField(trip.Destinations),
+		"itinerary":      h.parseJSONField(trip.Itinerary),
 	}
 
 	return utils.RespApi(c, "ok", "Berhasil mendapatkan data Trip", responseTrip)
@@ -206,25 +266,27 @@ func (h *TripHandler) GetAllTrips(c *fiber.Ctx) error {
 	for _, trip := range trips {
 		// Buat response object dengan format JSON yang benar
 		responseTrip := map[string]interface{}{
-			"id":           trip.ID,
-			"created_at":   trip.CreatedAt,
-			"updated_at":   trip.UpdatedAt,
-			"title":        trip.Title,
-			"slug":         trip.Slug,
-			"description":  trip.Description,
-			"location":     trip.Location,
-			"country":      trip.Country,
-			"type":         trip.Type,
-			"duration":     trip.Duration,
-			"price":        trip.Price,
-			"image":        trip.Image,
-			"images":       parseImagesField(trip.Images),
-			"min_people":   trip.MinPeople,
-			"meet_point":   trip.MeetPoint,
-			"content":      trip.Content,
-			"open_dates":   h.parseJSONField(trip.OpenDates),
-			"destinations": h.parseJSONField(trip.Destinations),
-			"itinerary":    h.parseJSONField(trip.Itinerary),
+			"id":             trip.ID,
+			"created_at":     trip.CreatedAt,
+			"updated_at":     trip.UpdatedAt,
+			"title":          trip.Title,
+			"slug":           trip.Slug,
+			"description":    trip.Description,
+			"location":       trip.Location,
+			"country":        trip.Country,
+			"type":           trip.Type,
+			"duration":       trip.Duration,
+			"price":          trip.Price,
+			"image":          trip.Image,
+			"images":         parseImagesField(trip.Images),
+			"min_people":     trip.MinPeople,
+			"meet_point":     trip.MeetPoint,
+			"content":        trip.Content,
+			"use_open_dates": trip.UseOpenDates,
+			"use_itinerary":  trip.UseItinerary,
+			"open_dates":     h.parseJSONField(trip.OpenDates),
+			"destinations":   h.parseJSONField(trip.Destinations),
+			"itinerary":      h.parseJSONField(trip.Itinerary),
 		}
 		responseTrips = append(responseTrips, responseTrip)
 	}
@@ -402,6 +464,8 @@ func (h *TripHandler) AddTrip(c *fiber.Ctx) error {
 		MinPeople:    input.MinPeople,
 		MeetPoint:    input.MeetPoint,
 		Content:      input.Content,
+		UseOpenDates: input.UseOpenDates,
+		UseItinerary: input.UseItinerary,
 		OpenDates:    openDatesJSON,
 		Destinations: destinationsJSON,
 		Itinerary:    itineraryJSON,
@@ -432,7 +496,7 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 	if strings.Contains(contentType, "multipart/form-data") {
 		// Handle multipart form data for file uploads
 		// Check if form values exist before setting them
-		var title, slug, description, location, country, tripType, duration, priceStr, minPeopleStr, meetPoint, content, openDatesStr, destinationsStr, itineraryStr string
+		var title, slug, description, location, country, tripType, duration, priceStr, minPeopleStr, meetPoint, content, openDatesStr, destinationsStr, itineraryStr, useOpenDatesStr, useItineraryStr string
 
 		if c.FormValue("title") != "" {
 			title = c.FormValue("title")
@@ -498,7 +562,22 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 			input.MinPeople = minPeople
 		}
 
+		// Parse boolean flags
+		if c.FormValue("use_open_dates") != "" {
+			useOpenDatesStr = c.FormValue("use_open_dates")
+			if useOpenDates, err := strconv.ParseBool(useOpenDatesStr); err == nil {
+				input.UseOpenDates = &useOpenDates
+			}
+		}
+		if c.FormValue("use_itinerary") != "" {
+			useItineraryStr = c.FormValue("use_itinerary")
+			if useItinerary, err := strconv.ParseBool(useItineraryStr); err == nil {
+				input.UseItinerary = &useItinerary
+			}
+		}
+
 		// Parse JSON fields if they exist
+		openDatesStr = c.FormValue("open_dates")
 		if openDatesStr != "" {
 			// Validasi bahwa string ini adalah JSON yang valid dan parse
 			var temp interface{}
@@ -507,6 +586,7 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 			}
 		}
 
+		destinationsStr = c.FormValue("destinations")
 		if destinationsStr != "" {
 			// Validasi bahwa string ini adalah JSON yang valid dan parse
 			var temp interface{}
@@ -515,6 +595,7 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 			}
 		}
 
+		itineraryStr = c.FormValue("itinerary")
 		if itineraryStr != "" {
 			// Validasi bahwa string ini adalah JSON yang valid dan parse
 			var temp interface{}
@@ -654,7 +735,9 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 		updates["price"] = input.Price
 	}
 	if input.Image != nil {
-		updates["image"] = input.Image
+		// Strip server URL from image path
+		cleanedImage := stripServerURL(*input.Image)
+		updates["image"] = cleanedImage
 	}
 	if input.Images != nil {
 		if processed := processImagesInput(input.Images); processed != nil {
@@ -669,6 +752,12 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 	}
 	if input.Content != nil {
 		updates["content"] = input.Content
+	}
+	if input.UseOpenDates != nil {
+		updates["use_open_dates"] = input.UseOpenDates
+	}
+	if input.UseItinerary != nil {
+		updates["use_itinerary"] = input.UseItinerary
 	}
 	if input.OpenDates != nil {
 		if bytes, err := json.Marshal(input.OpenDates); err == nil {
@@ -705,25 +794,27 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 
 	// Buat response object dengan format JSON yang benar
 	responseTrip := map[string]interface{}{
-		"id":           trip.ID,
-		"created_at":   trip.CreatedAt,
-		"updated_at":   trip.UpdatedAt,
-		"title":        trip.Title,
-		"slug":         trip.Slug,
-		"description":  trip.Description,
-		"location":     trip.Location,
-		"country":      trip.Country,
-		"type":         trip.Type,
-		"duration":     trip.Duration,
-		"price":        trip.Price,
-		"image":        trip.Image,
-		"images":       parseImagesField(trip.Images),
-		"min_people":   trip.MinPeople,
-		"meet_point":   trip.MeetPoint,
-		"content":      trip.Content,
-		"open_dates":   h.parseJSONField(trip.OpenDates),
-		"destinations": h.parseJSONField(trip.Destinations),
-		"itinerary":    h.parseJSONField(trip.Itinerary),
+		"id":             trip.ID,
+		"created_at":     trip.CreatedAt,
+		"updated_at":     trip.UpdatedAt,
+		"title":          trip.Title,
+		"slug":           trip.Slug,
+		"description":    trip.Description,
+		"location":       trip.Location,
+		"country":        trip.Country,
+		"type":           trip.Type,
+		"duration":       trip.Duration,
+		"price":          trip.Price,
+		"image":          trip.Image,
+		"images":         parseImagesField(trip.Images),
+		"min_people":     trip.MinPeople,
+		"meet_point":     trip.MeetPoint,
+		"content":        trip.Content,
+		"use_open_dates": trip.UseOpenDates,
+		"use_itinerary":  trip.UseItinerary,
+		"open_dates":     h.parseJSONField(trip.OpenDates),
+		"destinations":   h.parseJSONField(trip.Destinations),
+		"itinerary":      h.parseJSONField(trip.Itinerary),
 	}
 
 	return utils.RespApi(c, "ok", "Berhasil memperbarui data Trip", responseTrip)
