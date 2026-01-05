@@ -10,7 +10,7 @@ interface Session {
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET!);
 
-export const getServerSession = cache(async (): Promise<Session | null> => {
+export const getServerSession = async (): Promise<Session | null> => {
    const cookieStore = await cookies();
    const token = cookieStore.get('accessToken')?.value;
 
@@ -42,4 +42,4 @@ export const getServerSession = cache(async (): Promise<Session | null> => {
       // Token invalid/expired → biarkan AuthGuard redirect ke /api/auth/refresh
       return null;
    }
-});
+};

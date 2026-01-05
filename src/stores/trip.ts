@@ -19,6 +19,8 @@ export interface TripData {
    meet_point?: string;
    destinations?: any[];
    content?: string;
+   use_open_dates?: boolean;
+   use_itinerary?: boolean;
    open_dates?: {
       from_date?: string;
       to_date?: string;
@@ -99,6 +101,10 @@ const useTripStore = create<TripState>()(
                   formData.append('min_people', String(data.min_people));
                if (data.meet_point) formData.append('meet_point', data.meet_point);
                if (data.content) formData.append('content', data.content);
+               if (data.use_open_dates !== undefined)
+                  formData.append('use_open_dates', String(data.use_open_dates));
+               if (data.use_itinerary !== undefined)
+                  formData.append('use_itinerary', String(data.use_itinerary));
                if (data.open_dates) formData.append('open_dates', JSON.stringify(data.open_dates));
                if (data.destinations)
                   formData.append('destinations', JSON.stringify(data.destinations));
@@ -146,6 +152,10 @@ const useTripStore = create<TripState>()(
                   formData.append('min_people', String(data.min_people));
                if (data.meet_point) formData.append('meet_point', data.meet_point);
                if (data.content) formData.append('content', data.content);
+               if (data.use_open_dates !== undefined)
+                  formData.append('use_open_dates', String(data.use_open_dates));
+               if (data.use_itinerary !== undefined)
+                  formData.append('use_itinerary', String(data.use_itinerary));
                if (data.open_dates) formData.append('open_dates', JSON.stringify(data.open_dates));
                if (data.destinations)
                   formData.append('destinations', JSON.stringify(data.destinations));

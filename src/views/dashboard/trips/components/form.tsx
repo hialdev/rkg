@@ -116,16 +116,23 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
       meet_point: currentTrip?.meet_point || '',
       destinations: currentTrip?.destinations || [],
       content: currentTrip?.content || '',
-      open_dates: currentTrip?.open_dates || [{ from_date: '', to_date: '' }],
-      itinerary: currentTrip?.itinerary || [
-         {
-            day: 1,
-            activities: [
-               { time: '08:00', description: 'Arrival and check-in' },
-               { time: '12:00', description: 'Lunch' },
-            ],
-         },
-      ],
+      use_open_dates: currentTrip?.use_open_dates ?? true,
+      use_itinerary: currentTrip?.use_itinerary ?? false,
+      // Only use placeholder data for NEW trips, preserve existing data when editing
+      open_dates: currentTrip?.open_dates || (currentTrip ? [] : [{ from_date: '', to_date: '' }]),
+      itinerary:
+         currentTrip?.itinerary ||
+         (currentTrip
+            ? []
+            : [
+                 {
+                    day: 1,
+                    activities: [
+                       { time: '08:00', description: 'Arrival and check-in' },
+                       { time: '12:00', description: 'Lunch' },
+                    ],
+                 },
+              ]),
    };
 
    const methods = useForm({
@@ -153,12 +160,13 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
    } = methods;
 
    useEffect(() => {
-      all({limit: 1000});
+      all({ limit: 1000 });
    }, []);
-   // Watch for changes in open_dates and itinerary
    const openDates = watch('open_dates');
    const itinerary = watch('itinerary');
    const images = watch('images');
+   const useOpenDates = watch('use_open_dates');
+   const useItinerary = watch('use_itinerary');
 
    const { add, update } = useTripStore();
 
@@ -463,6 +471,12 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
                         <Grid size={{ xs: 12, md: 6 }}>
                            <Field.Text name="meet_point" label="Meeting Point" />
                         </Grid>
+                        <Grid size={{ xs: 12, md: 6 }}>
+                           <Field.Switch name="use_open_dates" label="Use Open Dates" />
+                        </Grid>
+                        <Grid size={{ xs: 12, md: 6 }}>
+                           <Field.Switch name="use_itinerary" label="Use Itinerary" />
+                        </Grid>
                      </Grid>
                   </Grid>
 
@@ -514,130 +528,136 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
                   />
                </Box>
 
-               {/* Open Dates Section */}
-               <Box sx={{ mt: 4, mb: 3 }}>
-                  <Box
-                     sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        mb: 2,
-                     }}
-                  >
-                     <Typography variant="h6">Open Dates</Typography>
-                     <Button variant="outlined" onClick={addOpenDate} size="small">
-                        Add Date
-                     </Button>
-                  </Box>
-
-                  {openDates?.map((date, index) => (
-                     <Box key={index} sx={{ display: 'flex', gap: 2, mb: 2, alignItems: 'end' }}>
-                        <Field.DatePicker
-                           name={`open_dates.${index}.from_date`}
-                           label="From Date"
-                           slotProps={{ textField: { fullWidth: true } }}
-                        />
-                        <Field.DatePicker
-                           name={`open_dates.${index}.to_date`}
-                           label="To Date"
-                           slotProps={{ textField: { fullWidth: true } }}
-                        />
-                        <Button
-                           variant="outlined"
-                           color="error"
-                           onClick={() => removeOpenDate(index)}
-                           disabled={openDates.length <= 1}
-                        >
-                           Remove
-                        </Button>
-                     </Box>
-                  ))}
-               </Box>
-
-               {/* Itinerary Section */}
-               <Box sx={{ mt: 4, mb: 3 }}>
-                  <Box
-                     sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        mb: 2,
-                     }}
-                  >
-                     <Typography variant="h6">Itinerary</Typography>
-                     <Button variant="outlined" onClick={addItineraryDay} size="small">
-                        Add Day
-                     </Button>
-                  </Box>
-
-                  {itinerary?.map((day, dayIndex) => (
+               {/* Open Dates Section - Conditional */}
+               {useOpenDates && (
+                  <Box sx={{ mt: 4, mb: 3 }}>
                      <Box
-                        key={dayIndex}
                         sx={{
-                           mb: 4,
-                           p: 2,
-                           border: '1px solid',
-                           borderColor: 'divider',
-                           borderRadius: 1,
+                           display: 'flex',
+                           justifyContent: 'space-between',
+                           alignItems: 'center',
+                           mb: 2,
                         }}
                      >
-                        <Box
-                           sx={{
-                              display: 'flex',
-                              justifyContent: 'space-between',
-                              alignItems: 'center',
-                              mb: 2,
-                           }}
-                        >
-                           <Typography variant="h6">Day {day.day}</Typography>
+                        <Typography variant="h6">Open Dates</Typography>
+                        <Button variant="outlined" onClick={addOpenDate} size="small">
+                           Add Date
+                        </Button>
+                     </Box>
+
+                     {openDates?.map((date, index) => (
+                        <Box key={index} sx={{ display: 'flex', gap: 2, mb: 2, alignItems: 'end' }}>
+                           <Field.DatePicker
+                              name={`open_dates.${index}.from_date`}
+                              label="From Date"
+                              slotProps={{ textField: { fullWidth: true } }}
+                           />
+                           <Field.DatePicker
+                              name={`open_dates.${index}.to_date`}
+                              label="To Date"
+                              slotProps={{ textField: { fullWidth: true } }}
+                           />
                            <Button
                               variant="outlined"
                               color="error"
-                              onClick={() => removeItineraryDay(dayIndex)}
-                              disabled={itinerary.length <= 1}
+                              onClick={() => removeOpenDate(index)}
+                              disabled={openDates.length <= 1}
                            >
-                              Remove Day
+                              Remove
                            </Button>
                         </Box>
+                     ))}
+                  </Box>
+               )}
 
-                        <Stack spacing={2}>
-                           {day.activities?.map((activity, activityIndex) => (
-                              <Box
-                                 key={activityIndex}
-                                 sx={{ display: 'flex', gap: 2, alignItems: 'end' }}
-                              >
-                                 <Field.Text
-                                    name={`itinerary.${dayIndex}.activities.${activityIndex}.time`}
-                                    label="Time"
-                                    fullWidth
-                                 />
-                                 <Field.Text
-                                    name={`itinerary.${dayIndex}.activities.${activityIndex}.description`}
-                                    label="Activity"
-                                    fullWidth
-                                 />
-                                 <Button
-                                    variant="outlined"
-                                    color="error"
-                                    onClick={() => removeActivityFromDay(dayIndex, activityIndex)}
-                                    disabled={day.activities && day.activities.length <= 1}
-                                 >
-                                    Remove
-                                 </Button>
-                              </Box>
-                           ))}
-
-                           <Button
-                              variant="outlined"
-                              onClick={() => addActivityToDay(dayIndex)}
-                              sx={{ alignSelf: 'flex-start' }}
-                           >
-                              Add Activity
-                           </Button>
-                        </Stack>
+               {/* Itinerary Section - Conditional */}
+               {useItinerary && (
+                  <Box sx={{ mt: 4, mb: 3 }}>
+                     <Box
+                        sx={{
+                           display: 'flex',
+                           justifyContent: 'space-between',
+                           alignItems: 'center',
+                           mb: 2,
+                        }}
+                     >
+                        <Typography variant="h6">Itinerary</Typography>
+                        <Button variant="outlined" onClick={addItineraryDay} size="small">
+                           Add Day
+                        </Button>
                      </Box>
-                  ))}
-               </Box>
+
+                     {itinerary?.map((day, dayIndex) => (
+                        <Box
+                           key={dayIndex}
+                           sx={{
+                              mb: 4,
+                              p: 2,
+                              border: '1px solid',
+                              borderColor: 'divider',
+                              borderRadius: 1,
+                           }}
+                        >
+                           <Box
+                              sx={{
+                                 display: 'flex',
+                                 justifyContent: 'space-between',
+                                 alignItems: 'center',
+                                 mb: 2,
+                              }}
+                           >
+                              <Typography variant="h6">Day {day.day}</Typography>
+                              <Button
+                                 variant="outlined"
+                                 color="error"
+                                 onClick={() => removeItineraryDay(dayIndex)}
+                                 disabled={itinerary.length <= 1}
+                              >
+                                 Remove Day
+                              </Button>
+                           </Box>
+
+                           <Stack spacing={2}>
+                              {day.activities?.map((activity, activityIndex) => (
+                                 <Box
+                                    key={activityIndex}
+                                    sx={{ display: 'flex', gap: 2, alignItems: 'end' }}
+                                 >
+                                    <Field.Text
+                                       name={`itinerary.${dayIndex}.activities.${activityIndex}.time`}
+                                       label="Time"
+                                       fullWidth
+                                    />
+                                    <Field.Text
+                                       name={`itinerary.${dayIndex}.activities.${activityIndex}.description`}
+                                       label="Activity"
+                                       fullWidth
+                                    />
+                                    <Button
+                                       variant="outlined"
+                                       color="error"
+                                       onClick={() =>
+                                          removeActivityFromDay(dayIndex, activityIndex)
+                                       }
+                                       disabled={day.activities && day.activities.length <= 1}
+                                    >
+                                       Remove
+                                    </Button>
+                                 </Box>
+                              ))}
+
+                              <Button
+                                 variant="outlined"
+                                 onClick={() => addActivityToDay(dayIndex)}
+                                 sx={{ alignSelf: 'flex-start' }}
+                              >
+                                 Add Activity
+                              </Button>
+                           </Stack>
+                        </Box>
+                     ))}
+                  </Box>
+               )}
             </Box>
 
             <Box sx={{ position: 'sticky', bottom: 0, end: 0, start: 0, zIndex: 99, pb: 2 }}>

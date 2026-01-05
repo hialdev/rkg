@@ -1,5 +1,5 @@
-import { schemaUtils } from "src/components/hook-form";
-import z from "zod";
+import { schemaUtils } from 'src/components/hook-form';
+import z from 'zod';
 
 export type ITripTableFilters = {
    title: string;
@@ -26,6 +26,8 @@ export const TripSchema = z.object({
    meet_point: z.string().optional(),
    destinations: z.array(z.any()).optional(),
    content: z.string().optional(),
+   use_open_dates: z.boolean().optional(),
+   use_itinerary: z.boolean().optional(),
    open_dates: z
       .array(
          z.object({
