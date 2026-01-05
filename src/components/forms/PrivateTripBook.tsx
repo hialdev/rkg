@@ -33,26 +33,23 @@ const PrivateTripBook = ({ tripData }: Props) => {
          .string()
          .min(
             1,
-            translations.validation?.start_date_required ||
-               "Start date is required"
+            "Start date is required"
          ),
       endDate: z
          .string()
          .min(
             1,
-            translations.validation?.end_date_required || "End date is required"
+            "End date is required"
          ),
       message: z
          .string()
          .min(
             10,
-            translations.validation?.message_min_length ||
-               "Message must be at least 10 characters"
+            "Message must be at least 10 characters"
          )
          .max(
             500,
-            translations.validation?.message_max_length ||
-               "Message must not exceed 500 characters"
+            "Message must not exceed 500 characters"
          ),
    });
 
@@ -126,9 +123,15 @@ const PrivateTripBook = ({ tripData }: Props) => {
                                  ? newValue.add(1, "day")
                                  : dateRange[1];
                            setDateRange([newStartDate, newEndDate]);
-                           setValue("startDate", newStartDate.toISOString());
+                           setValue(
+                              "startDate",
+                              newStartDate.format("YYYY-MM-DD")
+                           );
                            if (newEndDate) {
-                              setValue("endDate", newEndDate.toISOString());
+                              setValue(
+                                 "endDate",
+                                 newEndDate.format("YYYY-MM-DD")
+                              );
                            }
                         }
                      }}
@@ -155,9 +158,12 @@ const PrivateTripBook = ({ tripData }: Props) => {
                                  ? newValue.subtract(1, "day")
                                  : dateRange[0];
                            setDateRange([newStartDate, newEndDate]);
-                           setValue("endDate", newEndDate.toISOString());
+                           setValue("endDate", newEndDate.format("YYYY-MM-DD"));
                            if (newStartDate) {
-                              setValue("startDate", newStartDate.toISOString());
+                              setValue(
+                                 "startDate",
+                                 newStartDate.format("YYYY-MM-DD")
+                              );
                            }
                         }
                      }}

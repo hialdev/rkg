@@ -48,17 +48,26 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
    let galleriesImages = [];
    let parsedImages = JSON.parse(tripData?.images || "[]");
    if (parsedImages && Array.isArray(parsedImages)) {
-      galleriesImages = parsedImages.map((img) =>
-         typeof img === "string" && img != ""
-            ? import.meta.env.PUBLIC_API_URL + "/" + img
-            : img
-      );
+      galleriesImages = parsedImages.map((img) => {
+         if (typeof img === "string" && img !== "") {
+            // Only prepend server URL if the path doesn't already start with http:// or https://
+            if (img.startsWith("http://") || img.startsWith("https://")) {
+               return img;
+            }
+            return import.meta.env.PUBLIC_API_URL + "/" + img;
+         }
+         return img;
+      });
    }
-   galleriesImages.push(
-      tripData.image
-         ? import.meta.env.PUBLIC_API_URL + "/" + tripData.image
-         : ""
-   );
+   // Add cover image to galleries
+   if (tripData.image) {
+      const coverImage =
+         tripData.image.startsWith("http://") ||
+         tripData.image.startsWith("https://")
+            ? tripData.image
+            : import.meta.env.PUBLIC_API_URL + "/" + tripData.image;
+      galleriesImages.push(coverImage);
+   }
 
    console.log("Galleries Images: ", galleriesImages);
    // Use parsedTripData instead of tripData for rendering
@@ -152,7 +161,7 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                      {translations.label.description}
                   </h2>
                   <div
-                     className="prose prose-stone mt-2"
+                     className="prose prose-stone max-w-none mt-2 [&>h1]:text-4xl [&>h1]:font-bold [&>h1]:mt-8 [&>h1]:mb-4 [&>h2]:text-3xl [&>h2]:font-bold [&>h2]:mt-6 [&>h2]:mb-3 [&>h3]:text-2xl [&>h3]:font-semibold [&>h3]:mt-5 [&>h3]:mb-2 [&>h4]:text-xl [&>h4]:font-semibold [&>h4]:mt-4 [&>h4]:mb-2 [&>img]:w-full [&>img]:rounded-xl [&>img]:my-4"
                      dangerouslySetInnerHTML={{
                         __html: displayTripData.content ?? "",
                      }}
@@ -271,20 +280,27 @@ const LocaleDetailTrip: React.FC<LocaleDetailTripProps> = ({ tripData }) => {
                      {translations.label.description}
                   </h2>
                   <div
-                     className="prose prose-stone mt-2"
+                     className="prose prose-stone max-w-none mt-2 [&>h1]:text-4xl [&>h1]:font-bold [&>h1]:mt-8 [&>h1]:mb-4 [&>h2]:text-3xl [&>h2]:font-bold [&>h2]:mt-6 [&>h2]:mb-3 [&>h3]:text-2xl [&>h3]:font-semibold [&>h3]:mt-5 [&>h3]:mb-2 [&>h4]:text-xl [&>h4]:font-semibold [&>h4]:mt-4 [&>h4]:mb-2 [&>img]:w-full [&>img]:rounded-xl [&>img]:my-4"
                      dangerouslySetInnerHTML={{
                         __html: displayTripData.content ?? "",
                      }}
                   />
                </section>
 
+               {/* Only show itinerary if use_itinerary is true */}
                <section className="w-full max-w-4xl py-20">
-                  <h2 className="text-4xl font-bold text-red-60 mb-10">
-                     {translations.label.itinerary}
-                  </h2>
-                  <div className="">
-                     <ItineraryPath itinerary={displayTripData.itinerary} />
-                  </div>
+                  {displayTripData.use_itinerary && (
+                     <>
+                        <h2 className="text-4xl font-bold text-red-60 mb-10">
+                           {translations.label.itinerary}
+                        </h2>
+                        <div className="">
+                           <ItineraryPath
+                              itinerary={displayTripData.itinerary}
+                           />
+                        </div>
+                     </>
+                  )}
                </section>
 
                <TripSections tripData={displayTripData} />

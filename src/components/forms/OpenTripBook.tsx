@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import {
    TextField,
    Button,
@@ -40,15 +41,20 @@ const OpenTripBook = ({ tripData }: OpenTripBookProps) => {
       fetchWhatsapp();
    }, []);
 
+   // Check if trip uses open dates or manual date range
+   const useOpenDates = tripData.use_open_dates ?? true;
+
    // Define the Zod schema for form validation
    const schema = z.object({
-      openDate: z
-         .string()
-         .min(
-            1,
-            translations?.validation?.open_date_required ||
-               "Open date is required"
-         ),
+      openDate: useOpenDates
+         ? z.string().min(1, "Open date is required")
+         : z.string().optional(),
+      fromDate: !useOpenDates
+         ? z.string().min(1, "From date is required")
+         : z.string().optional(),
+      toDate: !useOpenDates
+         ? z.string().min(1, "To date is required")
+         : z.string().optional(),
       additionalInfo: z.string().optional(),
    });
 
@@ -68,6 +74,8 @@ const OpenTripBook = ({ tripData }: OpenTripBookProps) => {
    });
 
    const [selectedDate, setSelectedDate] = useState<string | null>(null);
+   const [fromDate, setFromDate] = useState<Dayjs | null>(null);
+   const [toDate, setToDate] = useState<Dayjs | null>(null);
 
    const handleDateSelect = (dateRange: {
       from_date: string;
@@ -82,10 +90,17 @@ const OpenTripBook = ({ tripData }: OpenTripBookProps) => {
 
    const onSubmit = (data: FormData) => {
       const sendMessage = () => {
+         let dateInfo = "";
+         if (useOpenDates) {
+            dateInfo = `Selected date : ${data.openDate}`;
+         } else {
+            dateInfo = `From: ${data.fromDate}\nTo: ${data.toDate}`;
+         }
+
          const message = `
          Hello, I'm interested for take this ${tripData.title} Trip, !
 
-         Selected date : ${data.openDate}
+         ${dateInfo}
          Additional information : 
          ${data.additionalInfo ?? "-"}
 
@@ -119,49 +134,102 @@ const OpenTripBook = ({ tripData }: OpenTripBookProps) => {
                {tripData.title}
             </Typography>
 
-            <FormControl fullWidth className="mb-4" error={!!errors.openDate}>
-               <Typography variant="body2" sx={{ mb: 1 }}>
-                  {translations.label.available_dates}
-               </Typography>
+            {useOpenDates ? (
+               <FormControl
+                  fullWidth
+                  className="mb-4"
+                  error={!!errors.openDate}
+               >
+                  <Typography variant="body2" sx={{ mb: 1 }}>
+                     {translations.label.available_dates}
+                  </Typography>
 
-               <Box className="flex flex-wrap gap-2 mb-2">
-                  {(() => {
-                     const dates =
-                        typeof tripData.open_dates === "string"
-                           ? JSON.parse(tripData.open_dates)
-                           : tripData.open_dates;
+                  <Box className="flex flex-wrap gap-2 mb-2">
+                     {(() => {
+                        const dates =
+                           typeof tripData.open_dates === "string"
+                              ? JSON.parse(tripData.open_dates)
+                              : tripData.open_dates;
 
-                     return Array.isArray(dates)
-                        ? dates.map((dateRange: any, index: number) => {
-                             const isSelected =
-                                selectedDate ===
-                                `${dayjs(dateRange.from_date).format(
-                                   "DD MMM YYYY"
-                                )} - ${dayjs(dateRange.to_date).format(
-                                   "DD MMM YYYY"
-                                )}`;
-                             return (
-                                <Chip
-                                   key={index}
-                                   label={`${dayjs(dateRange.from_date).format(
+                        return Array.isArray(dates)
+                           ? dates.map((dateRange: any, index: number) => {
+                                const isSelected =
+                                   selectedDate ===
+                                   `${dayjs(dateRange.from_date).format(
                                       "DD MMM YYYY"
                                    )} - ${dayjs(dateRange.to_date).format(
                                       "DD MMM YYYY"
-                                   )}`}
-                                   onClick={() => handleDateSelect(dateRange)}
-                                   variant={isSelected ? "filled" : "outlined"}
-                                   color={isSelected ? "primary" : "default"}
-                                   className="cursor-pointer"
-                                />
-                             );
-                          })
-                        : null;
-                  })()}
-               </Box>
-               {errors.openDate && (
-                  <FormHelperText>{errors.openDate.message}</FormHelperText>
-               )}
-            </FormControl>
+                                   )}`;
+                                return (
+                                   <Chip
+                                      key={index}
+                                      label={`${dayjs(
+                                         dateRange.from_date
+                                      ).format("DD MMM YYYY")} - ${dayjs(
+                                         dateRange.to_date
+                                      ).format("DD MMM YYYY")}`}
+                                      onClick={() =>
+                                         handleDateSelect(dateRange)
+                                      }
+                                      variant={
+                                         isSelected ? "filled" : "outlined"
+                                      }
+                                      color={isSelected ? "primary" : "default"}
+                                      className="cursor-pointer"
+                                   />
+                                );
+                             })
+                           : null;
+                     })()}
+                  </Box>
+                  {errors.openDate && (
+                     <FormHelperText>{errors.openDate.message}</FormHelperText>
+                  )}
+               </FormControl>
+            ) : (
+               <>
+                  <Box className="mb-4">
+                     <DatePicker
+                        label="From Date"
+                        value={fromDate}
+                        onChange={(newValue) => {
+                           setFromDate(newValue);
+                           setValue(
+                              "fromDate",
+                              newValue?.format("YYYY-MM-DD") || ""
+                           );
+                        }}
+                        slotProps={{
+                           textField: {
+                              fullWidth: true,
+                              error: !!errors.fromDate,
+                              helperText: errors.fromDate?.message,
+                           },
+                        }}
+                     />
+                  </Box>
+                  <Box className="mb-4">
+                     <DatePicker
+                        label="To Date"
+                        value={toDate}
+                        onChange={(newValue) => {
+                           setToDate(newValue);
+                           setValue(
+                              "toDate",
+                              newValue?.format("YYYY-MM-DD") || ""
+                           );
+                        }}
+                        slotProps={{
+                           textField: {
+                              fullWidth: true,
+                              error: !!errors.toDate,
+                              helperText: errors.toDate?.message,
+                           },
+                        }}
+                     />
+                  </Box>
+               </>
+            )}
 
             <TextField
                fullWidth

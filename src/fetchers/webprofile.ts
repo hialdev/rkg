@@ -27,6 +27,8 @@ export interface Trip extends BaseModel {
    min_people?: number;
    meet_point?: string;
    content?: string;
+   use_open_dates?: boolean;
+   use_itinerary?: boolean;
    open_dates?: any; // json.RawMessage
    destinations?: any; // json.RawMessage
    itinerary?: any; // json.RawMessage

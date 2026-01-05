@@ -158,7 +158,11 @@ export default function SplitWidthSlider({
                         <div
                            className={`w-full h-full bg-center bg-cover transition-all duration-300`}
                            style={{
-                              backgroundImage: `url(${import.meta.env.PUBLIC_API_URL+'/'+item.image})`,
+                              backgroundImage: `url(${encodeURI(
+                                 import.meta.env.PUBLIC_API_URL +
+                                    "/" +
+                                    item.image
+                              )})`,
                               aspectRatio: "4 / 3", // Default aspect ratio for mobile
                               display: "block",
                            }}
@@ -290,7 +294,9 @@ export default function SplitWidthSlider({
                      <div
                         className={`w-full h-full bg-center bg-cover transition-all duration-300`}
                         style={{
-                           backgroundImage: `url(${import.meta.env.PUBLIC_API_URL+'/'+item.image})`,
+                           backgroundImage: `url(${encodeURI(
+                              import.meta.env.PUBLIC_API_URL + "/" + item.image
+                           )})`,
                            aspectRatio: hovered === idx ? "16 / 9" : undefined,
                            display: "block",
                         }}
@@ -307,7 +313,7 @@ export default function SplitWidthSlider({
                            variant="subtitle2"
                            sx={{ color: "#fff", fontWeight: "bold" }}
                         >
-                           00{idx+1}
+                           00{idx + 1}
                         </Typography>
                      </div>
                   </Paper>
