@@ -21,6 +21,7 @@ import { useBoolean } from 'minimal-shared/hooks';
 import { toast } from 'src/components/snackbar';
 import { Field, Form, RHFTextField, RHFUpload } from 'src/components/hook-form';
 import useEventPlanStore from 'src/stores/event-plan';
+import { CONFIG } from 'src/global-config';
 
 // ----------------------------------------------------------------------
 
@@ -29,7 +30,7 @@ const EventPlanSchema = z.object({
    step_order: z.number().min(1, { message: 'Step order is required!' }),
    subtitle: z.string().min(1, { message: 'Subtitle is required!' }),
    content: z.string().optional(),
-   image: z.instanceof(File).optional().nullable(),
+   images: z.array(z.instanceof(File).or(z.string())).optional().nullable(),
 });
 
 export type EventPlanType = z.infer<typeof EventPlanSchema> & {
@@ -50,13 +51,30 @@ export function EventPlanForm({ editData, onSuccess, open, onClose }: Props) {
 
    const isEdit = !!editData?.id;
 
+   // Parse existing images for edit mode
+   let parsedImages: string[] = [];
+   if (editData?.images) {
+      if (typeof editData.images === 'string') {
+         try {
+            const parsed = JSON.parse(editData.images);
+            if (Array.isArray(parsed)) {
+               parsedImages = parsed.map((img: string) =>
+                  img.startsWith('http') ? img : `${CONFIG.apiHostUrl}/${img}`
+               );
+            }
+         } catch (e) {
+            console.error('Failed to parse images:', e);
+         }
+      }
+   }
+
    // Default values for the form
    const defaultValues: EventPlanType = {
       title: editData?.title || '',
       step_order: editData?.step_order || 1,
       subtitle: editData?.subtitle || '',
       content: editData?.content || '',
-      image: null, // Don't prefill with existing image path as it's not a File object
+      images: parsedImages.length > 0 ? parsedImages : [], // Changed from null to []
    };
 
    const methods = useForm({
@@ -67,10 +85,18 @@ export function EventPlanForm({ editData, onSuccess, open, onClose }: Props) {
    const {
       reset,
       handleSubmit,
+      setValue,
+      watch,
       formState: { isSubmitting },
    } = methods;
 
    const { add, update } = useEventPlanStore();
+   const images = watch('images');
+
+   const handleRemoveFile = (inputFile: File | string) => {
+      const filtered = images?.filter((file) => file !== inputFile);
+      setValue('images', filtered, { shouldValidate: true, shouldDirty: true });
+   };
 
    const onSubmit = handleSubmit(async (data) => {
       try {
@@ -86,7 +112,10 @@ export function EventPlanForm({ editData, onSuccess, open, onClose }: Props) {
          }
 
          if (result.success) {
-            toast.success(result.message || (isEdit ? 'Event Plan updated successfully!' : 'Event Plan created successfully!'));
+            toast.success(
+               result.message ||
+                  (isEdit ? 'Event Plan updated successfully!' : 'Event Plan created successfully!')
+            );
             onSuccess?.();
             reset();
             if (onClose) onClose();
@@ -109,36 +138,18 @@ export function EventPlanForm({ editData, onSuccess, open, onClose }: Props) {
    };
 
    return (
-      <Dialog
-         fullWidth
-         maxWidth="md"
-         open={open ?? false}
-         onClose={onClose || (() => {})}
-      >
+      <Dialog fullWidth maxWidth="md" open={open ?? false} onClose={onClose || (() => {})}>
          <DialogTitle>{isEdit ? 'Edit' : 'Create New'} Event Plan</DialogTitle>
 
          <Form methods={methods} onSubmit={onSubmit}>
             <DialogContent sx={{ pt: 1, pb: 0, flexGrow: 1, overflow: 'auto' }}>
                <Stack spacing={3} mt={1}>
                   <Stack spacing={2}>
-                     <RHFTextField 
-                        name="title" 
-                        label="Title" 
-                        required 
-                     />
+                     <RHFTextField name="title" label="Title" required />
 
-                     <RHFTextField 
-                        name="step_order" 
-                        label="Step Order" 
-                        type="number"
-                        required 
-                     />
+                     <RHFTextField name="step_order" label="Step Order" type="number" required />
 
-                     <RHFTextField 
-                        name="subtitle" 
-                        label="Subtitle" 
-                        required 
-                     />
+                     <RHFTextField name="subtitle" label="Subtitle" required />
 
                      <Box sx={{ mb: 3 }}>
                         <Typography variant="body2" sx={{ mb: 1 }}>
@@ -147,11 +158,30 @@ export function EventPlanForm({ editData, onSuccess, open, onClose }: Props) {
                         <Field.Editor name="content" />
                      </Box>
 
-                     <RHFUpload
-                        name="image"
-                        maxSize={5242880} // 5MB
-                        helperText="Allowed *.jpeg, *.jpg, *.png, max size of 5MB"
-                     />
+                     <Box sx={{ mb: 3 }}>
+                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                           Images
+                        </Typography>
+                        <Field.Upload
+                           name="images"
+                           maxSize={5242880} // 5MB
+                           multiple
+                           onRemove={handleRemoveFile}
+                           helperText={
+                              <Typography
+                                 variant="caption"
+                                 sx={{
+                                    mt: 1,
+                                    display: 'block',
+                                    textAlign: 'center',
+                                    color: 'text.disabled',
+                                 }}
+                              >
+                                 Allowed *.jpeg, *.jpg, *.png, max size of 5MB each
+                              </Typography>
+                           }
+                        />
+                     </Box>
                   </Stack>
                </Stack>
             </DialogContent>
@@ -161,11 +191,7 @@ export function EventPlanForm({ editData, onSuccess, open, onClose }: Props) {
                   Cancel
                </Button>
 
-               <LoadingButton
-                  type="submit"
-                  variant="contained"
-                  loading={isSubmitting}
-               >
+               <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
                   {isEdit ? 'Update Event Plan' : 'Create Event Plan'}
                </LoadingButton>
             </DialogActions>

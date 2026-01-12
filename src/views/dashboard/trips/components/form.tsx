@@ -32,6 +32,7 @@ import { TripSchema, TripType } from 'src/types/trip';
 const ctgTrips = [
    { key: 'open-trip', value: 'Open Trip' },
    { key: 'private-trip', value: 'Private Trip' },
+   { key: 'one-day-trip', value: 'One Day Trip' },
 ];
 // ----------------------------------------------------------------------
 

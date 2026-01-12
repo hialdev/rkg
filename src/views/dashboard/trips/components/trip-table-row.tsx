@@ -114,16 +114,14 @@ export function TripTableRow({
             <TableCell sx={{ whiteSpace: 'nowrap' }}>
                {row.type ? (
                   row.type == 'open-trip' ? (
-                     <Chip variant="soft" color="info" label={row.type ? 'Open Trip' : 'not set'} />
+                     <Chip variant="soft" color="info" label="Open Trip" />
+                  ) : row.type == 'one-day-trip' ? (
+                     <Chip variant="soft" color="warning" label="One Day Trip" />
                   ) : (
-                     <Chip
-                        variant="soft"
-                        color="secondary"
-                        label={row.type ? 'Private Trip' : 'not set'}
-                     />
+                     <Chip variant="soft" color="secondary" label="Private Trip" />
                   )
                ) : (
-                  <Chip variant="soft" color="error" label={row.type ? 'Not Set' : 'not set'} />
+                  <Chip variant="soft" color="error" label="Not Set" />
                )}
             </TableCell>
 

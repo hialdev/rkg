@@ -9,7 +9,7 @@ export interface EventPlanData {
    step_order?: number;
    subtitle?: string;
    content?: string;
-   image?: any;
+   images?: any[];
 }
 
 interface EventPlanState {
@@ -28,7 +28,7 @@ const useEventPlanStore = create<EventPlanState>()(
          eventPlans: [],
          all: async (params?: any) => {
             const queryParams = new URLSearchParams();
-            
+
             if (params) {
                if (params.page !== undefined) queryParams.append('page', params.page.toString());
                if (params.limit !== undefined) queryParams.append('limit', params.limit.toString());
@@ -36,10 +36,10 @@ const useEventPlanStore = create<EventPlanState>()(
                if (params.sort !== undefined) queryParams.append('sort', params.sort);
                if (params.order !== undefined) queryParams.append('order', params.order);
             }
-            
+
             const queryString = queryParams.toString();
             const url = queryString ? `/event-plans?${queryString}` : '/event-plans';
-            
+
             const response = await protectedApi.get(url);
             if (response.data.success && response.data.data) {
                set({ eventPlans: response.data.data.event_plans || response.data.data });
@@ -54,16 +54,25 @@ const useEventPlanStore = create<EventPlanState>()(
             let payload: EventPlanData | FormData = data;
             let config = {};
 
-            // Jika ada field image yang instanceof File, gunakan FormData
-            if (data.image instanceof File) {
+            // Check if there are any File objects in images array
+            const hasFiles = data.images && data.images.some((img) => img instanceof File);
+
+            if (hasFiles) {
                const formData = new FormData();
 
-               // Mapping field satu per satu — aman dari TypeScript
+               // Mapping field satu per satu
                if (data.title) formData.append('title', data.title);
-               if (data.step_order !== undefined) formData.append('step_order', data.step_order.toString());
+               if (data.step_order !== undefined)
+                  formData.append('step_order', data.step_order.toString());
                if (data.subtitle) formData.append('subtitle', data.subtitle);
                if (data.content) formData.append('content', data.content);
-               formData.append('image', data.image); // image selalu ada di sini (karena dicek instanceof File)
+
+               // Append multiple images
+               if (data.images && Array.isArray(data.images)) {
+                  data.images.forEach((img: any) => {
+                     formData.append('images', img);
+                  });
+               }
 
                payload = formData;
                config = {
@@ -80,15 +89,24 @@ const useEventPlanStore = create<EventPlanState>()(
             let payload: EventPlanData | FormData = data;
             let config = {};
 
-            // Jika ada field image yang instanceof File, gunakan FormData
-            if (data.image instanceof File) {
+            // Check if there are any File objects in images array
+            const hasFiles = data.images && data.images.some((img) => img instanceof File);
+
+            if (hasFiles) {
                const formData = new FormData();
 
                if (data.title) formData.append('title', data.title);
-               if (data.step_order !== undefined) formData.append('step_order', data.step_order.toString());
+               if (data.step_order !== undefined)
+                  formData.append('step_order', data.step_order.toString());
                if (data.subtitle) formData.append('subtitle', data.subtitle);
                if (data.content) formData.append('content', data.content);
-               formData.append('image', data.image); // image selalu ada di sini (karena dicek instanceof File)
+
+               // Append multiple images (both new Files and existing URL strings)
+               if (data.images && Array.isArray(data.images)) {
+                  data.images.forEach((img: any) => {
+                     formData.append('images', img);
+                  });
+               }
 
                payload = formData;
                config = {

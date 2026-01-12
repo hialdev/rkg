@@ -247,7 +247,7 @@ export function TripListView() {
                            tableData.map((trip) => trip.country).filter(Boolean) as string[]
                         ),
                      ].filter(Boolean) as string[],
-                     types: ['open-trip', 'private-trip'],
+                     types: ['open-trip', 'private-trip', 'one-day-trip'],
                   }}
                />
 
