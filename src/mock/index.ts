@@ -97,6 +97,7 @@ export const cities = [
 export const tripTypes = [
    { name: "open-trip", label: "Open Trip" },
    { name: "private-trip", label: "Private Trip" },
+   { name: "one-day-trip", label: "One Day Trip" },
 ];
 
 export const imageLists = [
@@ -1538,13 +1539,14 @@ berkualitas tinggi hingga layanan konsumsi yang memanjakan, kami berkomitmen mem
          </ul>
       `,
       image: "https://placehold.co/720x480?text=DetailEventService",
-      galleries: imageLists.map(img => img.path)
+      galleries: imageLists.map((img) => img.path),
    },
    {
-      id: 2, 
+      id: 2,
       title: "MICE",
       slug: "mice",
-      description: "Meeting | Incentive | Conference | Exhibition | Corporate Meeting | Workshop | Online Meeting | Hybrid Meeting",
+      description:
+         "Meeting | Incentive | Conference | Exhibition | Corporate Meeting | Workshop | Online Meeting | Hybrid Meeting",
       content: `
          <h4>Layanan Meeting natavisual : Solusi untuk Meeting Profesional yang Efektif dan Berkesan</h4>
          <p>Corporate Meeting | Workshop | Online Meeting | Hybrid Meeting
@@ -1575,7 +1577,7 @@ berkualitas tinggi hingga layanan konsumsi yang memanjakan, kami berkomitmen mem
          </ul>
       `,
       image: "https://placehold.co/720x480?text=DetailEventService",
-      galleries: imageLists.map(img => img.path)
+      galleries: imageLists.map((img) => img.path),
    },
    {
       id: 3,
@@ -1612,6 +1614,6 @@ berkualitas tinggi hingga layanan konsumsi yang memanjakan, kami berkomitmen mem
          </ul>
       `,
       image: "https://placehold.co/720x480?text=DetailEventService",
-      galleries: imageLists.map(img => img.path)
-   }
-]
+      galleries: imageLists.map((img) => img.path),
+   },
+];

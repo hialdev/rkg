@@ -8,6 +8,11 @@ import {
    Paper,
    Container,
 } from "@mui/material";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import { getSetting, type EventPlan } from "../../../fetchers";
 
 interface StepEventProps {
@@ -36,6 +41,24 @@ const StepEvent: React.FC<StepEventProps> = ({ events }) => {
    };
 
    const activeEvent = events.find((event) => event.id === activeTab);
+
+   // Parse images from JSON string
+   const getImages = (event: EventPlan): string[] => {
+      if (!event.images) return [];
+
+      try {
+         if (typeof event.images === "string") {
+            const parsed = JSON.parse(event.images);
+            return Array.isArray(parsed) ? parsed : [];
+         }
+         if (Array.isArray(event.images)) {
+            return event.images;
+         }
+      } catch (e) {
+         console.error("Failed to parse images:", e);
+      }
+      return [];
+   };
 
    const sendMessage = () => {
       const message = `
@@ -121,20 +144,41 @@ const StepEvent: React.FC<StepEventProps> = ({ events }) => {
                      color: "white",
                   }}
                >
-                  <img
-                     src={
-                        activeEvent.image
-                           ? import.meta.env.PUBLIC_API_URL +
-                             "/" +
-                             activeEvent.image
-                           : "https://placehold.co/720x480?text=StepEventImage"
+                  {/* Image Slider */}
+                  {(() => {
+                     const images = getImages(activeEvent);
+                     if (images.length > 0) {
+                        return (
+                           <Box sx={{ mb: 3 }}>
+                              <Swiper
+                                 modules={[Pagination, Autoplay]}
+                                 navigation
+                                 pagination={{ clickable: true }}
+                                 autoplay={{ delay: 5000 }}
+                                 loop={images.length > 1}
+                                 className="event-plan-swiper"
+                                 style={{ borderRadius: "16px", maxWidth:"40em"}}
+                              >
+                                 {images.map((img, idx) => (
+                                    <SwiperSlide key={idx}>
+                                       <img
+                                          src={`${
+                                             import.meta.env.PUBLIC_API_URL
+                                          }/${img}`}
+                                          alt={`${activeEvent.title} - Image ${
+                                             idx + 1
+                                          }`}
+                                          className="w-full aspect-video rounded-2xl object-cover"
+                                       />
+                                    </SwiperSlide>
+                                 ))}
+                              </Swiper>
+                           </Box>
+                        );
                      }
-                     alt="Thumbnail step"
-                     className={
-                        (activeEvent.image ? "block" : "hidden") +
-                        " w-full mb-5 aspect-video rounded-2xl object-cover"
-                     }
-                  />
+                     return null;
+                  })()}
+
                   <Typography
                      typography={`h5`}
                      fontWeight={`bold`}

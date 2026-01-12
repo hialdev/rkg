@@ -19,7 +19,7 @@ export interface Trip extends BaseModel {
    description?: string;
    location?: string;
    country?: string;
-   type?: "open-trip" | "private-trip" | string;
+   type?: "open-trip" | "private-trip" | "one-day-trip" | string;
    duration?: string;
    price?: number;
    image?: string;
@@ -89,7 +89,7 @@ export interface EventPlan extends BaseModel {
    step_order?: number;
    subtitle?: string;
    content?: string;
-   image?: string;
+   images?: string;
 }
 
 export interface Faq extends BaseModel {

@@ -13,10 +13,10 @@ export const menuPaths = {
       root: "/services",
       open_trip: "/services/open-trip",
       private_trip: "/services/private-trip",
+      one_day_trip: "/services/one-day-trip",
       event_organizer: "/services/event-organizer",
    },
-
-}
+};
 // This will be updated by the locale context to provide localized menu items
 export const getMenus = (locale: "en" | "id"): MenuItem[] => {
    if (locale === "id") {
@@ -36,6 +36,11 @@ export const getMenus = (locale: "en" | "id"): MenuItem[] => {
                {
                   name: "Private Trip",
                   path: menuPaths.service.private_trip,
+                  childerns: [],
+               },
+               {
+                  name: "One Day Trip",
+                  path: menuPaths.service.one_day_trip,
                   childerns: [],
                },
                {
@@ -64,6 +69,11 @@ export const getMenus = (locale: "en" | "id"): MenuItem[] => {
                {
                   name: "Private Trip",
                   path: menuPaths.service.private_trip,
+                  childerns: [],
+               },
+               {
+                  name: "One Day Trip",
+                  path: menuPaths.service.one_day_trip,
                   childerns: [],
                },
                {
@@ -96,7 +106,16 @@ export const menus: MenuItem[] = [
             path: menuPaths.service.private_trip,
             childerns: [],
          },
-         { name: "Event Organizer", path: menuPaths.service.event_organizer, childerns: [] },
+         {
+            name: "One Day Trip",
+            path: menuPaths.service.one_day_trip,
+            childerns: [],
+         },
+         {
+            name: "Event Organizer",
+            path: menuPaths.service.event_organizer,
+            childerns: [],
+         },
       ],
    },
 ];

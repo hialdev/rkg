@@ -24,14 +24,17 @@ export default function FilteredTrips({
 }: FilteredTripsProps) {
    const { translations } = useLocale();
    const [tripType, setTripType] = useState<
-      "all" | "open-trip" | "private-trip" | string
+      "all" | "open-trip" | "private-trip" | "one-day-trip" | string
    >(initialTripType);
    const [filtered, setFiltered] = useState<Trip[]>([]);
 
    useEffect(() => {
       const fetchTrips = async () => {
          try {
-            const params = {type:tripType !== "all" ? tripType : "", location:initialLocations.join(',')}
+            const params = {
+               type: tripType !== "all" ? tripType : "",
+               location: initialLocations.join(","),
+            };
             const res = await getTrips(params);
             const trips = res.data.data;
 
@@ -48,6 +51,7 @@ export default function FilteredTrips({
       if (tripType === "open-trip") return translations.services.items[0].title;
       if (tripType === "private-trip")
          return translations.services.items[1].title;
+      if (tripType === "one-day-trip") return "One Day Trip"; // You can add this to translations if needed
       return translations.nav.services;
    };
    useEffect(() => {

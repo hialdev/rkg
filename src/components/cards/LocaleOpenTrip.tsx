@@ -31,7 +31,7 @@ const LocaleOpenTrip: React.FC<OpenTripProps> = ({ trip }) => {
       Location: ${trip.location}
       
       Link:
-      ${window.location.href+'trips/'+trip.slug}
+      ${window.location.href + "trips/" + trip.slug}
             `.trim();
 
       const encodedMessage = encodeURIComponent(message);
@@ -47,10 +47,16 @@ const LocaleOpenTrip: React.FC<OpenTripProps> = ({ trip }) => {
                className={`${"p-2 px-4 text-white font-medium text-sm"} ${
                   trip.type == "open-trip"
                      ? "bg-linear-to-bl from-emerald-300 to-cyan-700"
+                     : trip.type == "one-day-trip"
+                     ? "bg-linear-to-br from-purple-400 to-indigo-600"
                      : "bg-linear-to-tl from-yellow-400 via-yellow-600 to-orange-300"
                }`}
             >
-               {trip.type == "open-trip" ? "Open Trip" : "Private Trip"}
+               {trip.type == "open-trip"
+                  ? "Open Trip"
+                  : trip.type == "one-day-trip"
+                  ? "One Day Trip"
+                  : "Private Trip"}
             </div>
             {/* <div className=" p-2 px-4 bg-emerald-600 text-white font-medium text-sm">
                {translations.label.best}{" "}

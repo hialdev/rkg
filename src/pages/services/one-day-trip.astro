@@ -1,0 +1,19 @@
+---
+import LocaleSearchContent from "../../components/sections/search/LocaleSearchContent";
+import Layout from "../../layouts/Layout.astro";
+import type { PageMetaType } from "../../types/page";
+
+const metaData: PageMetaType = {
+   title: "Our Services - One Day Trip | RKG Tour & Travel",
+   description:
+      "Discover RKG Tour & Travel's One Day Trip services, offering exciting single-day travel experiences to various destinations.",
+   image: "/assets/rkgtour.webp",
+   robot: true,
+};
+
+export const prerender = false;
+---
+
+<Layout pageMeta={metaData}>
+   <LocaleSearchContent client:idle />
+</Layout>
