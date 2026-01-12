@@ -20,7 +20,7 @@ type EventTypeInitialInput struct {
 	Description *string  `json:"description,omitempty" validate:"omitempty"`
 	Image       *string  `json:"image,omitempty" validate:"omitempty"`
 	Content     *string  `json:"content,omitempty" validate:"omitempty"`
-	Galleries   []string `json:"galleries,omitempty" validate:"omitempty,max=5"`
+	Galleries   []string `json:"galleries,omitempty" validate:"omitempty,max=30"`
 }
 
 type EventTypeHandler struct {

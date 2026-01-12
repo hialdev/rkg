@@ -20,7 +20,7 @@ type TripInitialInput struct {
 	Description  *string     `json:"description,omitempty" validate:"omitempty"`
 	Location     *string     `json:"location" validate:"omitempty,max=200"`
 	Country      *string     `json:"country" validate:"omitempty,max=100"`
-	Type         *string     `json:"type" validate:"omitempty,oneof=open-trip private-trip"`
+	Type         *string     `json:"type" validate:"omitempty,oneof=open-trip private-trip one-day-trip"`
 	Duration     *string     `json:"duration" validate:"omitempty,max=20"`
 	Price        *float64    `json:"price" validate:"omitempty,min=0"`
 	Image        *string     `json:"image,omitempty" validate:"omitempty"`

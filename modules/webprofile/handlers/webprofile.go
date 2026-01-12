@@ -3,6 +3,7 @@ package handlers
 import (
 	"aldev/modules/cms/models"
 	"aldev/utils"
+	"math/rand"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -271,13 +272,24 @@ func (h *WebProfileHandler) GetGalleries(c *fiber.Ctx) error {
 		"all":      allGalleries,
 	}
 
-	// Limit featured and sliders to max 6
+	// Randomize and limit featured to max 6
 	if len(allGalleries) > 0 {
-		featuredEnd := len(allGalleries)
+		// Create a copy for randomization
+		featuredGalleries := make([]map[string]interface{}, len(allGalleries))
+		copy(featuredGalleries, allGalleries)
+
+		// Shuffle the galleries for random selection
+		for i := len(featuredGalleries) - 1; i > 0; i-- {
+			j := rand.Intn(i + 1)
+			featuredGalleries[i], featuredGalleries[j] = featuredGalleries[j], featuredGalleries[i]
+		}
+
+		// Take first 6 after shuffle
+		featuredEnd := len(featuredGalleries)
 		if featuredEnd > 6 {
 			featuredEnd = 6
 		}
-		response["featured"] = allGalleries[0:featuredEnd]
+		response["featured"] = featuredGalleries[0:featuredEnd]
 
 		slidersEnd := len(allGalleries)
 		if slidersEnd > 6 {

@@ -3,6 +3,7 @@ package handlers
 import (
 	"aldev/modules/cms/models"
 	"aldev/utils"
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -14,11 +15,11 @@ import (
 )
 
 type EventPlanInitialInput struct {
-	Title    *string `json:"title" validate:"omitempty,max=300"`
-	Step     *int    `json:"step_order" validate:"omitempty"`
-	Subtitle *string `json:"subtitle" validate:"omitempty,max=300"`
-	Content  *string `json:"content" validate:"omitempty"`
-	Image    *string `json:"image,omitempty" validate:"omitempty"`
+	Title    *string     `json:"title" validate:"omitempty,max=300"`
+	Step     *int        `json:"step_order" validate:"omitempty"`
+	Subtitle *string     `json:"subtitle" validate:"omitempty,max=300"`
+	Content  *string     `json:"content" validate:"omitempty"`
+	Images   interface{} `json:"images,omitempty" validate:"omitempty"`
 }
 
 type EventPlanHandler struct {
@@ -57,7 +58,7 @@ func (h *EventPlanHandler) GetAllEventPlans(c *fiber.Ctx) error {
 
 	// --- Filter search
 	if search != "" {
-	db = db.Where(`
+		db = db.Where(`
 			LOWER(title) LIKE ? OR 
 			LOWER(subtitle) LIKE ? OR 
 			LOWER(content) LIKE ?`,
@@ -105,13 +106,13 @@ func (h *EventPlanHandler) GetAllEventPlans(c *fiber.Ctx) error {
 			"step_order": eventPlan.Step,
 			"subtitle":   eventPlan.Subtitle,
 			"content":    eventPlan.Content,
-			"image":      eventPlan.Image,
+			"images":     eventPlan.Images,
 		}
-	responseEventPlans = append(responseEventPlans, responseEventPlan)
+		responseEventPlans = append(responseEventPlans, responseEventPlan)
 	}
 
 	result := fiber.Map{
-	"event_plans": responseEventPlans,
+		"event_plans": responseEventPlans,
 		"pagination": fiber.Map{
 			"total":      total,
 			"page":       page,
@@ -140,7 +141,7 @@ func (h *EventPlanHandler) AddEventPlan(c *fiber.Ctx) error {
 			if err == nil {
 				step = &stepVal
 			}
-	}
+		}
 
 		input = EventPlanInitialInput{
 			Title:    &title,
@@ -149,13 +150,16 @@ func (h *EventPlanHandler) AddEventPlan(c *fiber.Ctx) error {
 			Content:  &content,
 		}
 
-		// Handle file upload
-		if file, err := c.FormFile("image"); err == nil && file != nil {
-			filePath, err := utils.UploadFile(c, "image", "event_plans")
-			if err != nil {
-				return utils.RespApi(c, "bad", "Gagal upload image EventPlan", err.Error())
+		// Handle multiple images upload
+		if file, err := c.FormFile("images"); err == nil && file != nil {
+			imagePaths, err := utils.UploadFileFlex(c, "images", "event_plans")
+			if err == nil && len(imagePaths) > 0 {
+				jsonStr, err := json.Marshal(imagePaths)
+				if err == nil {
+					imgStr := string(jsonStr)
+					input.Images = &imgStr
+				}
 			}
-			input.Image = &filePath
 		}
 	} else {
 		// Handle JSON data
@@ -168,7 +172,12 @@ func (h *EventPlanHandler) AddEventPlan(c *fiber.Ctx) error {
 		if verrs, ok := err.(validator.ValidationErrors); ok {
 			return utils.RespApi(c, "bad", "Validasi gagal", verrs.Translate(utils.Translator))
 		}
-	return utils.RespApi(c, "bad", "Validasi gagal", err.Error())
+		return utils.RespApi(c, "bad", "Validasi gagal", err.Error())
+	}
+
+	var imagesJSONStr *string
+	if input.Images != nil {
+		imagesJSONStr = processImagesInput(input.Images)
 	}
 
 	eventPlan := models.EventPlan{
@@ -176,7 +185,7 @@ func (h *EventPlanHandler) AddEventPlan(c *fiber.Ctx) error {
 		Step:     input.Step,
 		Subtitle: input.Subtitle,
 		Content:  input.Content,
-		Image:    input.Image,
+		Images:   imagesJSONStr,
 	}
 
 	if err := h.DB.Create(&eventPlan).Error; err != nil {
@@ -223,18 +232,51 @@ func (h *EventPlanHandler) UpdateEventPlan(c *fiber.Ctx) error {
 			Content:  &content,
 		}
 
-		// Handle file upload
-		if file, err := c.FormFile("image"); err == nil && file != nil {
-			oldImagePath := ""
-			if eventPlan.Image != nil {
-				oldImagePath = *eventPlan.Image
+		// Handle multiple images upload
+		var existingImages []string
+		form, err := c.MultipartForm()
+		if err == nil {
+			// Retrieve existing strings
+			if values, ok := form.Value["images"]; ok {
+				for _, v := range values {
+					if v != "" {
+						// Clean URL if needed
+						if strings.Contains(v, "/uploads/") {
+							parts := strings.Split(v, "/uploads/")
+							if len(parts) > 1 {
+								v = "uploads/" + parts[1]
+							}
+						}
+						existingImages = append(existingImages, v)
+					}
+				}
 			}
+		}
 
-			filePath, err := utils.UpdateFile(c, oldImagePath, "image", "event_plans")
-			if err != nil {
-				return utils.RespApi(c, "bad", "Gagal memperbarui image EventPlan", err.Error())
+		// Upload new files
+		var newImagePaths []string
+		if file, err := c.FormFile("images"); err == nil && file != nil {
+			paths, err := utils.UploadFileFlex(c, "images", "event_plans")
+			if err == nil {
+				newImagePaths = paths
 			}
-			input.Image = &filePath
+		}
+
+		// Combine existing and new
+		if len(existingImages) > 0 || len(newImagePaths) > 0 {
+			allImages := append(existingImages, newImagePaths...)
+			jsonStr, err := json.Marshal(allImages)
+			if err == nil {
+				imgStr := string(jsonStr)
+				input.Images = &imgStr
+			}
+		} else {
+			if form != nil {
+				if _, ok := form.Value["images"]; ok {
+					emptyStr := "[]"
+					input.Images = &emptyStr
+				}
+			}
 		}
 	} else {
 		// Handle JSON data
@@ -244,10 +286,10 @@ func (h *EventPlanHandler) UpdateEventPlan(c *fiber.Ctx) error {
 	}
 
 	if err := utils.Validate.Struct(input); err != nil {
-	if verrs, ok := err.(validator.ValidationErrors); ok {
+		if verrs, ok := err.(validator.ValidationErrors); ok {
 			return utils.RespApi(c, "bad", "Validasi gagal", verrs.Translate(utils.Translator))
 		}
-	return utils.RespApi(c, "bad", "Validasi gagal", err.Error())
+		return utils.RespApi(c, "bad", "Validasi gagal", err.Error())
 	}
 
 	updates := map[string]interface{}{
@@ -255,7 +297,12 @@ func (h *EventPlanHandler) UpdateEventPlan(c *fiber.Ctx) error {
 		"step_order": input.Step,
 		"subtitle":   input.Subtitle,
 		"content":    input.Content,
-		"image":      input.Image,
+	}
+
+	if input.Images != nil {
+		if processed := processImagesInput(input.Images); processed != nil {
+			updates["images"] = *processed
+		}
 	}
 
 	if err := h.DB.Model(&eventPlan).Updates(updates).Error; err != nil {
@@ -269,14 +316,14 @@ func (h *EventPlanHandler) UpdateEventPlan(c *fiber.Ctx) error {
 
 	// Buat response object dengan format JSON yang benar
 	responseEventPlan := map[string]interface{}{
-	"id":         eventPlan.ID,
+		"id":         eventPlan.ID,
 		"created_at": eventPlan.CreatedAt,
 		"updated_at": eventPlan.UpdatedAt,
-	"title":      eventPlan.Title,
-	"step_order": eventPlan.Step,
+		"title":      eventPlan.Title,
+		"step_order": eventPlan.Step,
 		"subtitle":   eventPlan.Subtitle,
 		"content":    eventPlan.Content,
-		"image":      eventPlan.Image,
+		"images":     eventPlan.Images,
 	}
 
 	return utils.RespApi(c, "ok", "Berhasil memperbarui data EventPlan", responseEventPlan)
@@ -294,9 +341,16 @@ func (h *EventPlanHandler) DeleteEventPlan(c *fiber.Ctx) error {
 		return utils.RespApi(c, "ise", "Gagal Mendapatkan EventPlan", err.Error())
 	}
 
-	// Hapus file terkait jika ada
-	if eventPlan.Image != nil && *eventPlan.Image != "" {
-		utils.DeleteFile(*eventPlan.Image)
+	// Hapus multiple images jika ada
+	if eventPlan.Images != nil && *eventPlan.Images != "" {
+		var imagePaths []string
+		if err := json.Unmarshal([]byte(*eventPlan.Images), &imagePaths); err == nil {
+			for _, imagePath := range imagePaths {
+				if imagePath != "" {
+					utils.DeleteFile(imagePath)
+				}
+			}
+		}
 	}
 
 	if err := h.DB.Delete(&eventPlan).Error; err != nil {
