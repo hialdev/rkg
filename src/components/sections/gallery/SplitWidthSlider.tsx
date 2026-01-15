@@ -23,6 +23,16 @@ const DEFAULT_ITEMS: Item[] = new Array(6).fill(0).map((_, i) => ({
    title: `${String(i + 1).padStart(3, "0")}`, // Format as 001, 002, etc.
 }));
 
+// Helper function to properly encode URLs with special characters
+const encodeImageUrl = (baseUrl: string, imagePath: string): string => {
+   // Split the path and encode each part separately to handle special characters like ()
+   const encodedPath = imagePath
+      .split("/")
+      .map((part) => encodeURIComponent(part))
+      .join("/");
+   return `${baseUrl}/${encodedPath}`;
+};
+
 export default function SplitWidthSlider({
    items = DEFAULT_ITEMS,
    gap = 16,
@@ -158,11 +168,10 @@ export default function SplitWidthSlider({
                         <div
                            className={`w-full h-full bg-center bg-cover transition-all duration-300`}
                            style={{
-                              backgroundImage: `url(${encodeURI(
-                                 import.meta.env.PUBLIC_API_URL +
-                                    "/" +
-                                    item.image
-                              )})`,
+                              backgroundImage: `url("${encodeImageUrl(
+                                 import.meta.env.PUBLIC_API_URL,
+                                 item.image
+                              )}")`,
                               aspectRatio: "4 / 3", // Default aspect ratio for mobile
                               display: "block",
                            }}
@@ -294,9 +303,10 @@ export default function SplitWidthSlider({
                      <div
                         className={`w-full h-full bg-center bg-cover transition-all duration-300`}
                         style={{
-                           backgroundImage: `url(${encodeURI(
-                              import.meta.env.PUBLIC_API_URL + "/" + item.image
-                           )})`,
+                           backgroundImage: `url("${encodeImageUrl(
+                              import.meta.env.PUBLIC_API_URL,
+                              item.image
+                           )}")`,
                            aspectRatio: hovered === idx ? "16 / 9" : undefined,
                            display: "block",
                         }}
