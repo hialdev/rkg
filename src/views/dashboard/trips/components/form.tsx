@@ -180,6 +180,15 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
       try {
          console.info('Trip Form Data:', data);
 
+         // Validate file count before sending
+         if (data.images && Array.isArray(data.images)) {
+            const fileCount = data.images.filter((img) => img instanceof File).length;
+            if (fileCount > 30) {
+               toast.error('Maksimal 30 file gambar yang dapat diupload');
+               return;
+            }
+         }
+
          // Manually include the slug value since the field is disabled
          const formData = {
             ...data,
@@ -354,7 +363,8 @@ export function TripForm({ currentTrip, onSuccess }: Props) {
                                     color: 'text.disabled',
                                  }}
                               >
-                                 Allowed *.jpeg, *.jpg, *.png, *.webp max size of 5MB each
+                                 Allowed *.jpeg, *.jpg, *.png, *.webp max size of 5MB each (Max 30
+                                 files)
                               </Typography>
                            }
                         />
