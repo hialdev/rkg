@@ -392,13 +392,38 @@ func (h *TripHandler) AddTrip(c *fiber.Ctx) error {
 		}
 
 		// Handle multiple images upload
-		if file, err := c.FormFile("images"); err == nil && file != nil {
-			imagePaths, err := utils.UploadFileFlex(c, "images", "trips")
-			if err == nil && len(imagePaths) > 0 {
-				jsonStr, err := json.Marshal(imagePaths)
-				if err == nil {
-					imgStr := string(jsonStr)
-					input.Images = &imgStr
+		form, err := c.MultipartForm()
+		if err == nil {
+			if files, ok := form.File["images"]; ok && len(files) > 0 {
+				// Validate file count
+				const maxFiles = 30
+				if len(files) > maxFiles {
+					return utils.RespApi(c, "bad",
+						fmt.Sprintf("Maksimal %d file yang dapat diupload", maxFiles), nil)
+				}
+
+				// Validate each file size
+				const maxFileSize = 5 * 1024 * 1024 // 5MB
+				for _, file := range files {
+					if file.Size > maxFileSize {
+						return utils.RespApi(c, "bad",
+							fmt.Sprintf("File %s terlalu besar. Maksimal 5MB", file.Filename), nil)
+					}
+				}
+
+				// Upload all files
+				imagePaths, err := utils.UploadFileFlex(c, "images", "trips")
+				if err != nil {
+					return utils.RespApi(c, "bad",
+						"Gagal upload images. Error: "+err.Error(), nil)
+				}
+
+				if len(imagePaths) > 0 {
+					jsonStr, err := json.Marshal(imagePaths)
+					if err == nil {
+						imgStr := string(jsonStr)
+						input.Images = &imgStr
+					}
 				}
 			}
 		}
@@ -646,7 +671,24 @@ func (h *TripHandler) UpdateTrip(c *fiber.Ctx) error {
 
 		// Step 2: Upload file baru
 		var newImagePaths []string
-		if file, err := c.FormFile("images"); err == nil && file != nil {
+		if files, ok := form.File["images"]; ok && len(files) > 0 {
+			// Validate file count - ensure total doesn't exceed max
+			const maxFiles = 30
+			totalFiles := len(existingImages) + len(files)
+			if totalFiles > maxFiles {
+				return utils.RespApi(c, "bad",
+					fmt.Sprintf("Total file tidak boleh lebih dari %d", maxFiles), nil)
+			}
+
+			// Validate each file size
+			const maxFileSize = 5 * 1024 * 1024 // 5MB
+			for _, file := range files {
+				if file.Size > maxFileSize {
+					return utils.RespApi(c, "bad",
+						fmt.Sprintf("File %s terlalu besar. Maksimal 5MB", file.Filename), nil)
+				}
+			}
+
 			paths, err := utils.UploadFileFlex(c, "images", "trips")
 			if err == nil {
 				newImagePaths = paths
