@@ -26,7 +26,9 @@ func main() {
 
 	utils.ValidationTranslationInit()
 
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		BodyLimit: 40 * 1024 * 1024,
+	})
 	// app.Use(cors.New(cors.Config{
 	//      AllowOrigins:     "http://localhost:8081, http://localhost:8082",
 	//      AllowMethods:     "GET,POST,DELETE",
